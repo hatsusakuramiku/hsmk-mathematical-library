@@ -119,7 +119,7 @@ classdef Interpolation
                 interpolation.fittingMaxError = double(derivativeFunction);
                 return
             end
-            supDerivativeFunction = matlabFunction(DerivativeFunction .* (-1));
+            supDerivativeFunction = matlabFunction(derivativeFunction .* (-1));
             infDerivativeFunction = matlabFunction(derivativeFunction);
             inf = fminbnd(infDerivativeFunction,min(interpolation.xCoordinate),max(interpolation.xCoordinate));
             sup = fminbnd(supDerivativeFunction,min(interpolation.xCoordinate),max(interpolation.xCoordinate));
