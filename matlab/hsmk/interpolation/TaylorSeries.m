@@ -38,8 +38,11 @@ classdef TaylorSeries < Interpolation
             taylorSeries.center = center;
         end
 
-        function derivativeFunction = getderivativeFunction(taylorSeries)
-            derivativeFunction = taylorSeries;
+        function derivativeFunction = getDerivativeFunction(taylorSeries)
+            if isempty(taylorSeries.derivativeFunction)
+                taylorSeries = taylorSeries.generateDerivativeFunction;
+            end
+            derivativeFunction = taylorSeries.derivativeFunction;
         end
 
     end

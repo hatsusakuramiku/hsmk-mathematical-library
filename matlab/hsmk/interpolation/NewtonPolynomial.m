@@ -1,4 +1,4 @@
-classdef NewtonPolynomial < Interpolation
+classdef NewtonPolynomial < Interpolation & Coordinates
     properties (Access = private)
         differenceQuotientMatrix; 
         differenceQuotientTable; 
