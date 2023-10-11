@@ -18,7 +18,7 @@ methods(Access = public)
     end
 
     function yCoordinate = getYCoordinate(coordinates)
-        yCoordinate = coordinates.xCoordinate;
+        yCoordinate = coordinates.yCoordinate;
     end
 end
 end
