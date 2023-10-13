@@ -4,6 +4,7 @@ classdef Interpolation
         order; % 拟合阶次
         polynomial; % 拟合多项式
         fittingError; % 拟合误差
+        accuracy; % 拟合精度，需为正数，若不指定则默认未0.0001
     end
 
     properties (Constant,Access = protected)
@@ -29,10 +30,11 @@ classdef Interpolation
     end
 
     methods(Access = public)
-        function interpolation = Interpolation(fittingFunction, order)
+        function interpolation = Interpolation(fittingFunction, order, accuracy)
             % @Class #Interpolation 的构造函数
             interpolation.fittingFunction = [];
             interpolation.order = [];
+            interpolation.accuracy = [];
             if abs(nargin) == 1
                 interpolation.fittingFunction = fittingFunction;
             elseif abs(nargin) == 2
@@ -42,77 +44,48 @@ classdef Interpolation
                 interpolation.fittingFunction =fittingFunction;
                 interpolation.order = order;
             elseif abs(nargin) == 0
+            elseif abs(nargin) == 3
+                interpolation.fittingFunction =fittingFunction;
+                interpolation.order = order;
+                interpolation.accuracy = accuracy;
             else
                 error("输入参数过多！")
             end
         end
     end
 
-    methods
-
-        function fittingFunction = getFittingFunction(interpolation)
-            fittingFunction = interpolation.fittingFunction;
-        end
-
-        function interpolation = setFittingFunction(interpolation,fittingFunction)
-            interpolation.fittingFunction = fittingFunction;
-        end
-
-        function tempFittingFunction = getTempFittingFunction(interpolation)
-            tempFittingFunction = interpolation.tempFittingFunction;
-        end
-
-        function polynomial = getPolynomial(interpolation)
-            polynomial = interpolation.polynomial;
-        end
-
-        function order = getOrder(interpolation)
-            order = interpolation.order;
-        end
-
-        function interpolation = setOrder(interpolation,order)
-            if isempty(order) || numel(order) ~= 1 || fix(order) ~= order
-                error("输入参数错误！ 请确保输入参数是非负整数！")
-            end
-            interpolation.order = order;
-        end
-
-        function fittingError = getFittingError(interpolation)
-            fittingError = interpolation.fittingError;
-        end
-    end
-
     methods(Access = protected)
-        function sum = factorial(interpolation, n, xCoordinate, varargin)
+        function sum = factorial(n, xCoordinate, varargin)
+            syms x;
             % 类内部函数,用于计算连乘或阶乘
             numArgs = abs(nargin);
             sum = sym(1);
             switch numArgs
-                case 1
+                case 0
                     % 使用"interpolation.factorial"会至少输入一个参数"@Param #interpolation"
                     % 如果仅有一个输入参数就输出一个空的矩阵或数组
                     waring("无额外参数输入，未进行计算，将返回一个空的矩阵或数组！")
                     sum = [];
-                case 2
+                case 1
                     % 调用MATLAB中"factorial(n)"计算"n"的阶乘，其函数已有检错功能，此处不再另加
                     sum = sum .* factorial(n);
-                case 3
+                case 2
                     % 此处"n"为输入的 @Param #xCoordinate 的长度 - 1，即输入的x坐标向量中元素个数 - 1，"k"为输入参数 @Param #n，其中$ x_{i} $ 是@Param #xCoordinate 中的元素
                     % 如果@Param #n为空，则计算 $  \prod_{ i = 0 }^{n} (x-x_{i})  $
                     % 如果@Param #n不为空，则计算 $ \prod_{\begin{matrix} i = 0\\ i\ne k \end{matrix}}^{n} (x-x_{i}) $
                     judgement = prejudgeN(n,xCoordinate);
                     if judgement == 0
                         for i = 1:length(xCoordinate)
-                            sum = sum * (interpolation.x - xCoordinate(i));
+                            sum = sum * (x - xCoordinate(i));
                         end
                         sum = simplify(sum);
                         return
                     else
                         for i = setdiff(1:length(xCoordinate), n)
-                            sum = sum * (interpolation.x - xCoordinate(i));
+                            sum = sum * (x - xCoordinate(i));
                         end
                     end
-                case 4
+                case 3
                     % 此处"n"为输入的 @Param #xCoordinate 的长度 - 1，即输入的x坐标向量中元素个数 - 1，"k"为输入参数 @Param #n ,其中$ x_{i} $ 是@Param #xCoordinate 中的元素
                     % 可输入 1 个可选参数
                     % 可选参数及用法
@@ -123,7 +96,7 @@ classdef Interpolation
                     judgement = prejudgeN(n,xCoordinate);
                     if isempty(varargin)
                         warning("输入可选参数为空，将使用输入的 前三个参数进行计算！")
-                        sum = factorial(interpolation, n, xCoordinate);
+                        sum = factorial(n, xCoordinate);
                     else
                         if ~length(varargin) == 1
                             error("输入可选参数过多，只能接受一个可选参数！");
