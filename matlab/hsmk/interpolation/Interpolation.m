@@ -174,7 +174,7 @@ classdef Interpolation
             judgement = 1;
             if isempty(n)
                 judgement = 0;
-            elseif  numel(n) ~= 1 || n <= 0 || fix(n) ~= n || n > length(xCoordinate)
+            elseif numel(n) ~= 1 || n <= 0 || fix(n) ~= n || n > length(xCoordinate)
                 error("输入参数错误或超出数组索引！ 请确保输入参数为非负整数且小于数组长度！")
             else
                 if length(unique(xCoordinate)) ~= length(xCoordinate)
