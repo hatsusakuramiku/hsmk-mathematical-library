@@ -64,7 +64,7 @@ classdef Interpolation
                 case 0
                     % 使用"interpolation.factorial"会至少输入一个参数"@Param #interpolation"
                     % 如果仅有一个输入参数就输出一个空的矩阵或数组
-                    waring("无额外参数输入，未进行计算，将返回一个空的矩阵或数组！")
+                    warning("无额外参数输入，未进行计算，将返回一个空的矩阵或数组！")
                     sum = [];
                 case 1
                     % 调用MATLAB中"factorial(n)"计算"n"的阶乘，其函数已有检错功能，此处不再另加
