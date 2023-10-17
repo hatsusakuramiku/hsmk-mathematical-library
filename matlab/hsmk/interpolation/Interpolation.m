@@ -55,37 +55,37 @@ classdef Interpolation
     end
 
     methods(Access = protected)
-        function sum = factorial(n, xCoordinate, varargin)
+        function sum = factorial(Interpolation,n, xCoordinate, varargin)
             syms x;
             % 类内部函数,用于计算连乘或阶乘
             numArgs = abs(nargin);
             sum = sym(1);
             switch numArgs
-                case 0
+                case 1
                     % 使用"interpolation.factorial"会至少输入一个参数"@Param #interpolation"
                     % 如果仅有一个输入参数就输出一个空的矩阵或数组
                     warning("无额外参数输入，未进行计算，将返回一个空的矩阵或数组！")
                     sum = [];
-                case 1
-                    % 调用MATLAB中"factorial(n)"计算"n"的阶乘，其函数已有检错功能，此处不再另加
-                    sum = sum .* factorial(n);
                 case 2
+                    % 调用MATLAB中"factorial(n)"计算"n"的阶乘，其函数已有检错功能，此处不再另加
+                    sum = sum .* builtin('factorial', n);
+                case 3
                     % 此处"n"为输入的 @Param #xCoordinate 的长度 - 1，即输入的x坐标向量中元素个数 - 1，"k"为输入参数 @Param #n，其中$ x_{i} $ 是@Param #xCoordinate 中的元素
                     % 如果@Param #n为空，则计算 $  \prod_{ i = 0 }^{n} (x-x_{i})  $
                     % 如果@Param #n不为空，则计算 $ \prod_{\begin{matrix} i = 0\\ i\ne k \end{matrix}}^{n} (x-x_{i}) $
                     judgement = prejudgeN(n,xCoordinate);
                     if judgement == 0
                         for i = 1:length(xCoordinate)
-                            sum = sum * (x - xCoordinate(i));
+                            sum = sum * (x - xCoordinate(i)); %#ok<PROPLC>
                         end
                         sum = simplify(sum);
                         return
                     else
                         for i = setdiff(1:length(xCoordinate), n)
-                            sum = sum * (x - xCoordinate(i));
+                            sum = sum * (x - xCoordinate(i)); %#ok<PROPLC>
                         end
                     end
-                case 3
+                case 4
                     % 此处"n"为输入的 @Param #xCoordinate 的长度 - 1，即输入的x坐标向量中元素个数 - 1，"k"为输入参数 @Param #n ,其中$ x_{i} $ 是@Param #xCoordinate 中的元素
                     % 可输入 1 个可选参数
                     % 可选参数及用法
@@ -96,7 +96,7 @@ classdef Interpolation
                     judgement = prejudgeN(n,xCoordinate);
                     if isempty(varargin)
                         warning("输入可选参数为空，将使用输入的 前三个参数进行计算！")
-                        sum = factorial(n, xCoordinate);
+                        sum = Interpolation.factorial(n, xCoordinate);
                     else
                         if ~length(varargin) == 1
                             error("输入可选参数过多，只能接受一个可选参数！");

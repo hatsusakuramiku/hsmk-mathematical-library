@@ -11,6 +11,11 @@ classdef TaylorSeries < Interpolation
 
     methods
         function derivativeFunction = get.derivativeFunction(taylorSeries)
+            %GET.DERIVATIVEFUNCTION 修改derivativeFunction的值.当使用命令taylorSeries.derivativeFunction时，
+            %    根据taylorSeries.order与taylorSeries.fittingFunction的值修改derivativeFunction的值并返回。
+            %    当taylorSeries.order与taylorSeries.fittingFunction的值至少一个为空时，修改derivativeFunction
+            %    的值为空；当taylorSeries.order与taylorSeries.fittingFunction的值均为空时，derivativeFunction
+            %    的值为taylorSeries.fittingFunction的 0 到taylorSeries.order + 1 阶导函数数组，其自变量为'x'。
             if ~isempty(taylorSeries.fittingFunction) && ~isempty(taylorSeries.order)
                 derivativeFunction = sym(zeros(1,taylorSeries.order + 2)); % 创建一个细胞数组来存储导数函数
                 for n = 0:taylorSeries.order + 1
@@ -21,8 +26,11 @@ classdef TaylorSeries < Interpolation
             end
         end
     end
+
     methods
+
         function taylorSeries = TaylorSeries(fittingFunction,center,order,accuracy)
+        %TAYLORSERIEX TaylorSeries类的构造函数.
             if nargin == 0
                 fittingFunction = [];
                 center = [];
@@ -41,8 +49,8 @@ classdef TaylorSeries < Interpolation
                 if isempty(accuracy)
                     warning("未输入参数，将使用默认值'0.0001")
                     accuracy = 0.0001;
-                elseif ~isempty(accuracy) && accuracy < 0
-                    error("输入参数必须是正数！")
+                elseif accuracy < 0
+                    error("输入参数必须是非负数！")
                 end
             else
                 error("输入参数数目错误！")
@@ -66,64 +74,285 @@ classdef TaylorSeries < Interpolation
             taylorSeries.center = center;
         end
 
-        function polynomiaVector = getPolynomiaVector(taylorSeries,fittingFunction,center,order,varargin)
+        function [polynomiaVector,taylorSeriesOut] = getPolynomiaVector(taylorSeries,fittingFunction,center,order,varargin)
+            % 获取多项式向量
             syms a;
-            option = {'getmore'};
-            if nargin == 1
-                taylorSeries.getPolynomiaVector(taylorSeries.fittingFunction,taylorSeries.center,taylorSeries.order);
-            elseif nargin >= 4 && nargin <= 5
-                taylorSeries.paramJudgement(fittingFunction,center,order);
-                len = order + 2;
-                outlen = len;
-                if isempty(varargin) || (~isempty(varargin) && ~ismember(varargin,option))
-                    error("可选参数输入错误！")
-                elseif ~isempty(varargin) && ismember(varargin,option)
-                    outlen = len;
+            option = {"getmore"};
+            if nargout == 1 || nargout == 0
+                if nargin == 1
+                    if ~isempty(taylorSeries.polynomiaVector)
+                        polynomiaVector = taylorSeries.polynomiaVector;
+                    else
+                        polynomiaVector = taylorSeries.getPolynomiaVector(taylorSeries.tempFittingFunction,taylorSeries.center,taylorSeries.order);
+                    end
+                elseif nargin == 4 || nargin == 5
+                    taylorSeries.paramJudgement(fittingFunction,center,order);
+                    len = order + 2;
+                    outlen = len - 1;
+                    if nargin == 5
+                        if isempty(varargin) || isempty(varargin{1})
+                            error("可选参数不能为空！")
+                        else
+                            varargin = string(varargin);
+                        end
+                        if length(varargin) == 1 && isequal(varargin{1},option{1})
+                            outlen = outlen + 1;
+                        else
+                            error("可选参数输入错误！")
+                        end
+                    end
+                    taylorSeries.paramJudgement(fittingFunction,center,order);
+                    x = symvar(fittingFunction);
+                    derivativeFunction = sym(zeros(1,len)); %#ok<PROPLC> % 创建一个细胞数组来存储导数函数
+                    for n = 0:len - 1
+                        derivativeFunction(n + 1) = diff(fittingFunction, x, n); %#ok<PROPLC> % 求解第 n 阶导数，并存储在数组中
+                    end
+                    polynomiaVector = (x - center) .^ (0:1:len - 1);
+                    tempDerivativeFunction = subs(derivativeFunction(setdiff(1:len,len)),x,center); %#ok<PROPLC>
+                    tempDerivativeFunction = [tempDerivativeFunction,subs(derivativeFunction(end),x,a)]; %#ok<PROPLC>
+                    polynomiaVector = (tempDerivativeFunction ./ factorial(0:1:(len - 1))) .* polynomiaVector;
+                    polynomiaVector = polynomiaVector(1:outlen);
+                else
+                    error("输入参数数量错误！")
+                end
+            elseif nargout == 2
+                if nargin == 1
+                    if ~isempty(taylorSeries.polynomiaVector)
+                        polynomiaVector = taylorSeries.polynomiaVector;
+                        taylorSeriesOut = taylorSeries;
+                        return
+                    else
+                        polynomiaVector = taylorSeries.getPolynomiaVector(taylorSeries.tempFittingFunction,taylorSeries.center,taylorSeries.order);
+                        taylorSeries.polynomiaVector = polynomiaVector;
+                        taylorSeriesOut = taylorSeries;
+                        return
+                    end
+                elseif nargin == 4 || nargin == 5
+                    if nargin == 5
+                        polynomiaVector = taylorSeries.getPolynomiaVector(fittingFunction,center,order,varargin);
+                    else
+                        polynomiaVector = taylorSeries.getPolynomiaVector(fittingFunction,center,order);
+                    end
+                    taylorSeriesOut = TaylorSeries(fittingFunction,center,order);
+                    taylorSeriesOut.polynomiaVector = polynomiaVector;
+                else
+                    error("输入参数数量错误！")
                 end
             else
-                error("输入参数数量错误！")
+                error("输出参数数目或格式不对！")
             end
-            taylorSeries.paramJudgement(fittingFunction,center,order);
-            x = symvar(fittingFunction);
-            derivativeFunction = sym(zeros(1,len)); %#ok<PROPLC> % 创建一个细胞数组来存储导数函数
-            for n = 0:len - 1
-                derivativeFunction(n + 1) = diff(fittingFunction, x, n); %#ok<PROPLC> % 求解第 n 阶导数，并存储在数组中
-            end
-            polynomiaVector = (x - center) .^ (0:1:len - 1);
-            tempDerivativeFunction = subs(derivativeFunction(setdiff(1:len,len)),x,center); %#ok<PROPLC>
-            tempDerivativeFunction = [tempDerivativeFunction,subs(derivativeFunction(end),x,a)]; %#ok<PROPLC>
-            polynomiaVector = (tempDerivativeFunction ./ factorial(0:1:(len - 1))) .* polynomiaVector;
-            polynomiaVector = polynomiaVector(1:outlen);
         end
 
-        function polynomiaVector = getpolynomiavector(taylorSeries,varargin)
-            option = {'getmore'};
-            if nargin == 1
-                polynomiaVector = taylorSeries.getPolynomiaVector();
-            elseif nargin == 2
-                if isempty(varargin) || (~isempty(varargin) && ~ismember(varargin,option))
-                    error("可选参数输入错误！")
-                elseif ~isempty(varargin) && ismember(varargin,option)
-                    polynomiaVector = taylorSeries.getPolynomiaVector(taylorSeries.fittingFunction,taylorSeries.center,taylorSeries.order,"getmore");
+        function [polynomial,taylorSeries] = getPolynomia(taylorSeries,fittingFunction,center,order)
+            if nargout == 1 || nargout == 0
+                if nargin == 1
+                    if isempty(taylorSeries.polynomial)
+                        polynomiaVector = taylorSeries.getPolynomiaVector(); %#ok<PROPLC>
+                        polynomial = simplify(sum(polynomiaVector)); %#ok<PROPLC>
+                        return
+                    else
+                        polynomial = taylorSeries.polynomial;
+                        return
+                    end
+                elseif nargin == 4
+                    polynomiaVector = taylorSeries.getPolynomiaVector(fittingFunction,center,order); %#ok<PROPLC>
+                    polynomial = simplify(sum(polynomiaVector)); %#ok<PROPLC>
+                else
+                    error("输入参数错误！")
+                end
+            elseif nargout == 2
+                if nargin == 1
+                    if isempty(taylorSeries.polynomial)
+                        [polynomiaVector,taylorSeries] = taylorSeries.getPolynomiaVector(); %#ok<PROPLC>
+                        polynomial = simplify(sum(polynomiaVector)); %#ok<PROPLC>
+                        taylorSeries.polynomial = polynomial;
+                        return
+                    else
+                        polynomial = taylorSeries.polynomial;
+                        return
+                    end
+                elseif nargin == 4
+                    taylorSeries = TaylorSeries(fittingFunction,center,order);
+                    [polynomiaVector,taylorSeries] = taylorSeries.getPolynomiaVector(); %#ok<PROPLC>
+                    polynomial = simplify(sum(polynomiaVector)); %#ok<PROPLC>
+                    taylorSeries.polynomial = polynomial;
+                else
+                    error("输入参数错误！")
                 end
             else
-                error("输入参数数量错误！")
+                error("输出参数数目或格式不对！")
             end
         end
 
-        function remainder = getRemainder(taylorSeries,fittingFunction,center,order)
-            if nargin == 1
-                polynomiaVector = taylorSeries.getpolynomiavector("getmore"); %#ok<PROPLC>
-            elseif nargin == 4
-                polynomiaVector = taylorSeries.getPolynomiaVector(fittingFunction,center,order,"getmore"); %#ok<PROPLC>
+        function [fittingError,taylorSeries] = getFittingError(taylorSeries,varargin)
+            len = length(varargin);
+            if nargout == 1 || nargout == 0
+                if nargin == 1
+                    if isempty(taylorSeries.fittingError)
+                        polynomial = taylorSeries.getPolynomia();
+                        fittingError = subs(taylorSeries.tempFittingFunction - polynomial,taylorSeries.x,taylorSeries.center);
+                    else
+                        fittingError = taylorSeries.fittingError;
+                    end
+                elseif nargin == 4 || nargin == 5
+                    if len == 1
+                        if isnumeric(varargin{1}) && isscalar(varargin{1})
+                            point = varargin{1};
+                        else
+                            error("输入参数错误！")
+                        end
+                        if isempty(taylorSeries.fittingError)
+                            polynomial = taylorSeries.getPolynomia();
+                            fittingError = subs(taylorSeries.tempFittingFunction - polynomial,taylorSeries.x,point);
+                        else
+                            fittingError = taylorSeries.fittingError;
+                        end
+                    elseif len == 3
+                        fittingFunction = varargin{1};
+                        center = varargin{2};%#ok<PROPLC>
+                        order = varargin{3};
+                        taylorSeries.paramJudgement(fittingFunction,center,order);%#ok<PROPLC>
+                        polynomial = taylorSeries.getPolynomia(fittingFunction,center,order);%#ok<PROPLC>
+                        x = symvar(fittingFunction);
+                        fittingError = subs(fittingFunction - polynomial,x,center);%#ok<PROPLC>
+                    elseif len == 4
+                        fittingFunction = varargin{1};
+                        center = varargin{2};%#ok<PROPLC>
+                        order = varargin{3};
+                        if isnumeric(varargin{4}) && isscalar(varargin{4})
+                            point = varargin{4};
+                        else
+                            error("输入参数错误！")
+                        end
+                        taylorSeries.paramJudgement(fittingFunction,center,order);%#ok<PROPLC>
+                        polynomial = taylorSeries.getPolynomia(fittingFunction,center,order); %#ok<PROPLC>
+                        x = symvar(fittingFunction);
+                        fittingError = subs(fittingFunction - polynomial,x,point);
+                    else
+                        error("输入参数数量错误！")
+                    end
+                else
+                    error("输入参数数量错误！")
+                end
+            elseif nargout == 2
+                if nargin == 1
+                    if isempty(taylorSeries.fittingError)
+                        [polynomial,taylorSeries] = taylorSeries.getPolynomia();
+                        fittingError = subs(taylorSeries.tempFittingFunction - polynomial,taylorSeries.x,taylorSeries.center);
+                        taylorSeries.fittingError = fittingError;
+                    else
+                        fittingError = taylorSeries.fittingError;
+                    end
+                elseif nargin == 4 || nargin == 5
+                    if len == 1
+                        if isnumeric(varargin{1}) && isscalar(varargin{1})
+                            point = varargin{1};
+                        else
+                            error("输入参数错误！")
+                        end
+                        if isempty(taylorSeries.polynomial)
+                            [polynomial,taylorSeries] = taylorSeries.getPolynomia();
+                            fittingError = subs(taylorSeries.tempFittingFunction - polynomial,taylorSeries.x,point);
+                        end
+                    elseif len == 3
+                        fittingFunction = varargin{1};
+                        center = varargin{2};%#ok<PROPLC>
+                        order = varargin{3};
+                        taylorSeries.paramJudgement(fittingFunction,center,order);%#ok<PROPLC>
+                        [polynomial,taylorSeries] = taylorSeries.getPolynomia(fittingFunction,center,order);%#ok<PROPLC>
+                        x = symvar(fittingFunction);
+                        fittingError = subs(fittingFunction - polynomial,x,center);%#ok<PROPLC>
+                        taylorSeries.fittingError = fittingError;
+                    elseif len == 4
+                        fittingFunction = varargin{1};
+                        center = varargin{2};%#ok<PROPLC>
+                        order = varargin{3};
+                        if isnumeric(varargin{4}) && isscalar(varargin{4})
+                            point = varargin{4};
+                        else
+                            error("输入参数错误！")
+                        end
+                        taylorSeries.paramJudgement(fittingFunction,center,order);%#ok<PROPLC>
+                        [polynomial,taylorSeries] = taylorSeries.getPolynomia(fittingFunction,center,order); %#ok<PROPLC>
+                        x = symvar(fittingFunction);
+                        fittingError = subs(fittingFunction - polynomial,x,point);
+                    else
+                        error("输入参数数量错误！")
+                    end
+                else
+                    error("输入参数数量错误！")
+                end
+            else
+                error("输出参数数目或格式不对！")
             end
-            remainder = polynomiaVector(end); %#ok<PROPLC>
         end
 
+        function [polynomiaVector,taylorSeries] = getpolynomiavector(taylorSeries,varargin)
+            if nargout == 1 || nargout == 0
+                if nargin == 1
+                    if isempty(taylorSeries.polynomiaVector)
+                        polynomiaVector = taylorSeries.getpolynomiaVector();
+                    else
+                        polynomiaVector = taylorSeries.polynomiaVector;
+                    end
+                elseif nargin == 2
+                    polynomiaVector = taylorSeries.getPolynomiaVector(taylorSeries.tempFittingFunction, taylorSeries.center, taylorSeries.order, varargin);
+                else
+                    error("输入参数错误！");
+                end
+            elseif nargout == 2
+                if nargin == 1
+                    if isempty(taylorSeries.polynomiaVector)
+                        [polynomiaVector,taylorSeries] = taylorSeries.getpolynomiaVector();
+                    else
+                        polynomiaVector = taylorSeries.polynomiaVector;
+                    end
+                elseif nargin == 2
+                    [polynomiaVector,taylorSeries] = taylorSeries.getPolynomiaVector(taylorSeries.tempFittingFunction, taylorSeries.center, taylorSeries.order, varargin);
+                else
+                    error("输入参数错误！");
+                end
+            else
+                error("输出参数数目或格式不对！")
+            end
+        end
+
+        function [remainder,taylorSeries] = getRemainder(taylorSeries,fittingFunction,center,order)
+            if nargout == 1 || nargout == 0
+                if nargin == 1
+                    if isempty(taylorSeries.remainder)
+                        [polynomiaVector,taylorSeries] = taylorSeries.getpolynomiavector("getmore"); %#ok<PROPLC>
+                        remainder = polynomiaVector(end); %#ok<PROPLC>
+                    else
+                        remainder = taylorSeries.remainder;
+                    end
+                elseif nargin == 4
+                    polynomiaVector = taylorSeries.getPolynomiaVector(fittingFunction,center,order,"getmore"); %#ok<PROPLC>
+                    remainder = polynomiaVector(end); %#ok<PROPLC>
+                end
+            elseif nargout == 2
+                if nargin == 1 && nargout == 2
+                    if isempty(taylorSeries.remainder)
+                        [polynomiaVector,taylorSeries] = taylorSeries.getpolynomiavector("getmore"); %#ok<PROPLC>
+                        remainder = polynomiaVector(end); %#ok<PROPLC>
+                        taylorSeries.remainder = remainder;
+                        return
+                    else
+                        remainder = taylorSeries.remainder;
+                        return
+                    end
+                elseif nargin == 4
+                    [polynomiaVector,taylorSeries] = taylorSeries.getPolynomiaVector(fittingFunction,center,order,"getmore"); %#ok<PROPLC>
+                    remainder = polynomiaVector(end); %#ok<PROPLC>
+                    taylorSeries.remainder = remainder;
+                end
+            else
+                error("输出参数数目或格式不对！")
+            end
+        end
     end
 
     methods(Hidden)
-
         function paramJudgement(taylorSeries,fittingFunction,center,order,accuracy)
             switch(nargin)
                 case 1
@@ -156,7 +385,7 @@ classdef TaylorSeries < Interpolation
                     if isempty(accuracy)
                         warning("输入参数为空！")
                     elseif ~isempty(accuracy) && accuracy < 0
-                        error("输入参数必须是正数！")
+                        error("输入参数必须是非负数！")
                     end
                 otherwise
                     error("输入参数数量错误！")
