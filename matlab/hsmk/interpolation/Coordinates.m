@@ -6,8 +6,12 @@ end
 
 methods(Access = public)
     function coordinates = Coordinates(xCoordinate,yCoordinate)
-        if isempty([xCoordinate,yCoordinate]) || any(~isvector(xCoordinate) | ~isvector(yCoordinate)) || ~isequal(numel(xCoordinate),numel(yCoordinate))
-            error("输入参数错误！输入坐标不匹配或格式错误！")
+        arguments
+            xCoordinate {mustBeVector,mustBeReal} = 0
+            yCoordinate {mustBeVector,mustBeReal} = 0
+        end
+        if ~isequal(numel(xCoordinate),numel(yCoordinate))
+            error("输入参数错误！输入坐标不匹配！")
         end
         coordinates.xCoordinate = xCoordinate;
         coordinates.yCoordinate = yCoordinate;
