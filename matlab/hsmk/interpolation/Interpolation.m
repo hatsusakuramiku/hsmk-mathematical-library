@@ -5,10 +5,6 @@ classdef Interpolation
         accuracy; % 计算精度
     end
 
-    properties (Constant, Access = protected)
-        tool = Tool();
-    end
-
     methods (Access = public)
 
         function interpolation = Interpolation(order, accuracy)

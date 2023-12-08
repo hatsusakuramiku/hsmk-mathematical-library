@@ -39,7 +39,7 @@ classdef TaylorSeries < Interpolation
 
     end
 
-    methods
+    methods(Access = public)
 
         function taylorSeries = TaylorSeries(fittingFunction, center, order, accuracy)
             % TAYLORSERIES 构造函数
@@ -146,7 +146,7 @@ classdef TaylorSeries < Interpolation
                 len = length(derCell{i});
                 temp = derCell{i};
                 vector = ones(1, len) .* taylorSeries.center(i);
-                xVector = taylorSeries.tool.xVectorProd(vector);
+                xVector = cumprod(x - vector);
                 taylorSeries.polynomiaVector{i} = [xVector .* temp ./ sym(cumprod(1:1:len)), subs(taylorSeries.tempFittingFunction(i), x, taylorSeries.center(i))];
             end
 
