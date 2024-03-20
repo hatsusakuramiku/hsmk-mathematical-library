@@ -5,9 +5,8 @@ function [polynomial, coefficients] = lSline(xCoordinate, yCoordinate, option)
     %   2. $y = \frac{A}{x} + B$ option = 1
     %   3. $y = \frac{D}{x + C}$ option = 2
     %   4. $y = \frac{1}{Ax + B}$ option = 3
-    %   5. $y = A \ln(x) + B$ option = 4
-    %   6. $y = Ce^{Ax}$ option = 5
-    %   7. $y = Cx^{A}$ option = 6
+    %   5. $y = Ce^{Ax}$ option = 4
+    %   6. $y = Cx^{A}$ option = 5
     %   polynomial = LSLINE(xCoordinate, yCoordinate, option)
     %   Inputs
     %       xCoordinate - x坐标 {mustBeVector, mustBeReal}

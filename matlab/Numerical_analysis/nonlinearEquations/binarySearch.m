@@ -32,10 +32,7 @@ function [point, fval, fittingMatrix] = binarySearch(inputFunction, area, accura
 
     nargoutchk(1, 2); % 要求输出参数数量在1-2个
 
-    if length(symvar(inputFunction)) ~= 1
-        throw(MException('MATLAB:binarySearch:InvalidInput', sprintf('输入的函数 %s 不是单符号连续函数', sym2str(inputFunction))));
-    end
-
+    % 预处理
     try
         double(subs(inputFunction, symvar(inputFunction), sum(area) / 2));
     catch e
@@ -48,33 +45,33 @@ function [point, fval, fittingMatrix] = binarySearch(inputFunction, area, accura
     area = tool.vector2Area(area, 2); % 转换区间，确保区间仅有两个端点且左端点小于右端点
     fittingMatrix = [area(1), area(2), (area(1) + area(2)) / 2];
 
+    % 如果左右端点符号相同则直接返回
     if sign(subs(inputFunction, x, area(1))) == sign(subs(inputFunction, x, area(2)))
-        throw(MException('MATLAB:binarySearch:InvalidInput', sprintf("输入公式 %s 在给定的计算区间 [%s] 内无零点或不止一个零点！请确保给定函数在给定区间内有且仅有一个零点！", inputFunction, num2str(area))));
+        point = NaN(1, 2);
+        fval = NaN(1, 2);
+        return
     end
 
-    middle = (area(1) + area(2)) / 2;
-    middleValue = subs(inputFunction, x, middle);
+    % 二分法求解
+    a = area(1);
+    b = area(2);
+    c = (a + b) / 2;
+    iter = 0;
 
-    while abs(middleValue) > accuracy
-        a = subs(inputFunction, x, area(1));
-        middle = (area(1) + area(2)) / 2;
-        middleValue = subs(inputFunction, x, middle);
+    while (abs(subs(inputFunction, x, c)) > accuracy) && (iter < maxInext)
 
-        if sign(middleValue) ~= sign(a)
-            area(2) = middle;
+        if sign(subs(inputFunction, x, a)) == sign(subs(inputFunction, x, c))
+            b = c;
         else
-            area(1) = middle;
+            a = c;
         end
 
-        fittingMatrix = [fittingMatrix; area(1), area(2), middle]; %#ok<AGROW>
-        [height, ~] = size(fittingMatrix);
-
-        if height == 1000
-            warning("迭代次数已超过1000，请考虑检查并修改条件以提高运算速度!");
-        end
-
+        iter = iter + 1;
+        c = (a + b) / 2;
     end
 
-    point = middle;
-    fval = middleValue;
+    point = c;
+    fval = subs(inputFunction, x, point);
+    fittingMatrix = [fittingMatrix; a, b, c];
+
 end

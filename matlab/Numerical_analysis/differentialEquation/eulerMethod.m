@@ -1,38 +1,60 @@
-function [result, intervalMatrix] = eulerMethod(fun, orginX, orginY, height, maxStep)
+function [result, intervalMatrix] = eulerMethod(fun, t_0, y_0, endPoint, step)
+    %EULER 使用欧拉方法求解常微分方程
+    % [result, intervalMatrix] = eulerMethod(fun, t_0, y_0, endPoint, step)
+    % 适用如下形式的方程
+    % y' = f(t, y), y(t_0) = y_0
+    %
+    %   Inputs
+    %       fun - 输入函数 {mustBeUnderlyingType(fun, 'function_handle')}
+    %       t_0 - 初始坐标 {mustBeReal}
+    %       y_0 - 初始值 {mustBeReal}
+    %       endPoint - 结束坐标 {mustBeReal}
+    %       step - 步长 {mustBeReal, mustBeGreaterThan(step, 0)}
+    %   Outputs
+    %       result - 结果
+    %       intervalMatrix - 迭代矩阵
+    %   Examples
+    %       [result, intervalMatrix] = eulerMethod(fun, t_0, y_0, endPoint, step)
 
+    %% 输入参数校验
     arguments
-        fun {mustBeUnderlyingType(fun, 'sym')}
-        orginX {mustBeReal}
-        orginY {mustBeReal}
-        height {mustBeGreaterThan(height, 0)}
-        maxStep {mustBeInteger, mustBeGreaterThanOrEqual(maxStep, 1)} = 2
+        fun {mustBeUnderlyingType(fun, 'function_handle')}
+        t_0 {mustBeReal}
+        y_0 {mustBeReal}
+        endPoint {mustBeReal}
+        step {mustBeReal, mustBeGreaterThan(step, 0)}
     end
 
-    syms x y
-    var = symvar(fun);
-
-    if length(var) ~= 2
-        error("函数必须是二元函数")
+    try
+        range = range_check([t_0, endPoint]);
+        rangeLength = range(2) - range(1);
+    catch ME
+        throw(ME);
     end
 
-    t = ismember(var, "y");
-
-    if isAlways(t == 0)
-        warning("函数中必须不包含 y ，无法确定迭代变量，或将导致计算错误，请考虑将迭代变量替换为 y")
-        fun = subs(fun, var, [x, y]);
-    else
-        fun = subs(fun, var(t == 0), x);
+    try
+        fun(t_0, y_0);
+    catch ME
+        throw(MException('MATLAB:eulerMethod:InvalidInput', '输入函数不合法, 输入函数必须是二元函数'));
     end
 
-    xVector = [orginX, height .* (1:1:maxStep)];
-    intervalMatrix = zeros(maxStep + 1, 2);
-    intervalMatrix(1) = orginY;
+    %% 计算
 
-    for i = 1:maxStep
-        intervalMatrix(i + 1, 1) = intervalMatrix(i, 1) + height * subs(fun, [x, y], [xVector(i), intervalMatrix(i, 1)]);
+    tVector = t_0:step:endPoint;
+
+    if isdecimal(rangeLength / step)
+        warning("区间长度不是步长的整数倍，可能导致较大精度损失!");
+        tVector = [tVector, endPoint];
     end
 
-    intervalMatrix(:, 2) = xVector';
-    result = intervalMatrix(end, 1);
+    intervalLength = length(tVector);
 
+    intervalMatrix = [tVector; zeros(1, intervalLength)];
+    intervalMatrix(2,1) = y_0;
+
+    for i = 1:intervalLength - 1
+        intervalMatrix(2, i + 1) = intervalMatrix(2, i) + step * fun(tVector(i), intervalMatrix(2, i));
+    end
+
+    result = intervalMatrix(2, end);
 end
