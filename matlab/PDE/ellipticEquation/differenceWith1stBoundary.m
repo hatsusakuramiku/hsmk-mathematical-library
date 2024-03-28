@@ -1,4 +1,4 @@
-function fval = differenceWith1thBoundary(range, coefficients, fun, conditions, intervalNum)
+function fval = differenceWith1stBoundary(range, coefficients, fun, conditions, intervalNum)
     % DIFFERENCEWITH1THBOUNDARY  使用直接差分法对第一类边界条件的二阶偏微分方程在指定区间内进行数值逼近
     %   fval = differenceWith1thBoundary(range, coefficients, fun, conditions, intervalNum)
     %   适用方程格式如下
@@ -79,35 +79,5 @@ function fval = differenceWith1thBoundary(range, coefficients, fun, conditions, 
     end
 
     fval = [conditions(1), (A \ (fValue'))', conditions(2)];
-
-    function result = func(fun, x)
-
-        if isa(fun, 'function_handle')
-            result = fun(x);
-        elseif isa(fun, 'sym')
-            result = double(subs(fun, symvar(fun), x));
-        else
-            result = fun .* ones(1, length(x));
-        end
-
-    end
-
-    function result = vectorStandardization(inputVector, lens)
-
-        len = length(inputVector);
-        result = zeros(1, max(lens, len));
-        result(1:len) = inputVector;
-
-    end
-
-    function result = cellStandardization(inputCell, lens)
-
-        result = cellfun(@(x) zeros(1, 1), cell(1, lens), 'UniformOutput', false);
-
-        for j = 1:1:length(inputCell)
-            result{j} = inputCell{j};
-        end
-
-    end
 
 end
