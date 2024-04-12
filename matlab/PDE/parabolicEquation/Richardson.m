@@ -1,4 +1,4 @@
-function [fval, fvalMatrix] = forwordDifferenceWith1stBoundary(xRange, initial, coefficient, fun, conditions, xNum, tNum, tStep)
+function [fval, fvalMatrix] = Richardson(xRange, initial, coefficient, fun, conditions, xNum, tNum, tStep)
 
     arguments
         xRange {mustBeVector, mustBeReal} % 计算区间
@@ -33,25 +33,27 @@ function [fval, fvalMatrix] = forwordDifferenceWith1stBoundary(xRange, initial, 
 
     if gridRadio < 0
         throw(MException('MATLAB:forwordDifferenceWith1stBoundary:InvalidInput', 'gridRadio must be positive.'));
-    elseif gridRadio > 0.5
-        warning('MATLAB:forwordDifferenceWith1stBoundary:InvalidInput', 'gridRadio is too large.');
     end
 
     %% 计算
+
+    secondVector = forwardDifferenceWith1stBoundary(xRange, initial, coefficient, fun, conditions, xNum, 1, tStep);
 
     fvalMatrix = zeros(tNum + 1, xNum + 1);
     xVector = xRange(1):xStep:xRange(2);
     fvalMatrix(:, 1) = ones(tNum + 1, 1) * conditions(1);
     fvalMatrix(:, end) = ones(tNum + 1, 1) * conditions(2);
     fvalMatrix(1, :) = func(initial, xVector);
+    fvalMatrix(2, :) = secondVector;
 
-    funVector = func(fun, xVector) .* tStep;
+    [SMatrix, IMatrix] = getSMatrix(xNum - 1);
+    aMatrix = 2 * gridRadio .* (SMatrix - 2 * IMatrix);
 
-    for i = 2:1:tNum + 1
+    funVector = func(fun, xRange(1) + xStep:xStep:xRange(2) - xStep) .* tStep;
+    funVector = [funVector(1) + (1 + 2 * gridRadio) * conditions(1), funVector(2:end - 1), funVector(end) + (1 + 2 * gridRadio) * conditions(2)];
 
-        for j = 2:1:xNum
-            fvalMatrix(i, j) = fvalMatrix(i - 1, j) * (1 - 2 * gridRadio) + gridRadio * (fvalMatrix(i - 1, j + 1) + fvalMatrix(i - 1, j - 1)) + funVector(j);
-        end
+    for i = 3:1:tNum + 1
+        fvalMatrix(i, 2:end - 1) = (aMatrix * fvalMatrix(i - 1, 2:end - 1)')' + fvalMatrix(i - 2, 2:end - 1) + funVector;
 
     end
 

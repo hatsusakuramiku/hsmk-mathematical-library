@@ -1,9 +1,11 @@
-function [fval, fvalMatrix] = CNMethodWith1stBoundary(xRange, initial, coefficient, fun, conditions, xNum, tNum, tStep)
+function [fval, fvalMatrix] = forwardWithViscosAnd1stBounary(xRange, initial, coefficient, fun, conditions, xNum, tNum, tStep)
+    % 适用方程:
+    % $$ \frac{u^{n + 1}_j - u^n_j}{\tau = a\frac{u^n_{j + 1} - 2u^n_j + u^n_{j - 1}}{h^2} + b\frac{u^n_{j} - u^n_{j - 1}}{h} $$
 
     arguments
         xRange {mustBeVector, mustBeReal} % 计算区间
         initial {mustBeScalarOrEmpty} % 初始条件
-        coefficient {mustBeReal} % 二次偏导系数
+        coefficient {mustBeVector, mustBeReal} % 第一个元素为空间二次偏导系数，第二个元素为空间一次偏导系数
         fun {mustBeScalarOrEmpty} % 非齐次项
         conditions {mustBeVector, mustBeReal} % 边界条件
         xNum {mustBePositive, mustBeInteger} % 空间点数
@@ -29,31 +31,27 @@ function [fval, fvalMatrix] = CNMethodWith1stBoundary(xRange, initial, coefficie
 
     vectorStandardization(conditions, 2);
 
-    gridRadio = coefficient * tStep / xStep;
+    gridRadio_1 = coefficient(1) * tStep / xStep ^ 2;
+    gridRadio_2 = coefficient(2) * tStep / xStep;
 
-    if gridRadio < 0
+    if gridRadio_1 < 0
         throw(MException('MATLAB:forwordDifferenceWith1stBoundary:InvalidInput', 'gridRadio must be positive.'));
-    elseif gridRadio > 0.5
+    elseif gridRadio_1 > 0.5
         warning('MATLAB:forwordDifferenceWith1stBoundary:InvalidInput', 'gridRadio is too large.');
     end
 
     %% 计算
-
-    [SMtrix, IMatrix] = getSMatrix(xNum - 1);
-    aMatrix = 2*(1 + gridRadio) .* IMatrix - gridRadio .* SMtrix;
-    bMatrix = 2*(1 - gridRadio) .* IMatrix + gridRadio .* SMtrix;
-
+    [aMatrix, bMatrix, cMatrix] = getMatrix(xNum - 1);
+    matrix = (gridRadio_1 + gridRadio_2 / 2) .* aMatrix + (1 - 2 * gridRadio_1) .* bMatrix + (gridRadio_1 - gridRadio_2 / 2) .* cMatrix;
+    xVector = xRange(1) + xStep:xStep:xRange(2) - xStep;
+    funvector = func(fun, xVector) .* tStep;
+    funvector(1) = conditions(1) * (gridRadio_1 - gridRadio_2 / 2) + funvector(1);
+    funvector(end) = conditions(2) * (gridRadio_1 + gridRadio_2 / 2 + funvector(end));
     fvalMatrix = zeros(tNum + 1, xNum + 1);
-    xVector = xRange(1):xStep:xRange(2);
-    fvalMatrix(:, 1) = ones(tNum + 1, 1) * conditions(1);
-    fvalMatrix(:, end) = ones(tNum + 1, 1) * conditions(2);
-    fvalMatrix(1, :) = func(initial, xVector);
-
-    funVector = func(fun, xRange(1) + xStep:xStep:xRange(2) - xStep) .* tStep * 2;
+    fvalMatrix(1, :) = func(initial, xRange(1):xStep:xRange(2));
 
     for i = 2:1:tNum + 1
-        funVector_ = [funVector(1) + 2 * gridRadio * conditions(1), funVector(2:end - 1), funVector(end) + 2 * gridRadio * conditions(2)];
-        fvalMatrix(i, 2:end - 1) = aMatrix \ ((bMatrix * fvalMatrix(i - 1, 2:end - 1)')' + funVector_)';
+        fvalMatrix(i, 2:end - 1) = (matrix * fvalMatrix(i - 1, 2:end - 1)')' + funvector;
     end
 
     fval = fvalMatrix(end, :);

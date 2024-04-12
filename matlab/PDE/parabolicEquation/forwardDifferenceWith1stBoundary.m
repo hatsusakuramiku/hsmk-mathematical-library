@@ -1,4 +1,4 @@
-function [fval, fvalMatrix] = backwordDifferenceWith1stBoundary(xRange, initial, coefficient, fun, conditions, xNum, tNum, tStep)
+function [fval, fvalMatrix] = forwardDifferenceWith1stBoundary(xRange, initial, coefficient, fun, conditions, xNum, tNum, tStep)
 
     arguments
         xRange {mustBeVector, mustBeReal} % 计算区间
@@ -40,34 +40,18 @@ function [fval, fvalMatrix] = backwordDifferenceWith1stBoundary(xRange, initial,
     %% 计算
 
     fvalMatrix = zeros(tNum + 1, xNum + 1);
-    xVector = xRange(1) + xStep:xStep:xRange(2) - xStep;
+    xVector = xRange(1):xStep:xRange(2);
     fvalMatrix(:, 1) = ones(tNum + 1, 1) * conditions(1);
     fvalMatrix(:, end) = ones(tNum + 1, 1) * conditions(2);
-    fvalMatrix(1, 2:end - 1) = func(initial, xVector);
+    fvalMatrix(1, :) = func(initial, xVector);
 
-    aMatrix = zeros(xNum - 1, xNum - 1);
+    [Smatrix, IMatrix] = getSMatrix(xNum - 1);
+    aMatrix = (1 - 2 * gridRadio) .* IMatrix + gridRadio .* Smatrix;
 
-    for i = 1:1:xNum - 1
-
-        if i == 1
-            aMatrix(i, i + 1) = -gridRadio;
-        elseif i == xNum - 1
-            aMatrix(i, i - 1) = -gridRadio;
-        else
-            aMatrix(i, i - 1) = -gridRadio;
-            aMatrix(i, i + 1) = -gridRadio;
-        end
-
-        aMatrix(i, i) = 1 + 2 * gridRadio;
-    end
-
-    funVector = func(fun, xVector) .* tStep;
-    funVector(1) = funVector(1) + gridRadio * conditions(1);
-    funVector(end) = funVector(end) + gridRadio * conditions(2);
-
+    funVector = func(fun, xRange(1) + xStep:xStep:xRange(2) - xStep) .* tStep;
+    funVector = [funVector(1) + gridRadio * conditions(1), funVector(2:end - 1), funVector(end) + gridRadio * conditions(2)];
     for i = 2:1:tNum + 1
-        funVector_ = funVector + fvalMatrix(i - 1, 2:end - 1);
-        fvalMatrix(i, 2:end - 1) = aMatrix \ funVector_';
+        fvalMatrix(i, 2:end - 1) = (aMatrix * fvalMatrix(i - 1, 2:end - 1)')' + funVector;
     end
 
     fval = fvalMatrix(end, :);

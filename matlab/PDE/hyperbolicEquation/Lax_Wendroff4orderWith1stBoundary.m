@@ -1,9 +1,11 @@
-function [fval, fvalMatrix] = CNMethodWith1stBoundary(xRange, initial, coefficient, fun, conditions, xNum, tNum, tStep)
+function [fval, fvalMatrix] = Lax_Wendroff4orderWith1stBoundary(xRange, initial, coefficient, fun, conditions, xNum, tNum, tStep)
+    % 适用方程:
+    % $$ \frac{\partial u}{\partial t} + a\frac{\partial u}{\partial x} = 0$$
 
     arguments
         xRange {mustBeVector, mustBeReal} % 计算区间
         initial {mustBeScalarOrEmpty} % 初始条件
-        coefficient {mustBeReal} % 二次偏导系数
+        coefficient {mustBeReal} % 空间一次偏导系数
         fun {mustBeScalarOrEmpty} % 非齐次项
         conditions {mustBeVector, mustBeReal} % 边界条件
         xNum {mustBePositive, mustBeInteger} % 空间点数
@@ -23,25 +25,27 @@ function [fval, fvalMatrix] = CNMethodWith1stBoundary(xRange, initial, coefficie
     end
 
     % 边界条件必须为数值，且最多两个，不足则补零
-    if length(conditions) > 2
+    if length(conditions) ~= 2
         throw(MException('MATLAB:forwordDifferenceWith1stBoundary:InvalidInput', 'conditions must have at most 2 elements.'));
     end
 
     vectorStandardization(conditions, 2);
 
-    gridRadio = coefficient * tStep / xStep;
+    if numel(coefficient) ~= 1
+        throw(MException('MATLAB:forwordDifferenceWith1stBoundary:InvalidInput', 'coefficient must be a scalar.'));
+    elseif coefficient == 0
+        throw(MException('MATLAB:forwordDifferenceWith1stBoundary:InvalidInput', 'coefficient must be non-zero.'));
+    end
+
+    gridRadio = coefficient* tStep / xStep;
 
     if gridRadio < 0
         throw(MException('MATLAB:forwordDifferenceWith1stBoundary:InvalidInput', 'gridRadio must be positive.'));
-    elseif gridRadio > 0.5
-        warning('MATLAB:forwordDifferenceWith1stBoundary:InvalidInput', 'gridRadio is too large.');
+    elseif gridRadio > 1
+        warning('MATLAB:forwordDifferenceWith1stBoundary:InvalidInput', 'gridRadio = %f is too large, which should be smaller than %f.', gridRadio, 1);
     end
 
     %% 计算
-
-    [SMtrix, IMatrix] = getSMatrix(xNum - 1);
-    aMatrix = 2*(1 + gridRadio) .* IMatrix - gridRadio .* SMtrix;
-    bMatrix = 2*(1 - gridRadio) .* IMatrix + gridRadio .* SMtrix;
 
     fvalMatrix = zeros(tNum + 1, xNum + 1);
     xVector = xRange(1):xStep:xRange(2);
@@ -49,11 +53,13 @@ function [fval, fvalMatrix] = CNMethodWith1stBoundary(xRange, initial, coefficie
     fvalMatrix(:, end) = ones(tNum + 1, 1) * conditions(2);
     fvalMatrix(1, :) = func(initial, xVector);
 
-    funVector = func(fun, xRange(1) + xStep:xStep:xRange(2) - xStep) .* tStep * 2;
+    matrix = diag(ones(1, xNum - 2), 1) .* (gridRadio ^ 2 - gridRadio)./2 + diag(ones(1, xNum - 1), 0) .* (1 - gridRadio ^ 2) + diag(ones(1, xNum - 2), -1) .* (gridRadio ^ 2 + gridRadio)./2;
+    funVector = func(fun, xRange(1) + xStep:xStep:xRange(2)-xStep);
+    funVector(1) = funVector(1) + conditions(1) * (gridRadio ^ 2 + gridRadio)/2;
+    funVector(end) = funVector(end) + conditions(2) * (gridRadio ^ 2 - gridRadio)/2;
 
     for i = 2:1:tNum + 1
-        funVector_ = [funVector(1) + 2 * gridRadio * conditions(1), funVector(2:end - 1), funVector(end) + 2 * gridRadio * conditions(2)];
-        fvalMatrix(i, 2:end - 1) = aMatrix \ ((bMatrix * fvalMatrix(i - 1, 2:end - 1)')' + funVector_)';
+        fvalMatrix(i, 2:end - 1) = (matrix * fvalMatrix(i - 1, 2:end - 1)')' + funVector;
     end
 
     fval = fvalMatrix(end, :);

@@ -1,4 +1,4 @@
-function [fval, fvalMatrix] = CNMethodWith1stBoundary(xRange, initial, coefficient, fun, conditions, xNum, tNum, tStep)
+function [fval, fvalMatrix] = backwardDifferenceWith1stBoundary(xRange, initial, coefficient, fun, conditions, xNum, tNum, tStep)
 
     arguments
         xRange {mustBeVector, mustBeReal} % 计算区间
@@ -33,27 +33,26 @@ function [fval, fvalMatrix] = CNMethodWith1stBoundary(xRange, initial, coefficie
 
     if gridRadio < 0
         throw(MException('MATLAB:forwordDifferenceWith1stBoundary:InvalidInput', 'gridRadio must be positive.'));
-    elseif gridRadio > 0.5
-        warning('MATLAB:forwordDifferenceWith1stBoundary:InvalidInput', 'gridRadio is too large.');
     end
 
     %% 计算
 
-    [SMtrix, IMatrix] = getSMatrix(xNum - 1);
-    aMatrix = 2*(1 + gridRadio) .* IMatrix - gridRadio .* SMtrix;
-    bMatrix = 2*(1 - gridRadio) .* IMatrix + gridRadio .* SMtrix;
-
     fvalMatrix = zeros(tNum + 1, xNum + 1);
-    xVector = xRange(1):xStep:xRange(2);
+    xVector = xRange(1) + xStep:xStep:xRange(2) - xStep;
     fvalMatrix(:, 1) = ones(tNum + 1, 1) * conditions(1);
     fvalMatrix(:, end) = ones(tNum + 1, 1) * conditions(2);
-    fvalMatrix(1, :) = func(initial, xVector);
+    fvalMatrix(1, 2:end - 1) = func(initial, xVector);
 
-    funVector = func(fun, xRange(1) + xStep:xStep:xRange(2) - xStep) .* tStep * 2;
+    [SMtrix, IMatrix] = getSMatrix(xNum - 1);
+    aMatrix = (1 + 2*gridRadio) .* IMatrix -  gridRadio.* SMtrix;
+
+    funVector = func(fun, xVector) .* tStep;
+    
+    funVector = [funVector(1) + gridRadio * conditions(1), funVector(2:end - 1), funVector(end) + gridRadio * conditions(2)];
 
     for i = 2:1:tNum + 1
-        funVector_ = [funVector(1) + 2 * gridRadio * conditions(1), funVector(2:end - 1), funVector(end) + 2 * gridRadio * conditions(2)];
-        fvalMatrix(i, 2:end - 1) = aMatrix \ ((bMatrix * fvalMatrix(i - 1, 2:end - 1)')' + funVector_)';
+        funVector_ = funVector + fvalMatrix(i - 1, 2:end - 1);
+        fvalMatrix(i, 2:end - 1) = aMatrix \ funVector_';
     end
 
     fval = fvalMatrix(end, :);
