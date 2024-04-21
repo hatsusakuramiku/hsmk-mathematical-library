@@ -2,4 +2,7 @@
 test.*
 temp.*
 untitled.m
-.*
+*.png
+*.jpg
+*.fig
+*.jepg

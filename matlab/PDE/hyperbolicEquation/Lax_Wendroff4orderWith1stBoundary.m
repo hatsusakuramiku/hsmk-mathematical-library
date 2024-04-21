@@ -37,7 +37,7 @@ function [fval, fvalMatrix] = Lax_Wendroff4orderWith1stBoundary(xRange, initial,
         throw(MException('MATLAB:forwordDifferenceWith1stBoundary:InvalidInput', 'coefficient must be non-zero.'));
     end
 
-    gridRadio = coefficient* tStep / xStep;
+    gridRadio = coefficient * tStep / xStep;
 
     if gridRadio < 0
         throw(MException('MATLAB:forwordDifferenceWith1stBoundary:InvalidInput', 'gridRadio must be positive.'));
@@ -53,13 +53,16 @@ function [fval, fvalMatrix] = Lax_Wendroff4orderWith1stBoundary(xRange, initial,
     fvalMatrix(:, end) = ones(tNum + 1, 1) * conditions(2);
     fvalMatrix(1, :) = func(initial, xVector);
 
-    matrix = diag(ones(1, xNum - 2), 1) .* (gridRadio ^ 2 - gridRadio)./2 + diag(ones(1, xNum - 1), 0) .* (1 - gridRadio ^ 2) + diag(ones(1, xNum - 2), -1) .* (gridRadio ^ 2 + gridRadio)./2;
-    funVector = func(fun, xRange(1) + xStep:xStep:xRange(2)-xStep);
-    funVector(1) = funVector(1) + conditions(1) * (gridRadio ^ 2 + gridRadio)/2;
-    funVector(end) = funVector(end) + conditions(2) * (gridRadio ^ 2 - gridRadio)/2;
+    aMatrix = diag(ones(1, xNum - 2), 1) .* (gridRadio ^ 2 - gridRadio) .* 0.5;
+    bMatrix = diag(ones(1, xNum - 1)) .* (1 - gridRadio ^ 2);
+    cMatrix = diag(ones(1, xNum - 2), -1) .* (gridRadio ^ 2 + gridRadio) .* 0.5;
+    fvalMatrix(2, :) = UpwindFormatWith1stBoundary(xRange, initial, coefficient, fun, conditions, xNum, 1, tStep);
+    funVector = func(fun, xRange(1) + xStep:xStep:xRange(2) - xStep);
+    funVector(1) = funVector(1) + conditions(1) * gridRadio ^ 2;
+    funVector(end) = funVector(end) + conditions(2) * gridRadio ^ 2;
 
-    for i = 2:1:tNum + 1
-        fvalMatrix(i, 2:end - 1) = (matrix * fvalMatrix(i - 1, 2:end - 1)')' + funVector;
+    for i = 3:1:tNum + 1
+        fvalMatrix(i, 2:end - 1) = ((aMatrix + bMatrix + cMatrix) * fvalMatrix(i - 1, 2:end - 1)')' + funVector;
     end
 
     fval = fvalMatrix(end, :);
