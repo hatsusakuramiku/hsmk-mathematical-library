@@ -1,7 +1,7 @@
 *.asv
 test.*
 temp.*
-untitled.m
+untitled.*
 *.png
 *.jpg
 *.fig

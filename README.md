@@ -53,8 +53,8 @@
 
 ## C++ （C++ 语言）
 
-> **语言标准**: C++11
-> **编译器**: gcc.exe (x86_64-posix-sjlj-rev0, Built by MinGW-W64 project) 8.1.0
+> **语言标准**: C++17
+> **编译器**: g++.exe (x86_64-posix-sjlj-rev0, Built by MinGW-W64 project) 8.1.0
 > **文件编码**: UTF-8
 > **字符集**: UTF-8
 
@@ -148,7 +148,7 @@
 
 ### 矩阵运算
 
-- [ ] 线性方程组的求解
+- [ ] Jacobain 迭代法
 - [ ] 矩阵LU分解
 
 ### 数值积分
