@@ -1,10 +1,4 @@
 *.asv
 test.*
-temp.*
-untitled.*
-*.png
-*.jpg
-*.fig
-*.jepg
 *.exe
 .vscode/
