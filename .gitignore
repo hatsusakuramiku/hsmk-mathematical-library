@@ -6,3 +6,5 @@ untitled.*
 *.jpg
 *.fig
 *.jepg
+*.exe
+.vscode/

@@ -4,7 +4,7 @@
             "name": "C/C++: gcc.exe 生成和调试活动文件",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${fileDirname}\\${fileBasenameNoExtension}.exe",
+            "program": "C:\\Users\\79240\\desktopFiles\\git\\zh-CN\\C\\test.exe",
             "args": [],
             "stopAtEntry": false,
             "cwd": "${fileDirname}",

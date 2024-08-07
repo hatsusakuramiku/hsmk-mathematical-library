@@ -685,7 +685,7 @@ Matrix *matrix_splicing(Matrix *a, Matrix *b, unsigned int aix)
         {
             PERROR(MATRIX_SIZE_ERROR_001, "Matrix *matrix_splicing(Matrix *a, Matrix *b, unsigned int aix);");
         }
-        if (aix = 1)
+        if (aix == 1)
         {
             return matrix_gen(a_rows + b_rows, a_cols, vector_splicing(b->data, a->data));
         }
@@ -705,7 +705,7 @@ Matrix *matrix_splicing(Matrix *a, Matrix *b, unsigned int aix)
         {
             return NULL;
         }
-        if (aix = 2)
+        if (aix == 2)
         {
             for (int i = 0; i < a_rows; i++)
             {
@@ -729,7 +729,7 @@ Matrix *matrix_splicing(Matrix *a, Matrix *b, unsigned int aix)
                 }
                 for (int j = b_cols; j < a_cols + b_cols; j++)
                 {
-                    mat->data[IDX(a_cols + b_cols, i, j + b_cols)] = a->data[IDX(a_cols, i, j)];
+                    mat->data[IDX(a_cols + b_cols, i, j)] = a->data[IDX(a_cols, i, j - b_cols)];
                 }
             }
         }
