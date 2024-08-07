@@ -116,7 +116,7 @@ void matrix_print(Matrix *mat)
     {
         for (int i = 0; i < rows; i++)
         {
-            
+
             if (i == 2 && rows > MATRIX_ROWS_OMIT_PRINT_LIMIT)
             {
                 printf("%-10s\t", "⋮");
@@ -133,7 +133,9 @@ void matrix_print(Matrix *mat)
                 i = rows - 3;
                 printf("\n");
                 continue;
-            }else{
+            }
+            else
+            {
                 printf("%c\t", '|'); // 打印竖线
             }
             for (int j = 0; j < cols; j++)
@@ -713,7 +715,7 @@ Matrix *matrix_splicing(Matrix *a, Matrix *b, unsigned int aix)
                 }
                 for (int j = a_cols; j < b_cols + a_cols; j++)
                 {
-                    mat->data[IDX(a_cols + b_cols, i, j + a_cols)] = b->data[IDX(b_cols, i, j)];
+                    mat->data[IDX(a_cols + b_cols, i, j)] = b->data[IDX(b_cols, i, j - a_cols)];
                 }
             }
         }
