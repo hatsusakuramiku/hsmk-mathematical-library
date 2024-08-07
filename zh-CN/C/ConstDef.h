@@ -10,17 +10,25 @@
 #define FLT_EPSILON 1e-6
 
 /* ERROR DEFINE */
-#define VAR_LIST_LENGTH_001 "@ERROR: Too many or too few parameters are entered !\n@function: %s\nThis function only supports %d variable !\n"
-#define VAR_LIST_LENGTH_002 "@ERROR: Too many or too few parameters are entered !\n@function: %s\nThis function can only support a maximum of %d to %d parameters !\n"
+#define VAR_LIST_LENGTH_001 "@ERROR: Too many or too few parameters are entered !\nThis function only supports %d variable !\n@File: %s\n@Function: %s\n@Line: %d\n"
+#define VAR_LIST_LENGTH_002 "@ERROR: Too many or too few parameters are entered !\nThis function can only support a maximum of %d to %d parameters !\n@File: %s\n@Function: %s\n@Line: %d\n"
 #define PERROR(fmt, ...)            \
     {                               \
         printf(fmt, ##__VA_ARGS__); \
         exit(1);                    \
     }
+#define INVALID_INPUT_001 "@ERROR: The input parameter called \"%s\" must be an integer between %d and %d !\n@File: %s\n@Function: %s\n@Line: %d\n"
 
 /* WARNING DEFINE */
-#define VALUE_TYPE_WARNING_001 "@WARNING: value == %d\nMaybe a variable of the wrong type was entered\nThe prototype of the function is designed as: %s\n"
+#define VALUE_TYPE_WARNING_001 "@WARNING: value == %d\nMaybe a variable of the wrong type was entered\n@File: %s\n@Function: %s\n@Line: %d\n"
+#define MALLOC_FAILURE_001 "@WARNING: Failed to allocate memory, will return NULL\n@File: %s\n@Function: %s\n@Line: %d\n"
 #define PWARNING(fmt, ...) printf(fmt, ##__VA_ARGS__)
+#define PWARNING_RETURN(fmt, ...)     \
+    {                                 \
+        PWARNING(fmt, ##__VA_ARGS__); \
+        return NULL;                  \
+    }
+#define PWARNING_RETURN_MALLOC PWARNING_RETURN(MALLOC_FAILURE_001, __FILE__, __FUNCTION__, __LINE__)
 
 /* DOUBLE COMPARE DEFINE */
 #define DOUBLE_COMPARE_EQ2ZERO(a) (a == 0.0 || (fabs(a) <= DBL_EPSILON))

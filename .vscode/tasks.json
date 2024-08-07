@@ -7,9 +7,11 @@
             "args": [
                 "-fdiagnostics-color=always",
                 "-g",
-                "${file}",
+                "C:\\Users\\79240\\desktopFiles\\git\\zh-CN\\C\\test.c",
+                //"${file}",
                 "-o",
-                "${fileDirname}\\${fileBasenameNoExtension}.exe"
+                "${fileDirname}\\${fileBasenameNoExtension}.exe",
+                "-fopenmp"
             ],
             "options": {
                 "cwd": "${fileDirname}"
