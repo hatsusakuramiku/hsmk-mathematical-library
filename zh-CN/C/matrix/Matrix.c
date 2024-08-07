@@ -611,7 +611,7 @@ Matrix *twoArrayToMatrix(MATRIX_TYPE **array, unsigned int rows, unsigned int co
     return mat;
 }
 
-MATRIX_TYPE *_vector_comp_(int num, ...)
+MATRIX_TYPE *_vector_splicing_(int num, ...)
 {
     va_list ap;
     va_start(ap, num);
@@ -620,7 +620,7 @@ MATRIX_TYPE *_vector_comp_(int num, ...)
     if (a == NULL)
     {
         va_end(ap);
-        PERROR("Failed to allocate memory for vector_comp.\n");
+        PERROR("Failed to allocate memory for vector_splicing.\n");
         return NULL;
     }
 
@@ -632,7 +632,7 @@ MATRIX_TYPE *_vector_comp_(int num, ...)
         {
             va_end(ap);
             free(a);
-            PERROR("Null pointer found in vector_comp.\n");
+            PERROR("Null pointer found in vector_splicing.\n");
             return NULL;
         }
         length += LENGTH(a[i]);
@@ -643,7 +643,7 @@ MATRIX_TYPE *_vector_comp_(int num, ...)
     {
         va_end(ap);
         free(a);
-        PERROR("Failed to allocate memory for vector_comp.\n");
+        PERROR("Failed to allocate memory for vector_splicing.\n");
         return NULL;
     }
 
@@ -662,7 +662,7 @@ MATRIX_TYPE *_vector_comp_(int num, ...)
     return b;
 }
 
-Matrix *matrix_comp(Matrix *a, Matrix *b, unsigned int aix)
+Matrix *matrix_splicing(Matrix *a, Matrix *b, unsigned int aix)
 {
     if (a == NULL && b == NULL)
     {
@@ -681,22 +681,22 @@ Matrix *matrix_comp(Matrix *a, Matrix *b, unsigned int aix)
     {
         if (a_cols != b_cols)
         {
-            PERROR(MATRIX_SIZE_ERROR_001, "Matrix *matrix_comp(Matrix *a, Matrix *b, unsigned int aix);");
+            PERROR(MATRIX_SIZE_ERROR_001, "Matrix *matrix_splicing(Matrix *a, Matrix *b, unsigned int aix);");
         }
         if (aix = 1)
         {
-            return matrix_gen(a_rows + b_rows, a_cols, vector_comp(b->data, a->data));
+            return matrix_gen(a_rows + b_rows, a_cols, vector_splicing(b->data, a->data));
         }
         else
         {
-            return matrix_gen(b_rows + a_rows, b_cols, vector_comp(a->data, b->data));
+            return matrix_gen(b_rows + a_rows, b_cols, vector_splicing(a->data, b->data));
         }
     }
     else if (aix == 2 || aix == 4)
     {
         if (a_rows != b_rows)
         {
-            PERROR(MATRIX_SIZE_ERROR_001, "Matrix *matrix_comp(Matrix *a, Matrix *b, unsigned int aix);");
+            PERROR(MATRIX_SIZE_ERROR_001, "Matrix *matrix_splicing(Matrix *a, Matrix *b, unsigned int aix);");
         }
         Matrix *mat = matrix_gen(a_rows, a_cols + b_cols, NULL);
         if (mat == NULL)

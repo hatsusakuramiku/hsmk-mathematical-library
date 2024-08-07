@@ -1032,14 +1032,14 @@ typedef struct _Complex_Matrix
     Matrix rows: 3, cols: 3
     ```
 
-3. **matrix_comp**
+3. **matrix_splicing**
 
     说明: 矩阵拼接
 
     函数原型:
 
     ```C
-    Matrix *matrix_comp(Matrix *mat1, Matrix *mat2, unsigned int aix)
+    Matrix *matrix_splicing(Matrix *mat1, Matrix *mat2, unsigned int aix)
     ```
 
     **Input**:
@@ -1068,18 +1068,18 @@ typedef struct _Complex_Matrix
     ```C
     Matrix *mat_a = ones_matrix_value(3, 3, 1.0);
     Matrix *mat_b = ones_matrix_value(3, 3, 2.0);
-    Matrix *mat_comp_1 = matrix_comp(mat_a, mat_b, 1);
-    Matrix *mat_comp_2 = matrix_comp(mat_a, mat_b, 2);
-    Matrix *mat_comp_3 = matrix_comp(mat_a, mat_b, 3);
-    Matrix *mat_comp_4 = matrix_comp(mat_a, mat_b, 4);
+    Matrix *mat_splicing_1 = matrix_splicing(mat_a, mat_b, 1);
+    Matrix *mat_splicing_2 = matrix_splicing(mat_a, mat_b, 2);
+    Matrix *mat_splicing_3 = matrix_splicing(mat_a, mat_b, 3);
+    Matrix *mat_splicing_4 = matrix_splicing(mat_a, mat_b, 4);
     printf("aix = 1, 纵向拼接，拼接后的矩阵为:\n");
-    matrix_print(mat_comp_1);
+    matrix_print(mat_splicing_1);
     printf("aix = 2, 横向拼接，拼接后的矩阵为:\n");
-    matrix_print(mat_comp_2);
+    matrix_print(mat_splicing_2);
     printf("aix = 3, 纵向拼接，拼接后的矩阵为:\n");
-    matrix_print(mat_comp_3);
+    matrix_print(mat_splicing_3);
     printf("aix = 4, 横向拼接，拼接后的矩阵为:\n");
-    matrix_print(mat_comp_4);
+    matrix_print(mat_splicing_4);
     // 输出结果如下：
     aix = 1, 纵向拼接，拼接后的矩阵为:
     |       2.000000        2.000000        2.000000        |
