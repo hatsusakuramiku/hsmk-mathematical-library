@@ -70,7 +70,7 @@ typedef struct _Complex_Matrix
 
 ```C
 Matrix *matrix_gen(unsigned int rows, unsigned int cols, MATRIX_TYPE *data)
-    ```
+```
 
 **Input**:
 
