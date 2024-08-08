@@ -1,4 +1,5 @@
 #include "Matrix.h"
+#include "../CustomSort.c"
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
@@ -6,7 +7,8 @@
 #include <string.h>
 #include <stdarg.h>
 
-Matrix *matrix_gen(unsigned int rows, unsigned int cols, MATRIX_TYPE *data)
+Matrix *
+matrix_gen(unsigned int rows, unsigned int cols, MATRIX_TYPE *data)
 {
     if (rows == 0 || cols == 0)
     {
@@ -14,10 +16,7 @@ Matrix *matrix_gen(unsigned int rows, unsigned int cols, MATRIX_TYPE *data)
     }
 
     Matrix *mat = malloc(sizeof(Matrix));
-    if (mat == NULL)
-    {
-        return NULL;
-    }
+    PWARNING_RETURN_MALLOC(mat);
 
     mat->rows = rows;
     mat->cols = cols;
@@ -26,6 +25,7 @@ Matrix *matrix_gen(unsigned int rows, unsigned int cols, MATRIX_TYPE *data)
     if (mat->data == NULL)
     {
         free(mat);
+        printf(MALLOC_FAILURE_001, VNAME(mat->data), __FILE__, __FUNCTION__, __LINE__);
         return NULL;
     }
 
@@ -46,10 +46,7 @@ Matrix *matrix_gen(unsigned int rows, unsigned int cols, MATRIX_TYPE *data)
 
 Matrix *matrix_copy(Matrix *_sourse_mat)
 {
-    if (_sourse_mat == NULL)
-    {
-        return NULL;
-    }
+    PWARNING_RETURN_INPUT(_sourse_mat);
     Matrix *mat = matrix_gen(_sourse_mat->rows, _sourse_mat->cols, _sourse_mat->data);
     return mat;
 }
@@ -63,10 +60,8 @@ Matrix *matrix_copy(Matrix *_sourse_mat)
 void matrix_copy_(Matrix *a, Matrix *b)
 {
     // If either matrix is NULL, there is nothing to do.
-    if (a == NULL || b == NULL)
-    {
-        return;
-    }
+    PWARNING_RETURN_INPUT_NO_NULL(a);
+    PWARNING_RETURN_INPUT_NO_NULL(b);
 
     // Copy the data from `b` to `a`.
     memcpy(a->data, b->data, b->rows * b->cols * sizeof(MATRIX_TYPE));
@@ -75,24 +70,10 @@ void matrix_copy_(Matrix *a, Matrix *b)
     a->rows = b->rows;
     a->cols = b->cols;
 }
-// void matrix_copy_(Matrix *a, Matrix *b)
-// {
-//     if (a == NULL || b == NULL)
-//     {
-//         return;
-//     }
-//     memcpy(a->data, b->data, b->rows * b->cols * sizeof(MATRIX_TYPE));
-//     a->rows = b->rows;
-//     a->cols = b->cols;
-// }
 
 void matrix_free(Matrix *mat)
 {
-    if (mat == NULL)
-    {
-        // No need to free anything, just return
-        return;
-    }
+    PWARNING_RETURN_INPUT_NO_NULL(mat);
 
     // Free the memory allocated for the matrix data
     if (mat->data != NULL)
@@ -106,11 +87,7 @@ void matrix_free(Matrix *mat)
 
 void matrix_print(Matrix *mat)
 {
-    if (mat == NULL)
-    {
-        printf("Matrix is NULL\n");
-        return;
-    }
+    PWARNING_RETURN_INPUT_NO_NULL(mat);
     int rows = mat->rows, cols = mat->cols;
     if (rows > MATRIX_ROWS_OMIT_PRINT_LIMIT || cols > MATRIX_COLS_OMIT_PRINT_LIMIT)
     {
@@ -175,10 +152,7 @@ Matrix *ones_matrix(unsigned int rows, unsigned int cols)
         return NULL;
     }
     Matrix *mat = matrix_gen(rows, cols, NULL);
-    if (mat == NULL)
-    {
-        return NULL;
-    }
+    PWARNING_RETURN_MALLOC(mat);
     for (int i = 0; i < rows * cols; i++)
     {
         mat->data[i] = 1;
@@ -221,10 +195,7 @@ Matrix *_ones_matrix_(int num, ...)
             return NULL;
         }
         Matrix *mat = matrix_gen(rows, cols, NULL);
-        if (mat == NULL)
-        {
-            return NULL;
-        }
+        PWARNING_RETURN_MALLOC(mat);
         if (DOUBLE_COMPARE_EQ2ZERO(value))
         {
             PWARNING(VALUE_TYPE_WARNING_001, 0, __FILE__, __FUNCTION__, __LINE__);
@@ -253,10 +224,7 @@ Matrix *eye_matrix(unsigned int rows, unsigned int cols)
         return NULL;
     }
     Matrix *mat = matrix_gen(rows, cols, NULL);
-    if (mat == NULL)
-    {
-        return NULL;
-    }
+    PWARNING_RETURN_MALLOC(mat);
     for (int i = 0; i < MIN(rows, cols); i++)
     {
         mat->data[IDX(cols, i, i)] = 1;
@@ -299,10 +267,7 @@ Matrix *_eye_matrix_(int num, ...)
             return NULL;
         }
         Matrix *mat = matrix_gen(rows, cols, NULL);
-        if (mat == NULL)
-        {
-            return NULL;
-        }
+        PWARNING_RETURN_MALLOC(mat);
         if (DOUBLE_COMPARE_EQ2ZERO(value))
         {
             PWARNING(VALUE_TYPE_WARNING_001, 0, __FILE__, __FUNCTION__, __LINE__);
@@ -326,10 +291,7 @@ Matrix *rand_matrix(unsigned int rows, unsigned int cols, MATRIX_TYPE min, MATRI
         return NULL;
     }
     Matrix *mat = matrix_gen(rows, cols, NULL);
-    if (mat == NULL)
-    {
-        return NULL;
-    }
+    PWARNING_RETURN_MALLOC(mat);
     for (int i = 0; i < rows * cols; i++)
     {
         mat->data[i] = RAND(min, max, MATRIX_TYPE);
@@ -358,11 +320,7 @@ bool matrix_eq(Matrix *a, Matrix *b)
 }
 Matrix *_matrix_mul_(Matrix *a, ...)
 {
-    if (a == NULL)
-    {
-        return NULL;
-    }
-
+    PWARNING_RETURN_INPUT(a);
     va_list ap;
     va_start(ap, a);
     int type_index = va_arg(ap, int);
@@ -473,10 +431,7 @@ void matrix_mul_single_double_void(Matrix *a, double b)
 
 Matrix *_matrix_add_(Matrix *a, ...)
 {
-    if (a == NULL)
-    {
-        return NULL;
-    }
+    PWARNING_RETURN_INPUT(a);
     va_list ap;
     va_start(ap, a);
     int type_index = va_arg(ap, int);
@@ -546,10 +501,7 @@ Matrix *matrix_transpose_(Matrix *mat)
         return NULL;
     }
     Matrix *new_mat = matrix_gen(mat->cols, mat->rows, NULL);
-    if (new_mat == NULL)
-    {
-        return NULL;
-    }
+    PWARNING_RETURN_MALLOC(mat);
     for (int i = 0; i < mat->rows; i++)
     {
         for (int j = 0; j < mat->cols; j++)
@@ -567,10 +519,7 @@ MATRIX_TYPE **matrixTo2Array(Matrix *mat)
         return NULL;
     }
     MATRIX_TYPE **array = (MATRIX_TYPE **)malloc(sizeof(MATRIX_TYPE *) * mat->rows);
-    if (array == NULL)
-    {
-        return NULL;
-    }
+    PWARNING_RETURN_MALLOC(mat);
     for (int i = 0; i < mat->rows; i++)
     {
         array[i] = (MATRIX_TYPE *)malloc(sizeof(MATRIX_TYPE) * mat->cols);
@@ -586,7 +535,7 @@ MATRIX_TYPE **matrixTo2Array(Matrix *mat)
         int m_cols = mat->cols;
         for (int j = 0; j < mat->cols; j++)
         {
-            array[i][j] = mat->data[IDX(m_cols, j, i)];
+            array[i][j] = mat->data[IDX(m_cols, i, j)];
         }
     }
     return array;
@@ -594,20 +543,14 @@ MATRIX_TYPE **matrixTo2Array(Matrix *mat)
 
 Matrix *twoArrayToMatrix(MATRIX_TYPE **array, unsigned int rows, unsigned int cols)
 {
-    if (array == NULL)
-    {
-        return NULL;
-    }
+    PWARNING_RETURN_INPUT(array);
     Matrix *mat = matrix_gen(rows, cols, NULL);
-    if (mat == NULL)
-    {
-        return NULL;
-    }
+    PWARNING_RETURN_MALLOC(mat);
     for (int i = 0; i < rows; i++)
     {
         for (int j = 0; j < cols; j++)
         {
-            mat->data[IDX(mat->cols, j, i)] = array[i][j];
+            mat->data[IDX(mat->cols, i, j)] = array[i][j];
         }
     }
     return mat;
@@ -772,8 +715,7 @@ Matrix *matrix_cat(Matrix *a, unsigned int begin_row, unsigned int end_row, unsi
 void matrix_swap(Matrix *a, unsigned int aix, unsigned int select_index, unsigned int aim_index)
 {
 
-    if (a == NULL)
-        return;
+    PWARNING_RETURN_INPUT_NO_NULL(a);
     if (aix != 1 && aix != 2)
     {
         PERROR(INVALID_INPUT_001, "aix", 1, 2, __FILE__, __FUNCTION__, __LINE__);
@@ -807,34 +749,162 @@ void matrix_swap(Matrix *a, unsigned int aix, unsigned int select_index, unsigne
     }
 }
 
+int compar(const void *a, const void *b)
+{
+    MATRIX_TYPE *pa = *(MATRIX_TYPE **)a;
+    MATRIX_TYPE *pb = *(MATRIX_TYPE **)b;
+    printf("pa[0] = %.6lf, pb[0] = %.6lf\n", pa[0], pb[0]);
+    if (pa[0] > pb[0])
+        return 1;
+    else if (pa[0] < pb[0])
+        return -1;
+    else
+        return 0;
+}
+
+void matrix_sort_by_cols_values(Matrix *mat, unsigned int col_index, unsigned int sort_method, int (*compar)(const void *, const void *, int))
+{
+    PWARNING_RETURN_INPUT_NO_NULL(mat);
+
+    if (col_index > mat->cols || col_index < 1)
+    {
+        PERROR(INVALID_INPUT_001, "col_index", 1, mat->cols, __FILE__, __FUNCTION__, __LINE__);
+    }
+
+    MATRIX_TYPE **array = matrixTo2Array(mat);
+    if (array == NULL)
+    {
+        return;
+    }
+    matrix_custom_sort(array, sort_method, col_index, mat->rows, sizeof(MATRIX_TYPE *), compar);
+    matrix_copy_(mat, twoArrayToMatrix(array, mat->rows, mat->cols));
+}
+
 /* Tool function */
+
+int matrix_sort_default_a2z(const void *a, const void *b)
+{
+    MATRIX_TYPE *pa = (MATRIX_TYPE *)a;
+    MATRIX_TYPE *pb = (MATRIX_TYPE *)b;
+    if (*pa > *pb)
+        return 1;
+    else if (*pa < *pb)
+        return -1;
+    else
+        return 0;
+}
+
+int matrix_sort_default_z2a(const void *a, const void *b)
+{
+    MATRIX_TYPE *pa = (MATRIX_TYPE *)a;
+    MATRIX_TYPE *pb = (MATRIX_TYPE *)b;
+    if (*pa < *pb)
+        return 1;
+    else if (*pa > *pb)
+        return -1;
+    else
+        return 0;
+}
+
+// void vector_sort(MATRIX_TYPE *vector, unsigned int aix){
+//     int len = LENGTH(vector);
+//     if (aix == 1){
+//         for (int i = 0; i < len; i++){
+//             for (int j = i + 1; j < len; j++){
+//                 if (vector[i] > vector[j]){
+//                     MATRIX_TYPE temp = vector[i];
+//                     vector[i] = vector[j];
+//                     vector[j] = temp;
+//                 }
+//             }
+//         }
+//     }else{
+//         for (int i = 0; i < len; i++){
+//             for (int j = i + 1; j < len; j++){
+//                 if (vector[i] < vector[j]){
+//                     MATRIX_TYPE temp = vector[i];
+//                     vector[i] = vector[j];
+//                     vector[j] = temp;
+//                 }
+//             }
+//         }
+//     }
+// }
+
+void matrix_gauss_elimination_(Matrix *mat, unsigned int select_index, unsigned int aim_index, unsigned int start_index, unsigned int end_index, double value)
+{
+    for (int i = start_index; i <= end_index; i++)
+    {
+        mat->data[IDX(mat->cols, aim_index, i)] = mat->data[IDX(mat->cols, aim_index, i)] - mat->data[IDX(mat->cols, select_index, i)] * value;
+    }
+}
+
+void matrix_gauss_elimination_col_(Matrix *mat, unsigned int select_index, unsigned int aim_index, unsigned int start_index, unsigned int end_index, double value)
+{
+    for (int i = start_index; i <= end_index; i++)
+    {
+        mat->data[IDX(mat->cols, i, aim_index)] = mat->data[IDX(mat->cols, i, aim_index)] - mat->data[IDX(mat->cols, i, select_index)] * value;
+    }
+}
+
+void matrix_sort_by_zeros_num(Matrix *mat, unsigned int aix)
+{
+    Matrix *zeros_num = matrix_gen(mat->rows, 3, NULL);
+    for (int i = 0; i < mat->rows; i++)
+    {
+        for (int j = 0; j < mat->cols; j++)
+        {
+            if (mat->data[IDX(mat->cols, i, j)] == 0)
+            {
+                zeros_num->data[IDX(2, i, 0)] = i;
+                zeros_num->data[IDX(2, i, 1)] += 1;
+                zeros_num->data[IDX(2, i, 2)] = i;
+                if (j + 1 >= mat->cols || mat->data[IDX(mat->cols, i, j)] != 0)
+                {
+                    break;
+                }
+            }
+        }
+    }
+}
+
+void matrix_gauss_elimination(Matrix *mat)
+{
+}
 
 /* OpenMP function */
 Matrix *matrix_gen_omp(unsigned int rows, unsigned int cols, MATRIX_TYPE *data)
 {
-    if (rows == 0 || cols == 0)
+    if (rows == 0)
     {
+        printf(INPUT_NULL_002, VNAME(rows), __FILE__, __FUNCTION__, __LINE__ - 1);
+        return NULL;
+    }
+    else if (cols == 0)
+    {
+        printf(INPUT_NULL_002, VNAME(cols), __FILE__, __FUNCTION__, __LINE__ - 1);
         return NULL;
     }
 
     Matrix *mat = malloc(sizeof(Matrix));
-    if (mat == NULL)
-    {
-        // PWARNING_RETURN(MALLOC_FAILURE_001, __FILE__, __FUNCTION__, __LINE__);
-        PWARNING_RETURN_MALLOC;
-    }
+    // if (mat == NULL)
+    // {
+    //     PWARNING_RETURN(MALLOC_FAILURE_001, __FILE__, __FUNCTION__, __LINE__);
+
+    // }
+    PWARNING_RETURN_MALLOC(mat);
 
     mat->rows = rows;
     mat->cols = cols;
     mat->data = (data == NULL || LENGTH(data) != rows * cols) ? calloc(rows * cols, sizeof(MATRIX_TYPE)) : data;
 
-    if (mat->data == NULL)
-    {
-        free(mat);
-        // PWARNING_RETURN(MALLOC_FAILURE_001, __FILE__, __FUNCTION__, __LINE__);
-        PWARNING_RETURN_MALLOC;
-    }
+    // if (mat->data == NULL)
+    // {
+    //     free(mat);
+    //     PWARNING_RETURN(MALLOC_FAILURE_001, __FILE__, __FUNCTION__, __LINE__);
 
+    // }
+    PWARNING_RETURN_MALLOC(mat->data);
     if (data == NULL)
     {
         omp_set_num_threads(OMP_MAX_THREADS_NUM);

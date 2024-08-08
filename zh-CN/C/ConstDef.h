@@ -3,11 +3,13 @@
 
 #include <stdbool.h>
 #include <stdlib.h>
+#include <stdio.h>
 
 #define FALSE false
 #define TRUE true
 #define DBL_EPSILON 1e-15
 #define FLT_EPSILON 1e-6
+#define VNAME(value) (#value)
 
 /* ERROR DEFINE */
 #define VAR_LIST_LENGTH_001 "@ERROR: Too many or too few parameters are entered !\nThis function only supports %d variable !\n@File: %s\n@Function: %s\n@Line: %d\n"
@@ -21,15 +23,45 @@
 
 /* WARNING DEFINE */
 #define VALUE_TYPE_WARNING_001 "@WARNING: value == %d\nMaybe a variable of the wrong type was entered\n@File: %s\n@Function: %s\n@Line: %d\n"
-#define MALLOC_FAILURE_001 "@WARNING: Failed to allocate memory, will return NULL\n@File: %s\n@Function: %s\n@Line: %d\n"
+#define MALLOC_FAILURE_001 "@WARNING: Failed to allocate memory for variable called '%s', will return NULL\n@File: %s\n@Function: %s\n@Line: %d\n"
+#define MALLOC_FAILURE_002 "@WARNING: Failed to allocate memory for variable called '%s', will abort the operation and return\n@File: %s\n@Function: %s\n@Line: %d\n"
+#define INPUT_NULL_001 "@WARNING: The input parameter called '%s' is NULL, will abort the operation and return NULL\n@File: %s\n@Function: %s\n@Line: %d\n"
+#define INPUT_NULL_002 "@WARNING: The input parameter called '%s' is NULL, will abort the operation and return \n@File: %s\n@Function: %s\n@Line: %d\n"
 #define PWARNING(fmt, ...) printf(fmt, ##__VA_ARGS__)
 #define PWARNING_RETURN(fmt, ...)     \
     {                                 \
         PWARNING(fmt, ##__VA_ARGS__); \
         return NULL;                  \
     }
-#define PWARNING_RETURN_MALLOC PWARNING_RETURN(MALLOC_FAILURE_001, __FILE__, __FUNCTION__, __LINE__)
+#define PWARNING_RETURN_MALLOC(a)                                                   \
+    if (a == NULL)                                                                  \
+    {                                                                               \
+        /*free(a);*/                                                                \
+        printf(MALLOC_FAILURE_002, VNAME(a), __FILE__, __FUNCTION__, __LINE__ - 1); \
+        return NULL;                                                                \
+    }
 
+#define PWARNING_RETURN_MALLOC_NO_NULL(a)                                           \
+    if (a == NULL)                                                                  \
+    {                                                                               \
+        /*free(a);*/                                                                \
+        printf(MALLOC_FAILURE_002, VNAME(a), __FILE__, __FUNCTION__, __LINE__ - 1); \
+        return;                                                                     \
+    }
+
+#define PWARNING_RETURN_INPUT_NO_NULL(a)                                        \
+    if (a == NULL)                                                              \
+    {                                                                           \
+        printf(INPUT_NULL_002, VNAME(a), __FILE__, __FUNCTION__, __LINE__ - 1); \
+        return;                                                                 \
+    }
+
+#define PWARNING_RETURN_INPUT(a)                                                \
+    if (a == NULL)                                                              \
+    {                                                                           \
+        printf(INPUT_NULL_002, VNAME(a), __FILE__, __FUNCTION__, __LINE__ - 1); \
+        return NULL;                                                            \
+    }
 /* DOUBLE COMPARE DEFINE */
 #define DOUBLE_COMPARE_EQ2ZERO(a) (a == 0.0 || (fabs(a) <= DBL_EPSILON))
 #define DOUBLE_COMPARE_EQ(a, b) (DOUBLE_COMPARE_EQ2ZERO(a - b))
