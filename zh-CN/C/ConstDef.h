@@ -20,6 +20,8 @@
         exit(1);                    \
     }
 #define INVALID_INPUT_001 "@ERROR: The input parameter called \"%s\" must be an integer between %d and %d !\n@File: %s\n@Function: %s\n@Line: %d\n"
+#define INVALID_INPUT_002 "@ERROR: The input parameter called \"%s\" must be an integer and equal or greater than %d !\n@File: %s\n@Function: %s\n@Line: %d\n"
+#define INVALID_INPUT_003 "@ERROR: The length of the input parameter named \"%s\" must be equal to %d !\n@File: %s\n@Function: %s\n@Line: %d\n"
 
 /* WARNING DEFINE */
 #define VALUE_TYPE_WARNING_001 "@WARNING: value == %d\nMaybe a variable of the wrong type was entered\n@File: %s\n@Function: %s\n@Line: %d\n"

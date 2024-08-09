@@ -64,7 +64,7 @@ typedef struct _Complex_Matrix
 
 ### **matrix_gen**
 
-说明: 由给定数据创建指定大小的矩阵，给定数据的长度必须小于等于指定矩阵的大小，不足时会自动补零。
+说明: 由给定数据创建指定大小的矩阵，给定数据的长度必须小于等于指定矩阵的大小，长度不足时会自动补零。
 
 函数原型:
 
@@ -90,9 +90,85 @@ Matrix *matrix_gen(unsigned int rows, unsigned int cols, MATRIX_TYPE *data)
 
 ```C
 Matrix *mat = matrix_gen(3, 3, NULL);//创建一个3*3的全零矩阵
-MATRIX_TYPE data[] = {1, 2, 3, 4, 5, 6, 7, 8, 9};
+MATRIX_TYPE * data = (MATRIX_TYPE*)malloc(sizeof(MATRIX_TYPE) * 9);
+for (int i = 0; i < 9; i++){
+    data[i] = i + 1;
+}
 Matrix *mat_gen = matrix_gen(3, 3, data);//创建一个3*3的矩阵，数据为 1 2 3 4 5 6 7 8 9
 Matrix *mat_gen_matrix = matrix_gen(mat->rows, mat->cols, mat->data);//使用已有矩阵数据创建新矩阵
+
+// 若输入的 data 长度小于等于指定矩阵的大小，不足时会依次自动补零，可能导致非预期结果
+Matrix *mat_gen_matrix = matrix_gen(3, 3, data);//创建一个3*3的矩阵，数据为 1 2 3 4 5 6 7 8 9
+Matrix *mat_gen_data_matrix = matrix_gen(4, 4, mat_gen_matrix->data);//以已有矩阵数据创建新矩阵，但行列数不匹配，可能导致非预期结果
+matrix_print(mat_gen_matrix);//打印矩阵
+printf("生成的矩阵为：\n");
+matrix_print(mat_gen_data_matrix);//打印矩阵
+//预览结果如下
+|       1.000000        2.000000        3.000000        |
+|       4.000000        5.000000        6.000000        |
+|       7.000000        8.000000        9.000000        |
+Matrix rows: 3, cols: 3
+生成的矩阵为：
+|       1.000000        2.000000        3.000000        4.000000        |
+|       5.000000        6.000000        7.000000        8.000000        |
+|       9.000000        0.000000        0.000000        0.000000        |
+|       0.000000        0.000000        0.000000        0.000000        |
+
+//为修复这个问题可以使用下面的代码
+Matrix *mat_gen_data_matrix = matrix_gen_(4, 4, data, 3, 3);
+matrix_print(mat_gen_data_matrix);//打印矩阵
+//预览结果如下
+|       1.000000        2.000000        3.000000        0.000000        |
+|       4.000000        5.000000        6.000000        0.000000        |
+|       7.000000        8.000000        9.000000        0.000000        |
+|       0.000000        0.000000        0.000000        0.000000        |
+```
+
+### **matrix_gen_**
+
+说明: 由给定数据创建指定大小的矩阵，必须指定给定数据对应的矩阵大小，给定数据的长度必须小于等于指定矩阵的大小，不足时会自动补零。
+
+函数原型:
+
+```C
+Matrix *matrix_gen_(int rows, int cols, MATRIX_TYPE *data, int data_rows, int data_cols)
+```
+
+**Input**:
+
+|name|type|description|required|
+|----|----|----|----|
+|'rows'|unsigned int|生成的矩阵行数|必须大于 0|
+|'cols'|unsigned int|生成的矩阵列数|必须大于 0|
+|'data'|MATRIX_TYPE*|矩阵数据|MATRIX_TYPE 默认类型为 double, 暂不可自定义|
+|'data_rows'|unsigned int|给定数据矩阵行数|必须大于 0且小于等于指定矩阵行数|
+|'data_cols'|unsigned int|给定数据矩阵列数|必须大于 0且小于等于指定矩阵列数|
+
+**Output**:
+
+|type|description|
+|----|----|
+|Matrix*|生成的矩阵|
+
+使用示例:
+
+```C
+Matrix *mat = rand_matrix(3, 3, 0, 10);//创建一个3*3的随机矩阵，随机数取值范围为 [0, 10]
+Matrix *mat_ = matrix_gen_(4, 4, mat->data, 3, 3);
+matrix_print(mat);//打印矩阵
+printf("生成的矩阵为：\n");
+matrix_print(mat_);//打印矩阵
+//预览结果如下:
+|       0.012512        5.635681        1.932983        |
+|       8.087158        5.849915        4.798584        |
+|       3.502808        8.959351        8.228149        |
+Matrix rows: 3, cols: 3
+生成的矩阵为：
+|       0.012512        5.635681        1.932983        0.000000        |
+|       8.087158        5.849915        4.798584        0.000000        |
+|       3.502808        8.959351        8.228149        0.000000        |
+|       0.000000        0.000000        0.000000        0.000000        |
+Matrix rows: 4, cols: 4
 ```
 
 ### **matrix_free**

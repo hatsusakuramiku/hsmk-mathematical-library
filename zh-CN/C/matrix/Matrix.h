@@ -59,15 +59,16 @@ MATRIX_TYPE *_vector_splicing_(int num, ...); // vector compose
 // 为提高效率 Tool function 中的所有函数均不会对输入进行校验！
 void matrix_gauss_elimination(Matrix *mat);
 void matrix_gauss_elimination_col(Matrix *mat);
-void matrix_gauss_elimination_(Matrix *mat, unsigned int select_index, unsigned int aim_index, unsigned int start_index, unsigned int end_index, double value);
-void matrix_gauss_elimination_col_(Matrix *mat, unsigned int select_index, unsigned int aim_index, unsigned int start_index, unsigned int end_index, double value);
+void matrix_gauss_elimination_(Matrix *mat, unsigned int select_index, unsigned int aim_index, double value);
+void matrix_gauss_elimination_col_(Matrix *mat, unsigned int select_index, unsigned int aim_index, double value);
 void matrix_sort_by_zeros_num(Matrix *mat, unsigned int aix);
 void vector_sort(MATRIX_TYPE *vector, unsigned int aix, unsigned int sort_method);
-int matrix_sort_default_a2z(const void *a, const void *b);
-int matrix_sort_default_z2a(const void *a, const void *b);
+int matrix_sort_default_a2z(const void *a, const void *b, int col_index);
+int matrix_sort_default_z2a(const void *a, const void *b, int col_index);
 
 /* Function */
 Matrix *matrix_gen(unsigned int rows, unsigned int cols, MATRIX_TYPE *data);                                                                    // generate matrix
+Matrix *matrix_gen_(unsigned int rows, unsigned int cols, MATRIX_TYPE *data, unsigned int data_rows, unsigned int data_cols);                   // generate matrix
 Matrix *matrix_copy(Matrix *_sourse_mat);                                                                                                       // copy matrix
 void matrix_copy_(Matrix *a, Matrix *b);                                                                                                        // copy matrix
 void matrix_free(Matrix *mat);                                                                                                                  // free matrix

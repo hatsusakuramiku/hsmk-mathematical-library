@@ -20,7 +20,16 @@ matrix_gen(unsigned int rows, unsigned int cols, MATRIX_TYPE *data)
 
     mat->rows = rows;
     mat->cols = cols;
-    mat->data = (data == NULL || LENGTH(data) != rows * cols) ? calloc(rows * cols, sizeof(MATRIX_TYPE)) : data;
+
+    if (!(data == NULL || LENGTH(data) != rows * cols))
+    {
+        memcpy(mat->data, data, rows * cols * sizeof(MATRIX_TYPE));
+        return mat;
+    }
+    else
+    {
+        mat->data = (MATRIX_TYPE *)malloc(rows * cols * sizeof(MATRIX_TYPE));
+    }
 
     if (mat->data == NULL)
     {
@@ -28,6 +37,8 @@ matrix_gen(unsigned int rows, unsigned int cols, MATRIX_TYPE *data)
         printf(MALLOC_FAILURE_001, VNAME(mat->data), __FILE__, __FUNCTION__, __LINE__);
         return NULL;
     }
+
+    int len = LENGTH(data);
 
     if (data == NULL)
     {
@@ -38,9 +49,63 @@ matrix_gen(unsigned int rows, unsigned int cols, MATRIX_TYPE *data)
     }
     else
     {
-        memcpy(mat->data, data, rows * cols * sizeof(MATRIX_TYPE));
+        for (int i = 0; i < rows * cols; i++)
+        {
+            if (i >= len)
+            {
+                mat->data[i] = 0;
+            }
+            else
+            {
+                mat->data[i] = data[i];
+            }
+        }
     }
 
+    return mat;
+}
+
+Matrix *matrix_gen_(unsigned int rows, unsigned int cols, MATRIX_TYPE *data, unsigned int data_rows, unsigned int data_cols)
+{
+
+    if (rows * cols == LENGTH(data))
+    {
+        return matrix_gen(rows, cols, data);
+    }
+    else if (data_cols * data_rows != LENGTH(data))
+    {
+        PERROR(INVALID_INPUT_003, VNAME(data), data_rows * data_cols, __FILE__, __FUNCTION__, __LINE__);
+    }
+
+    if (rows < data_rows)
+    {
+        PERROR(INVALID_INPUT_002, "rows", data_rows, __FILE__, __FUNCTION__, __LINE__);
+    }
+    else if (cols < data_cols)
+    {
+        PERROR(INVALID_INPUT_001, "cols", data_cols, __FILE__, __FUNCTION__, __LINE__);
+    }
+
+    Matrix *mat = malloc(sizeof(Matrix));
+    PWARNING_RETURN_MALLOC(mat);
+    mat->rows = rows;
+    mat->cols = cols;
+    mat->data = (MATRIX_TYPE *)malloc(rows * cols * sizeof(MATRIX_TYPE));
+
+    for (int i = 0; i < rows; i++)
+    {
+        for (int j = 0; j < cols; j++)
+        {
+            if (i < data_rows && j < data_cols)
+            {
+                mat->data[IDX(cols, i, j)] = data[IDX(data_cols, i, j)];
+            }
+            else
+            {
+                mat->data[IDX(cols, i, j)] = 0;
+            }
+        }
+    }
     return mat;
 }
 
@@ -782,68 +847,43 @@ void matrix_sort_by_cols_values(Matrix *mat, unsigned int col_index, unsigned in
 
 /* Tool function */
 
-int matrix_sort_default_a2z(const void *a, const void *b)
+int matrix_sort_default_a2z(const void *a, const void *b, int col_index)
 {
-    MATRIX_TYPE *pa = (MATRIX_TYPE *)a;
-    MATRIX_TYPE *pb = (MATRIX_TYPE *)b;
-    if (*pa > *pb)
+    MATRIX_TYPE *pa = *(MATRIX_TYPE **)a;
+    MATRIX_TYPE *pb = *(MATRIX_TYPE **)b;
+    if (pa[col_index] > pb[col_index])
         return 1;
-    else if (*pa < *pb)
+    else if (pa[col_index] < pb[col_index])
         return -1;
     else
         return 0;
 }
 
-int matrix_sort_default_z2a(const void *a, const void *b)
+int matrix_sort_default_z2a(const void *a, const void *b, int col_index)
 {
-    MATRIX_TYPE *pa = (MATRIX_TYPE *)a;
-    MATRIX_TYPE *pb = (MATRIX_TYPE *)b;
-    if (*pa < *pb)
+    MATRIX_TYPE *pa = *(MATRIX_TYPE **)a;
+    MATRIX_TYPE *pb = *(MATRIX_TYPE **)b;
+    if (pa[col_index] < pb[col_index])
         return 1;
-    else if (*pa > *pb)
+    else if (pa[col_index] > pb[col_index])
         return -1;
     else
         return 0;
 }
 
-// void vector_sort(MATRIX_TYPE *vector, unsigned int aix){
-//     int len = LENGTH(vector);
-//     if (aix == 1){
-//         for (int i = 0; i < len; i++){
-//             for (int j = i + 1; j < len; j++){
-//                 if (vector[i] > vector[j]){
-//                     MATRIX_TYPE temp = vector[i];
-//                     vector[i] = vector[j];
-//                     vector[j] = temp;
-//                 }
-//             }
-//         }
-//     }else{
-//         for (int i = 0; i < len; i++){
-//             for (int j = i + 1; j < len; j++){
-//                 if (vector[i] < vector[j]){
-//                     MATRIX_TYPE temp = vector[i];
-//                     vector[i] = vector[j];
-//                     vector[j] = temp;
-//                 }
-//             }
-//         }
-//     }
-// }
-
-void matrix_gauss_elimination_(Matrix *mat, unsigned int select_index, unsigned int aim_index, unsigned int start_index, unsigned int end_index, double value)
+void matrix_gauss_elimination_(Matrix *mat, unsigned int select_index, unsigned int aim_index, double value)
 {
-    for (int i = start_index; i <= end_index; i++)
+    for (int i = 0; i < mat->cols; i++)
     {
-        mat->data[IDX(mat->cols, aim_index, i)] = mat->data[IDX(mat->cols, aim_index, i)] - mat->data[IDX(mat->cols, select_index, i)] * value;
+        mat->data[IDX(mat->cols, aim_index, i)] = mat->data[IDX(mat->cols, aim_index, i)] + mat->data[IDX(mat->cols, select_index, i)] * value;
     }
 }
 
-void matrix_gauss_elimination_col_(Matrix *mat, unsigned int select_index, unsigned int aim_index, unsigned int start_index, unsigned int end_index, double value)
+void matrix_gauss_elimination_col_(Matrix *mat, unsigned int select_index, unsigned int aim_index, double value)
 {
-    for (int i = start_index; i <= end_index; i++)
+    for (int i = 0; i < mat->cols; i++)
     {
-        mat->data[IDX(mat->cols, i, aim_index)] = mat->data[IDX(mat->cols, i, aim_index)] - mat->data[IDX(mat->cols, i, select_index)] * value;
+        mat->data[IDX(mat->cols, i, aim_index)] = mat->data[IDX(mat->cols, i, aim_index)] + mat->data[IDX(mat->cols, i, select_index)] * value;
     }
 }
 
