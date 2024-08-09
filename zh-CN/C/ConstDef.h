@@ -5,8 +5,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-#define FALSE false
-#define TRUE true
+// #define FALSE false
+// #define TRUE true
 #define DBL_EPSILON 1e-15
 #define FLT_EPSILON 1e-6
 #define VNAME(value) (#value)
@@ -48,14 +48,14 @@
     {                                                                               \
         /*free(a);*/                                                                \
         printf(MALLOC_FAILURE_002, VNAME(a), __FILE__, __FUNCTION__, __LINE__ - 1); \
-        return;                                                                     \
+        exit; /*return; */                                                          \
     }
 
 #define PWARNING_RETURN_INPUT_NO_NULL(a)                                        \
     if (a == NULL)                                                              \
     {                                                                           \
         printf(INPUT_NULL_002, VNAME(a), __FILE__, __FUNCTION__, __LINE__ - 1); \
-        return;                                                                 \
+        exit; /*return; */                                                      \
     }
 
 #define PWARNING_RETURN_INPUT(a)                                                \
