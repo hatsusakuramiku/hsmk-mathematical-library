@@ -33,9 +33,9 @@ void custom_sort(void *array, int sort_method, size_t elem_num, size_t elem_size
     case 3:
         insert_sort(array, elem_num, elem_size, compar);
         break;
-    case 4:
-        count_sort(array, elem_num, elem_size, compar);
-        break;
+    // case 4:
+    //     count_sort(array, elem_num, compar);
+    //     break;
     case 5:
         quick_sort(array, elem_num, elem_size, compar);
         break;
@@ -145,8 +145,9 @@ void insert_sort(void *base, size_t elem_num, size_t elem_size, int (*compar)(co
     free(key);
 }
 
-void count_sort(void *array, size_t elem_num, size_t elem_size, int (*compar)(const void *, const void *)) {}
-void quick_sort(void *array, size_t elem_num, size_t elem_size, int (*compar)(const void *, const void *)) {}
+void quick_sort(void *array, size_t elem_num, size_t elem_size, int (*compar)(const void *, const void *)) {
+    
+}
 void merge_sort(void *array, size_t elem_num, size_t elem_size, int (*compar)(const void *, const void *)) {}
 void sift_sort(void *array, size_t elem_num, size_t elem_size, int (*compar)(const void *, const void *)) {}
 void bucket_sort(void *array, size_t elem_num, size_t elem_size, int (*compar)(const void *, const void *)) {}
@@ -179,9 +180,9 @@ void matrix_custom_sort(void *array, int sort_method, int col, size_t elem_num, 
     case 3:
         matrix_insert_sort(array, col, elem_num, elem_size, compar);
         break;
-    case 4:
-        matrix_count_sort(array, col, elem_num, elem_size, compar);
-        break;
+    // case 4:
+    //     matrix_count_sort(array, col, elem_num, elem_size, compar);
+    //     break;
     case 5:
         matrix_quick_sort(array, col, elem_num, elem_size, compar);
         break;
@@ -263,7 +264,6 @@ void matrix_insert_sort(void *array, int col, size_t elem_num, size_t elem_size,
     }
     free(key);
 }
-void matrix_count_sort(void *array, int col, size_t elem_num, size_t elem_size, int (*compar)(const void *, const void *, int)) {}
 void matrix_quick_sort(void *array, int col, size_t elem_num, size_t elem_size, int (*compar)(const void *, const void *, int)) {}
 void matrix_merge_sort(void *array, int col, size_t elem_num, size_t elem_size, int (*compar)(const void *, const void *, int)) {}
 void matrix_sift_sort(void *array, int col, size_t elem_num, size_t elem_size, int (*compar)(const void *, const void *, int)) {}

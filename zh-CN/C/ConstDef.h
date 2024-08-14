@@ -4,41 +4,82 @@
 #include <stdbool.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <errno.h>
 
-// #define FALSE false
-// #define TRUE true
-#define DBL_EPSILON 1e-15
-#define FLT_EPSILON 1e-6
-#define VNAME(value) (#value)
+#define DBL_EPSILON 1e-15     // 2.220446049250313e-16
+#define FLT_EPSILON 1e-6      // 1.1920928955078125e-7
+#define VNAME(value) (#value) // Get variable name
+#define MSG_BUFFER 1024       // Message buffer size
+#define ZERO 0
 
-/* ERROR DEFINE */
-#define VAR_LIST_LENGTH_001 "@ERROR: Too many or too few parameters are entered !\nThis function only supports %d variable !\n@File: %s\n@Function: %s\n@Line: %d\n"
-#define VAR_LIST_LENGTH_002 "@ERROR: Too many or too few parameters are entered !\nThis function can only support a maximum of %d to %d parameters !\n@File: %s\n@Function: %s\n@Line: %d\n"
+/**
+ * For double comparison with zero or epsilon
+ */
+#define DOUBLE_COMPARE_EQ2ZERO(a) (a == 0.0 || (fabs(a) <= DBL_EPSILON))
+#define DOUBLE_COMPARE_EQ(a, b) (DOUBLE_COMPARE_EQ2ZERO(a - b))
+
+/**
+ * Error define
+ *
+ * Error message standaed format:
+ * @ERROR: Error message\n@File: File name\n@Function: Function name\n@Line: Line number\n
+ *
+ * When error occurs, the program prints the error message and will exit.
+ */
+
 #define PERROR(fmt, ...)            \
     {                               \
         printf(fmt, ##__VA_ARGS__); \
-        exit(1);                    \
+        abort();                    \
     }
+
+// Input parameter number error
+#define PARAMETERS_NUM_ERROR_001 "@ERROR: Too many or too few parameters are entered !\nThis function only supports %d variable !\n@File: %s\n@Function: %s\n@Line: %d\n"
+#define PARAMETERS_NUM_ERROR_002 "@ERROR: Too many or too few parameters are entered !\nThis function can only support a maximum of %d to %d parameters !\n@File: %s\n@Function: %s\n@Line: %d\n"
+
+// Input parameter type error
 #define INVALID_INPUT_001 "@ERROR: The input parameter called \"%s\" must be an integer between %d and %d !\n@File: %s\n@Function: %s\n@Line: %d\n"
 #define INVALID_INPUT_002 "@ERROR: The input parameter called \"%s\" must be an integer and equal or greater than %d !\n@File: %s\n@Function: %s\n@Line: %d\n"
 #define INVALID_INPUT_003 "@ERROR: The length of the input parameter named \"%s\" must be equal to %d !\n@File: %s\n@Function: %s\n@Line: %d\n"
 
-/* WARNING DEFINE */
-#define VALUE_TYPE_WARNING_001 "@WARNING: value == %d\nMaybe a variable of the wrong type was entered\n@File: %s\n@Function: %s\n@Line: %d\n"
-#define MALLOC_FAILURE_001 "@WARNING: Failed to allocate memory for variable called '%s', will return NULL\n@File: %s\n@Function: %s\n@Line: %d\n"
-#define MALLOC_FAILURE_002 "@WARNING: Failed to allocate memory for variable called '%s', will abort the operation and return\n@File: %s\n@Function: %s\n@Line: %d\n"
-#define INPUT_NULL_001 "@WARNING: The input parameter called '%s' is NULL, will abort the operation and return NULL\n@File: %s\n@Function: %s\n@Line: %d\n"
-#define INPUT_NULL_002 "@WARNING: The input parameter called '%s' is NULL, will abort the operation and return \n@File: %s\n@Function: %s\n@Line: %d\n"
+/**
+ * Warning define
+ *
+ * Warning message standaed format:
+ * @WARNING: Warning message\n@File: File name\n@Function: Function name\n@Line: Line number\n
+ *
+ * When warning occurs, the program prints the warning message and will return or do nothing.
+ */
+
+// Print warning
 #define PWARNING(fmt, ...) printf(fmt, ##__VA_ARGS__)
+
+// Input parameter type warning
+#define VALUE_TYPE_WARNING_001 "@WARNING: value == %d\nMaybe a variable of the wrong type was entered\n@File: %s\n@Function: %s\n@Line: %d\n"
+
+// Memory allocate error
+#define MALLOC_FAILURE_001 "@WARNING: Failed to allocate memory for variable called \"%s\", will abort the operation and return NULL\n@File: %s\n@Function: %s\n@Line: %d\n"
+#define MALLOC_FAILURE_002 "@WARNING: Failed to allocate memory for variable called \"%s\", will abort the operation and return\n@File: %s\n@Function: %s\n@Line: %d\n"
+#define MALLOC_FAILURE_003 "@WARNING: Failed to allocate memory for variable called \"%s\", will abort the operation and return zero\n@File: %s\n@Function: %s\n@Line: %d\n"
+
+// Input parameter null
+#define INPUT_NULL_001 "@WARNING: The input parameter called \"%s\" is NULL, will abort the operation and return NULL\n@File: %s\n@Function: %s\n@Line: %d\n"
+#define INPUT_NULL_002 "@WARNING: The input parameter called \"%s\" is NULL, will abort the operation and return \n@File: %s\n@Function: %s\n@Line: %d\n"
+#define INPUT_NULL_003 "@WARNING: The input parameter called \"%s\" is zero, will abort the operation and return \n@File: %s\n@Function: %s\n@Line: %d\n"
+#define INPUT_NULL_004 "@WARNING: The input parameter called \"%s\" or the input parameter called \"%s\" is zero, will abort the operation and return NULL\n@File: %s\n@Function: %s\n@Line: %d\n"
+
+// Parameter value error
+#define PARAMETER_VALUE_ERROR_001 "@WARNING: The parameter called \"%s\" is NULL , will abort the operation and return\n@File: %s\n@Function: %s\n@Line: %d\n"
+
 #define PWARNING_RETURN(fmt, ...)     \
     {                                 \
         PWARNING(fmt, ##__VA_ARGS__); \
         return NULL;                  \
     }
+
 #define PWARNING_RETURN_MALLOC(a)                                                   \
     if (a == NULL)                                                                  \
     {                                                                               \
-        /*free(a);*/                                                                \
         printf(MALLOC_FAILURE_002, VNAME(a), __FILE__, __FUNCTION__, __LINE__ - 1); \
         return NULL;                                                                \
     }
@@ -46,16 +87,29 @@
 #define PWARNING_RETURN_MALLOC_NO_NULL(a)                                           \
     if (a == NULL)                                                                  \
     {                                                                               \
-        /*free(a);*/                                                                \
         printf(MALLOC_FAILURE_002, VNAME(a), __FILE__, __FUNCTION__, __LINE__ - 1); \
-        exit; /*return; */                                                          \
+        return;                                                                     \
+    }
+
+#define PWARNING_RETURN_MALLOC_ZERO(a)                                              \
+    if (a == NULL)                                                                  \
+    {                                                                               \
+        printf(MALLOC_FAILURE_002, VNAME(a), __FILE__, __FUNCTION__, __LINE__ - 1); \
+        return ZERO;                                                                \
     }
 
 #define PWARNING_RETURN_INPUT_NO_NULL(a)                                        \
     if (a == NULL)                                                              \
     {                                                                           \
         printf(INPUT_NULL_002, VNAME(a), __FILE__, __FUNCTION__, __LINE__ - 1); \
-        exit; /*return; */                                                      \
+        return;                                                                 \
+    }
+
+#define PWARNING_RETURN_INPUT_ZERO(a)                                           \
+    if (a == NULL)                                                              \
+    {                                                                           \
+        printf(INPUT_NULL_002, VNAME(a), __FILE__, __FUNCTION__, __LINE__ - 1); \
+        return ZERO;                                                            \
     }
 
 #define PWARNING_RETURN_INPUT(a)                                                \
@@ -64,12 +118,12 @@
         printf(INPUT_NULL_002, VNAME(a), __FILE__, __FUNCTION__, __LINE__ - 1); \
         return NULL;                                                            \
     }
-/* DOUBLE COMPARE DEFINE */
-#define DOUBLE_COMPARE_EQ2ZERO(a) (a == 0.0 || (fabs(a) <= DBL_EPSILON))
-#define DOUBLE_COMPARE_EQ(a, b) (DOUBLE_COMPARE_EQ2ZERO(a - b))
 
-/* ARGC DEFINE */
-// doc https://blog.csdn.net/lamdonn/article/details/129192959
+/**
+ * For checking the number of input parameters
+ *
+ * ref: https://blog.csdn.net/lamdonn/article/details/129192959
+ */
 #ifndef ARG_MAX
 
 #define __ARGS(X) (X)
@@ -104,6 +158,6 @@
 #define ARGC(...) __ARGC(__VA_ARGS__)
 #define ARGS(x, ...) __VA##x(__VA_ARGS__)
 
-#endif
+#endif // ARG_MAX
 
-#endif
+#endif // CONSTDEF_H

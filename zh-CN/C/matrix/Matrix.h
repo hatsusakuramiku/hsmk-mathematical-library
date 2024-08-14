@@ -10,7 +10,7 @@
 #define MATRIX_TYPE MATRIX_DEFAULT_TYPE
 
 /* ERROR DEFINE */
-#define MATRIX_SIZE_ERROR_001 "@ERROR: The matrix size does not match\n@Function: %s\n"
+#define MATRIX_SIZE_ERROR_001 "@ERROR: The matrix size does not match\n@Function: %s\n@Line: %d\n@File: %s\n"
 
 /* MATRIX DEFINE */
 typedef struct _Matrix
@@ -48,7 +48,6 @@ typedef struct _Cat_Matrix
     unsigned int o_end_cols;
 } Cat_Matrix;
 
-
 #define IDX(col, rows, cols) ((col) * (rows) + (cols))
 #define LENGTH(vector) ((vector) == NULL ? 0 : _msize(vector) / sizeof(vector))
 #define MAX(a, b) ((a) > (b) ? (a) : (b))
@@ -67,10 +66,9 @@ Matrix *_matrix_mul_range_(Matrix *a, unsigned int start_rows, unsigned int end_
 #define eye_matrix_value(...) _eye_matrix_(ARGC(__VA_ARGS__), __VA_ARGS__)
 #define vector_splicing(...) _vector_splicing_(ARGC(__VA_ARGS__), __VA_ARGS__)
 
-    /* Tool function */
-    // 为提高效率 Tool function 中的所有函数均不会对输入进行校验！
-    void
-    matrix_gauss_elimination(Matrix *mat);
+/* Tool function */
+// 为提高效率 Tool function 中的所有函数均不会对输入进行校验！
+void matrix_gauss_elimination(Matrix *mat);
 // void matrix_gauss_elimination_col(Matrix *mat);
 void matrix_gauss_elimination_(Matrix *mat, unsigned int select_index, unsigned int aim_index, double value);
 // void matrix_gauss_elimination_col_(Matrix *mat, unsigned int select_index, unsigned int aim_index, double value);
@@ -80,9 +78,9 @@ int matrix_sort_default_a2z(const void *a, const void *b, int col_index);
 int matrix_sort_default_z2a(const void *a, const void *b, int col_index);
 
 /* Function */
-Matrix *matrix_gen(unsigned int rows, unsigned int cols, MATRIX_TYPE *data);                                                                    // generate matrix
-Matrix *matrix_gen_(unsigned int rows, unsigned int cols, MATRIX_TYPE *data, unsigned int data_rows, unsigned int data_cols);                   // generate matrix
-Matrix *matrix_copy(Matrix *_sourse_mat);                                                                                                       // copy matrix
+Matrix *matrix_gen(unsigned int rows, unsigned int cols, MATRIX_TYPE *data);                                                  // generate matrix
+Matrix *matrix_gen_(unsigned int rows, unsigned int cols, MATRIX_TYPE *data, unsigned int data_rows, unsigned int data_cols); // generate matrix
+Matrix *matrix_copy(Matrix *_sourse_mat);                                                                                     // copy matrix
 void matrix_copy_(Matrix *dest, Matrix *src);
 void matrix_copy_free(Matrix *dest, Matrix *src);                                                                                               // copy matrix
 void matrix_free(Matrix *mat);                                                                                                                  // free matrix
@@ -121,9 +119,9 @@ int matrix_rank_DYMethod(Matrix *mat);
 Matrix *matrix_inverse(Matrix *mat);
 MATRIX_TYPE matrix_det(Matrix *mat);
 /* Cat_Matrix function */
-Cat_Matrix *cat_matrix_gen(Matrix * source_matrix, unsigned int start_row, unsigned int end_row, unsigned int start_col, unsigned int end_col);
+Cat_Matrix *cat_matrix_gen(Matrix *source_matrix, unsigned int start_row, unsigned int end_row, unsigned int start_col, unsigned int end_col);
 void cat_matrix_free(Cat_Matrix *cat_mat);
-Matrix * cat_matrix_to_matrix(Cat_Matrix *cat_mat, unsigned int method);
+Matrix *cat_matrix_to_matrix(Cat_Matrix *cat_mat, unsigned int method);
 Matrix *cat_matrix_to_matrix_vaule(Cat_Matrix *cat_mat, unsigned int method, MATRIX_TYPE value);
 /* OpenMP function */
 #define OMP_MAX_THREADS_NUM omp_get_max_threads() / 2
