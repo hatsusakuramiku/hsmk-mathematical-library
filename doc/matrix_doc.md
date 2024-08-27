@@ -1,3 +1,7 @@
+# **注意**
+
+因代码还在不断完善中，此文档有一定滞后性，仅作为参考。
+
 # 说明
 
 矩阵相关内容，以实现函数/方法及其说明如下：
@@ -23,42 +27,6 @@ typedef struct _Matrix
 |'cols'|unsigned int|矩阵列数|必须大于 0|
 |'data'|MATRIX_TYPE*|矩阵数据|MATRIX_TYPE 默认类型为 double, 暂不可自定义|
 
-### 矩阵复杂类型定义
-
-```C
-typedef struct _Eifen
-{
-    unsigned int num;
-    MATRIX_TYPE *value;
-    MATRIX_TYPE max_value;
-    MATRIX_TYPE min_value;
-    MATRIX_TYPE *eifen_vector;
-} Eifen;
-
-typedef struct _Complex_Matrix
-{
-    Matrix *main_marix;
-    Matrix *upper_matrix;
-    Matrix *lower_matrix;
-    Eifen *eifen;
-    int rank;
-} Complex_Matrix;
-```
-
-**释义**:
-
-|name|type|description|required|
-|----|----|----|----|
-|'main_marix'|Matrix*|主矩阵|必须不为空|
-|'upper_matrix'|Matrix*|经初等行变换由主矩阵化为的上三角矩阵|必须不为空|
-|'lower_matrix'|Matrix*|经初等行变换由主矩阵化为的下三角矩阵|必须不为空|
-|'eifen'|Eifen*|矩阵特征值与特征向量等内容|必须不为空|
-|'rank'|int|矩阵的秩|为非负整数|
-|'Eifen.num'|unsigned int|矩阵特征值的个数|为非负整数|
-|'Eifen.value'|MATRIX_TYPE|矩阵特征值|为非负数|
-|'Eifen.max_value'|MATRIX_TYPE|矩阵特征值的最大值||
-|'Eifen.min_value'|MATRIX_TYPE|矩阵特征值的最小值||
-|'Eifen.eifen_vector'|MATRIX_TYPE|矩阵对应特征值的特征向量||
 
 ## 矩阵创建与销毁
 
@@ -178,14 +146,14 @@ Matrix rows: 4, cols: 4
 函数原型:
 
 ```C
-void matrix_free(Matrix *matrix)
+void matrix_free(Matrix **matrix)
 ```
 
 **使用示例**:
 
 ```C
 Matrix *mat = matrix_gen(3, 3, NULL);//创建一个3*3的全零矩阵
-matrix_free(mat);//释放矩阵
+matrix_free(&mat);//释放矩阵
 ```
 
 ### **matrix_print**
@@ -195,7 +163,7 @@ matrix_free(mat);//释放矩阵
 函数原型:
 
 ```C
-void matrix_print(Matrix *matrix)
+void matrix_print(const Matrix *matrix)
 ```
 
 **使用示例**:

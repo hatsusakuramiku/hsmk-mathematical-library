@@ -3,3 +3,7 @@ test.*
 *.exe
 .vscode/
 .idea/
+test.c
+cmake-build-windows/
+cmake-build-wsl/
+CMakeLists.txt

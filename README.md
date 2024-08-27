@@ -5,20 +5,23 @@
 
 > [!NOTE]
 > 下文所提到的语言标准/版本均为我使用的标准/版本，不代表运行项目所要求的最低/高版本。
+> 目前仅支持在 Windows 10 x64 or later 环境下运行，暂未适配其他环境如 Linux等。
 
 ## C （C 语言）
 
-> **语言标准**: C11
+> **语言标准**: C11 
 > **编译器**: gcc.exe (x86_64-posix-sjlj-rev0, Built by MinGW-W64 project) 8.1.0
 > **文件编码**: UTF-8
 > **字符集**: UTF-8
 
 ### 矩阵运算
 
-部分完成，文档 [matrix_doc](zh-CN/C/matrix/matrix_doc.md)
+部分完成，文档 [matrix_doc.md](/doc/matrix_doc.md),
+头文件 [matrix.h](/include/Matrix/matrix.h),
+源文件 [matrix.c](/src/Matrix/matrix.c).
 
 - [x] 普通矩阵、随机矩阵、单位矩阵、对角矩阵的创建与销毁等
-- [x] 矩阵乘积
+- [x] 矩阵乘积(A X B)
 - [x] 矩阵转置
 - [x] 矩阵拼接与分割
 - [x] 矩阵简单四则运算
@@ -26,7 +29,8 @@
 - [ ] 矩阵求逆
 - [ ] 矩阵求特征值和特征向量
 - [ ] 矩阵求行列式
-- [ ] 矩阵求秩
+- [x] 高斯消元
+- [x] 矩阵求秩
 - [ ] 线性方程组的求解
 - [ ] 矩阵LU分解
 
