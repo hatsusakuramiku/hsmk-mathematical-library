@@ -27,4 +27,14 @@
 #ifndef _HSMK_MATH_LIB_PAIR_H
 #define _HSMK_MATH_LIB_PAIR_H
 
+typedef  void* pair_element_t;
+typedef struct _Pair {
+    pair_element_t left;
+    pair_element_t right;
+} Pair;
+
+Pair* make_pair(pair_element_t left, pair_element_t right);
+void swap_pair(Pair *pair);
+void free_pair(Pair *pair);
+
 #endif //_HSMK_MATH_LIB_PAIR_H

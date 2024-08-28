@@ -20,6 +20,66 @@
  * SOFTWARE.
  */
 
-//
-// Created by 79240 on 24-8-26.
-//
+#include "constDef.h"
+#include "pair.h"
+#include <stdio.h>
+#include <stdlib.h>
+
+
+/**
+ * Creates a new Pair object with the specified left and right elements.
+ *
+ * @param left The left element of the pair.
+ * @param right The right element of the pair.
+ *
+ * @return A pointer to the newly created Pair object, or NULL if memory allocation fails.
+ *
+ * @throws MALLOC_FAILURE_002 If memory allocation fails.
+ */
+Pair* make_pair(pair_element_t left, pair_element_t right) {
+    Pair* pair = (Pair*)malloc(sizeof(Pair));
+    if (pair == NULL) {
+        PWARNING_RETURN_MALLOC(pair);
+    }
+    pair->left = left;
+    pair->right = right;
+    return pair;
+}
+/**
+ * Swaps the left and right elements of a Pair object.
+ *
+ * @param pair The Pair object whose elements are to be swapped.
+ *
+ * @return None
+ *
+ * @throws None
+ */
+void swap_pair(Pair *pair) {
+    if (pair == NULL) {
+        return;
+    }
+    pair_element_t temp = pair->left;
+    pair->left = pair->right;
+    pair->right = temp;
+}
+/**
+ * Frees the memory allocated for a Pair object and its elements.
+ *
+ * @param pair The Pair object to be freed.
+ *
+ * @return None
+ *
+ * @throws None
+ */
+void free_pair(Pair *pair) {
+    if (pair == NULL) {
+        return;
+    }
+    if (pair->left != NULL) {
+        FREE(pair->left);
+    }
+    if (pair->right != NULL) {
+        FREE(pair->right);
+    }
+    FREE(pair);
+}
