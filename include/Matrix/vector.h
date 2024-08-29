@@ -31,15 +31,17 @@
 #define VECTOR_DEAFAULT_PRINT_LENTH_LIMIT 20
 #define VECTOR_DEFAULT_PRECISION "%.6lf\t" /// matrix default precision
 
-enum VectorType {
-    VECTOR_TYPE_INT, /// int
-    VECTOR_TYPE_FLOAT, /// float
+enum VectorType
+{
+    VECTOR_TYPE_INT,    /// int
+    VECTOR_TYPE_FLOAT,  /// float
     VECTOR_TYPE_DOUBLE, /// double
-    VECTOR_TYPE_CHAR, /// char
-    VECTOR_TYPE_VOID /// void, need user defined
+    VECTOR_TYPE_CHAR,   /// char
+    VECTOR_TYPE_VOID    /// void, need user defined
 };
 
-typedef struct _Vector {
+typedef struct _Vector
+{
     void *data;
     unsigned int length;
     enum VectorType type;
@@ -63,7 +65,6 @@ Vector *vector_copy_p(const Vector *vector);
 void _vector_copy_p(const Vector *src_vec, Vector *dst_vec);
 
 void vector_copy_free_p(Vector **src_vec, Vector *dst_vec);
-
 
 // Deafault type support function
 static enum VectorType __gen_type();

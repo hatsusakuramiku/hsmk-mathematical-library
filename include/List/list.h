@@ -25,18 +25,19 @@
 
 typedef void *ListNodeData;
 
-typedef struct _ListNode {
- ListNodeData data;
- struct _ListNode *next;
- struct _ListNode *prev;
+typedef struct _ListNode
+{
+    ListNodeData data;
+    struct _ListNode *next;
+    struct _ListNode *prev;
 } ListNode;
 
-typedef struct _List {
- ListNode *head;
- ListNode *tail;
- int size;
+typedef struct _List
+{
+    ListNode *head;
+    ListNode *tail;
+    int size;
 } List;
-
 
 List *newList();
 

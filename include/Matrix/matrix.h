@@ -31,10 +31,10 @@
 #ifndef _HSMK_MATH_LIB_MATRIX_H
 #define _HSMK_MATH_LIB_MATRIX_H
 
-#define MATRIX_TYPE double                 /// Matrix default type
+#define MATRIX_TYPE double                   /// Matrix default type
 #define MATRIX_DEFAULT_PRECISION "%10.6lf\t" /// matrix default precision
-#define MATRIX_COLS_OMIT_PRINT_LIMIT 20    /// matrix cols omit print limit
-#define MATRIX_ROWS_OMIT_PRINT_LIMIT 200   /// matrix rows omit print limit
+#define MATRIX_COLS_OMIT_PRINT_LIMIT 20      /// matrix cols omit print limit
+#define MATRIX_ROWS_OMIT_PRINT_LIMIT 200     /// matrix rows omit print limit
 
 /// Matrix sort compare function type
 typedef int (*__matrix_cmp_func)(void *, const void *, const void *);
@@ -102,23 +102,6 @@ static Matrix *__matrix_mul(Matrix *a, ...);
 
 static Matrix *__matrix_add(Matrix *a, ...);
 
-/**
- * Creates a matrix filled with ones or a specified value.
- *
- * This function generates a matrix with the specified number of rows and columns,
- * and fills it with ones or a specified value. It supports variable number of arguments.
- *
- * @param ... Variable number of arguments. If num is 1, a single argument specifying the size of the square matrix.
- *             If num is 2, two arguments specifying the number of rows and columns.
- *             If num is 3, three arguments specifying the number of rows, columns, and the fill value.
- *
- * @return A pointer to the generated matrix, or NULL if an error occurs.
- *
- * @throws PARAMETERS_NUM_ERROR_002 If the number of arguments is not 1, 2, or 3.
- * @throws INPUT_NULL_004 If the number of rows or columns is zero.
- * @throws PARAMETER_VALUE_ERROR_001 If the generated matrix is NULL.
- * @throws VALUE_TYPE_WARNING_001 If the fill value is zero.
- */
 #define ones_matrix_value(...) __ones_matrix(ARGC(__VA_ARGS__), __VA_ARGS__)
 
 #define eye_matrix_value(...) __eye_matrix(ARGC(__VA_ARGS__), __VA_ARGS__)
@@ -133,7 +116,14 @@ void matrix_copy_r(Matrix **dest, const Matrix *src);
 
 void matrix_copy_free(Matrix **dest, Matrix **src); // copy matrix
 void matrix_free(Matrix **mat); // free matrix
+
 void matrix_print(const Matrix *mat); // print matrix
+static void print_matrix_without_omitting_elements(const Matrix *mat, int rows, int cols);
+
+static void print_matrix_with_omitted_elements(const Matrix *mat, int rows, int cols);
+
+static void print_ellipsis_row(const Matrix *mat, int cols);
+
 Matrix *ones_matrix(const unsigned int rows, const unsigned int cols); // generate ones matrix
 Matrix *zeros_matrix(const unsigned int rows, const unsigned int cols); // generate zeros matrix
 Matrix *eye_matrix(const unsigned int rows, const unsigned int cols); // generate eye matrix
@@ -166,8 +156,6 @@ Matrix *matrix_cat(const Matrix *a, const unsigned int begin_row, const unsigned
 void matrix_swap(const Matrix *a, const unsigned int aix, const unsigned int select_index,
                  const unsigned int aim_index);
 
-int matrix_default_cmp(void *index, const void *a, const void *b);
-
 int matrix_default_cmp_r(void *index, const void *a, const void *b);
 
 void matrix_sort_by_cols_values(const Matrix *mat, const unsigned int col_index); // matrix sort by rows values
@@ -175,7 +163,8 @@ void matrix_sort_by_zeros_num(const Matrix *mat);
 
 void matrix_gauss_elimination_(const Matrix *mat, const unsigned int select_index, const unsigned int aim_index,
                                const int
-                               begin_index, const MATRIX_TYPE value);
+                               begin_index,
+                               const MATRIX_TYPE value);
 
 void matrix_gauss_elimination(const Matrix *mat);
 
@@ -195,5 +184,9 @@ elem_pos_array *matrix_min_array(const Matrix *mat);
 
 elem_pos_array *matrix_max_array(const Matrix *mat);
 
+Matrix *matrix_dot_mul(const Matrix *a, const Matrix *b);
 
+void matrix_dot_mul_void(Matrix *a, const Matrix *b);
+
+void matrix_change(Matrix *mat, void *arg, MATRIX_TYPE (*func)(MATRIX_TYPE, void *));
 #endif // _HSMK_MATH_LIB_MATRIX_H

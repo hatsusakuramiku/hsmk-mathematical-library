@@ -25,7 +25,8 @@
 
 typedef void *pair_element_t;
 
-typedef struct _Pair {
+typedef struct _Pair
+{
     pair_element_t left;
     pair_element_t right;
 } Pair;

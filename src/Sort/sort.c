@@ -31,27 +31,40 @@
 /**
  * Compares two double values.
  *
+ * This function takes two void pointers to double values as input, compares them,
+ * and returns an integer indicating their relative order.
+ *
  * @param a The first double value.
  * @param b The second double value.
  *
  * @return -1 if a is less than b, 1 if a is greater than b, and 0 if a is equal to b.
  */
 int default_compare_example(const void *a, const void *b) {
+    // Cast the void pointers to double pointers to access the double values
     const double p1 = *(double *) a;
     const double p2 = *(double *) b;
+
+    // Compare the double values
     if (p1 < p2) {
+        // If p1 is less than p2, return -1
         return -1;
-    }
-    if (p1 > p2) {
+    } else if (p1 > p2) {
+        // If p1 is greater than p2, return 1
         return 1;
+    } else {
+        // If p1 is equal to p2, return 0
+        return 0;
     }
-    return 0;
 }
 
 /**
  * Compares two double values referenced by pointers.
  *
- * @param arg Unused argument.
+ * This function takes two void pointers to double values and an additional argument,
+ * which is used as an index to access the double values. It compares the double values
+ * at the specified index and returns an integer indicating their relative order.
+ *
+ * @param arg The index to access the double values.
  * @param a The first double value referenced by a pointer.
  * @param b The second double value referenced by a pointer.
  *
@@ -60,22 +73,29 @@ int default_compare_example(const void *a, const void *b) {
  * @throws None
  */
 int default_compare_example_r(const void *a, const void *b, const void *arg) {
+    // Cast the void pointers to double pointers to access the double values
     const double *p1 = *(double **) a;
     const double *p2 = *(double **) b;
+
+    // Extract the index from the arg parameter
     const int index = (int) arg;
+
+    // Compare the double values at the specified index
     if (p1[index] < p2[index]) {
+        // If p1 is less than p2, return -1
         return -1;
-    }
-    if (p1[index] > p2[index]) {
+    } else if (p1[index] > p2[index]) {
+        // If p1 is greater than p2, return 1
         return 1;
+    } else {
+        // If p1 is equal to p2, return 0
+        return 0;
     }
-    return 0;
 }
 
-//Quick sort block start
-// 快速排序的实现借鉴(抄的)自开源项目 https://github.com/bminor/glibc/blob/master
-///Quick sort code @ref https://github.com/bminor/glibc/blob/master/stdlib/qsort.c
-
+// Quick sort block start
+//  快速排序的实现借鉴(抄的)自开源项目 https://github.com/bminor/glibc/blob/master
+/// Quick sort code @ref https://github.com/bminor/glibc/blob/master/stdlib/qsort.c
 
 /**
  * Swap SIZE bytes between addresses A and B.  These helpers are provided
@@ -93,8 +113,8 @@ typedef unsigned long long int uint64_t;
 
 typedef uint32_t __attribute__((__may_alias__)) uint32_alias_t;
 typedef uint64_t __attribute__((__may_alias__)) uint64_alias_t;
-#define  QSORT_STACK_SIZE 1024
-#define  INDIRECT_SORT_SIZE_THRES 32
+#define QSORT_STACK_SIZE 1024
+#define INDIRECT_SORT_SIZE_THRES 32
 
 /**
  * Swaps 64-bit words between two memory addresses.
@@ -157,7 +177,6 @@ static void do_swap(void *__restrict a, void *__restrict b, size_t n, enum swap_
         _memswap(a, b, n);
     }
 }
-
 
 /**
  * Siftdown operation to maintain heap property in a binary heap.
@@ -295,7 +314,6 @@ struct msort_param {
     // temp is a temporary array used to store the sorted elements
     char *temp;
 };
-
 
 /**
  * Recursively performs a merge sort on the given array using a temporary buffer.
@@ -512,8 +530,7 @@ void quickSort(void *array, size_t elemNum, size_t elemSize, default_compare com
     return quickSort_r(array, NULL, elemNum, elemSize, (default_compare_r) compare);
 }
 
-///Quick sort block end
-
+/// Quick sort block end
 
 /**
  * Sorts an array of elements using the bubble sort algorithm.
@@ -526,17 +543,26 @@ void quickSort(void *array, size_t elemNum, size_t elemSize, default_compare com
  * @return None
  */
 void bubbleSort(void *array, size_t elemNum, size_t elemSize, default_compare compare) {
+    // If the array has less than 2 elements or is NULL, return early
     if (elemNum <= 1 || array == NULL) {
         return;
     }
+
+    // Loop through the array
     for (size_t i = 0; i < elemNum; i++) {
         int flag = 0;
+
+        // Loop through the unsorted part of the array
         for (size_t j = 0; j < elemNum - 1 - i; j++) {
+            // Compare the current element with the next element
             if (compare((char *) array + j * elemSize, (char *) array + (j + 1) * elemSize) > 0) {
+                // If the current element is greater than the next element, swap them
                 _memswap((char *) array + j * elemSize, (char *) array + (j + 1) * elemSize, elemSize);
                 flag = 1;
             }
         }
+
+        // If no swaps were made in the last iteration, the array is already sorted
         if (!flag) {
             return;
         }
@@ -545,6 +571,8 @@ void bubbleSort(void *array, size_t elemNum, size_t elemSize, default_compare co
 
 /**
  * Recursively sorts an array of elements using the bubble sort algorithm.
+ *
+ * This function works by repeatedly swapping the adjacent elements if they are in wrong order.
  *
  * @param array The array to be sorted.
  * @param arg An additional argument to be passed to the comparison function.
@@ -555,17 +583,27 @@ void bubbleSort(void *array, size_t elemNum, size_t elemSize, default_compare co
  * @return None
  */
 void bubbleSort_r(void *array, void *arg, size_t elemNum, size_t elemSize, default_compare_r compare) {
+    // Base case: If the array has one or zero elements, it is already sorted.
     if (elemNum <= 1 || array == NULL) {
         return;
     }
+
+    // Loop through the array, last element is already in place after each iteration.
     for (size_t i = 0; i < elemNum; i++) {
+        // Initialize a flag to track if any swaps were made in the current iteration.
         int flag = 0;
+
+        // Loop through the unsorted part of the array.
         for (size_t j = 0; j < elemNum - 1 - i; j++) {
+            // Compare the current element with the next element.
             if (compare((char *) array + j * elemSize, (char *) array + (j + 1) * elemSize, arg) > 0) {
+                // If the current element is greater than the next element, swap them.
                 _memswap((char *) array + j * elemSize, (char *) array + (j + 1) * elemSize, elemSize);
-                flag = 1;
+                flag = 1; // Set the flag to indicate a swap was made.
             }
         }
+
+        // If no swaps were made in the last iteration, the array is already sorted.
         if (!flag) {
             return;
         }
@@ -591,6 +629,9 @@ void insertionSort(void *array, size_t elemNum, size_t elemSize, default_compare
 /**
  * Recursively sorts an array of elements using the insertion sort algorithm.
  *
+ * This function takes an array, its size, the size of each element, and a comparison function as input.
+ * It sorts the array in-place using the insertion sort algorithm.
+ *
  * @param array The array to be sorted.
  * @param arg An additional argument to be passed to the comparison function.
  * @param elemNum The number of elements in the array.
@@ -602,20 +643,37 @@ void insertionSort(void *array, size_t elemNum, size_t elemSize, default_compare
  * @throws MALLOC_FAILURE_002 If memory allocation fails.
  */
 void insertionSort_r(void *array, void *arg, size_t elemNum, size_t elemSize, default_compare_r compare) {
+    // Check for invalid input
     if (elemNum <= 1 || array == NULL || compare == NULL) {
+        // If the array has one or zero elements, it is already sorted
+        // If the array is NULL or the comparison function is NULL, return immediately
         return;
     }
+
+    // Allocate memory for a temporary key
     char *key = (char *) malloc(sizeof(char) * elemSize);
-    PWARNING_RETURN_MALLOC_NO_NULL(key);
+    PWARNING_RETURN_MALLOC_NO_NULL(key); // Check for memory allocation failure
+
+    // Iterate over the array starting from the second element
     for (size_t i = 1; i < elemNum; ++i) {
+        // Swap the current element with the temporary key
         _memswap(key, (char *) array + i * elemSize, elemSize);
+
+        // Initialize the index for the inner loop
         size_t j = i - 1;
+
+        // Shift elements to the right until the correct position for the key is found
         while (compare((char *) array + j * elemSize, key, arg) > 0) {
+            // Swap the current element with the next element
             _memswap((char *) array + j * elemSize, (char *) array + (j + 1) * elemSize, elemSize);
-            j--;
+            j--; // Decrement the index
         }
+
+        // Swap the key with the element at the correct position
         _memswap((char *) array + (j + 1) * elemSize, key, elemSize);
     }
+
+    // Free the memory allocated for the temporary key
     FREE(key);
 }
 
@@ -638,6 +696,9 @@ void selectionSort(void *array, size_t elemNum, size_t elemSize, default_compare
 /**
  * Recursively sorts an array of elements using the selection sort algorithm.
  *
+ * This function works by repeatedly finding the minimum element from the unsorted part of the array
+ * and swapping it with the first unsorted element.
+ *
  * @param array The array to be sorted.
  * @param arg An additional argument to be passed to the comparison function.
  * @param elemNum The number of elements in the array.
@@ -649,16 +710,26 @@ void selectionSort(void *array, size_t elemNum, size_t elemSize, default_compare
  * @throws None
  */
 void selectionSort_r(void *array, void *arg, size_t elemNum, size_t elemSize, default_compare_r compare) {
+    // Base case: If the array has one or zero elements, it is already sorted.
     if (elemNum <= 1 || array == NULL || compare == NULL) {
         return;
     }
+
+    // Iterate over the array, considering each element as the start of the unsorted part.
     for (size_t i = 0; i < elemNum - 1; i++) {
+        // Initialize the index of the minimum element to the current index.
         size_t min = i;
+
+        // Find the minimum element in the unsorted part of the array.
         for (size_t j = i + 1; j < elemNum; j++) {
+            // Compare the current element with the minimum element found so far.
             if (compare((char *) array + j * elemSize, (char *) array + min * elemSize, arg) < 0) {
+                // Update the index of the minimum element if a smaller element is found.
                 min = j;
             }
         }
+
+        // Swap the minimum element with the first unsorted element.
         _memswap((char *) array + i * elemSize, (char *) array + min * elemSize, elemSize);
     }
 }

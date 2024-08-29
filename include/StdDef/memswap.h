@@ -36,23 +36,27 @@
  * @param p2 The second memory block to swap.
  * @param n  The size of the memory blocks to swap.
  */
-static inline void _memswap(void *__restrict p1, void *__restrict p2, size_t n) {
- /* Use multiple small memcpys with constant size to enable inlining on most
-    targets.  */
- enum {
-  SWAP_GENERIC_SIZE = 32
- };
- while (n > SWAP_GENERIC_SIZE) {
-  unsigned char tmp[SWAP_GENERIC_SIZE];
-  memcpy(tmp, p1, SWAP_GENERIC_SIZE);
-  p1 = mempcpy(p1, p2, SWAP_GENERIC_SIZE);
-  p2 = mempcpy(p2, tmp, SWAP_GENERIC_SIZE);
-  n -= SWAP_GENERIC_SIZE;
- }
- while (n > 0) {
-  const unsigned char t = ((unsigned char *) p1)[--n];
-  ((unsigned char *) p1)[n] = ((unsigned char *) p2)[n];
-  ((unsigned char *) p2)[n] = t;
- }
+static inline void _memswap(void *__restrict p1, void *__restrict p2, size_t n)
+{
+   /* Use multiple small memcpys with constant size to enable inlining on most
+      targets.  */
+   enum
+   {
+      SWAP_GENERIC_SIZE = 32
+   };
+   while (n > SWAP_GENERIC_SIZE)
+   {
+      unsigned char tmp[SWAP_GENERIC_SIZE];
+      memcpy(tmp, p1, SWAP_GENERIC_SIZE);
+      p1 = mempcpy(p1, p2, SWAP_GENERIC_SIZE);
+      p2 = mempcpy(p2, tmp, SWAP_GENERIC_SIZE);
+      n -= SWAP_GENERIC_SIZE;
+   }
+   while (n > 0)
+   {
+      const unsigned char t = ((unsigned char *)p1)[--n];
+      ((unsigned char *)p1)[n] = ((unsigned char *)p2)[n];
+      ((unsigned char *)p2)[n] = t;
+   }
 }
 #endif //_HSMK_MATH_LIB_MEMSWAP_H

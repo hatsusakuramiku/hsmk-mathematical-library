@@ -28,7 +28,7 @@
 #define DOUBLE_EPSILON 1e-32
 #define DOUBLE_COMP_EQ2ZERO(x) (x == 0.0 || fabs(x) <= DOUBLE_EPSILON)
 #define DOUBLE_COMP_EQ(x, y) (DOUBLE_COMP_EQZERO(x - y))
-#define UNSIGEND_INT_MAX 2e32-1
+#define UNSIGEND_INT_MAX 2e32 - 1
 
 // get parameter name
 #define VAR_NAME(var) (#var)
@@ -38,11 +38,18 @@
 #define MIN(x, y) ((x) < (y) ? (x) : (y))
 
 // free pointer
-#define FREE(x){if (x != NULL) {free(x); x = NULL;}}
+#define FREE(x)        \
+    {                  \
+        if (x != NULL) \
+        {              \
+            free(x);   \
+            x = NULL;  \
+        }              \
+    }
 // get random number
 #define RAND(min, max, TYPE) \
     ((TYPE)((min) + ((max - min) * ((TYPE)rand()) / ((TYPE)RAND_MAX + 1.0))))
-#ifdef  _CRT_USE_WINAPI_FAMILY_DESKTOP_APP
+#ifdef _CRT_USE_WINAPI_FAMILY_DESKTOP_APP
 #define LENGTH(vector) ((vector) == NULL ? 0 : _msize((void *)vector) / sizeof(vector[0]))
 #else
 #define LENGTH(vector) ((vector) == NULL ? 0 : malloc_usable_size((void *)vector) / sizeof(vector[0]))
@@ -152,7 +159,6 @@
 #define INPUT_NULL_007 "@WARNING: The input parameter called \"%s\" or the input parameter called \"%s\" is NULL, will abort the operation and return\n@File: %s\n@Function: %s\n@Line: %d\n"
 #define INPUT_NULL_008 "@WARNING: The input parameter called \"%s\" or the input parameter called \"%s\" is zero, will abort the operation and return zero\n@File: %s\n@Function: %s\n@Line: %d\n"
 #define INPUT_NULL_009 "@WARNING: The input parameter called \"%s\" or the input parameter called \"%s\" is NULL, will abort the operation and return zero\n@File: %s\n@Function: %s\n@Line: %d\n"
-
 
 // Parameter value error
 #define PARAMETER_VALUE_ERROR_001 "@WARNING: The parameter called \"%s\" is NULL , will abort the operation and return\n@File: %s\n@Function: %s\n@Line: %d\n"

@@ -23,7 +23,6 @@
 #ifndef _HSMK_MATH_LIB_SORT_H
 #define _HSMK_MATH_LIB_SORT_H
 
-
 /**
  * @brief Function pointer type for a comparison function with an additional argument.
  *
@@ -38,7 +37,6 @@
  *   - Positive if the first element is greater than the second element
  */
 typedef int (*default_compare_r)(const void *, const void *, const void *);
-
 
 /**
  * @brief Function pointer type for a comparison function.

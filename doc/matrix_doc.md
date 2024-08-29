@@ -6,16 +6,20 @@
 
 矩阵相关内容，以实现函数/方法及其说明如下：
 
-## 矩阵说明
-
-### 矩阵基础类型定义
+```C
+typedef struct _matrix_size {
+    unsigned int rows; /// 矩阵行数
+    unsigned int cols; /// 矩阵列数
+} matrix_size;
+```
 
 ```C
 typedef struct _Matrix
 {
-    unsigned int rows;
-    unsigned int cols;
-    MATRIX_TYPE *data;
+    unsigned int rows; /// 矩阵行数
+    unsigned int cols; /// 矩阵列数
+    matrix_size size;  /// 矩阵的大小数据
+    MATRIX_TYPE *data; /// 矩阵的数据
 } Matrix;
 ```
 
@@ -26,7 +30,6 @@ typedef struct _Matrix
 |'rows'|unsigned int|矩阵行数|必须大于 0|
 |'cols'|unsigned int|矩阵列数|必须大于 0|
 |'data'|MATRIX_TYPE*|矩阵数据|MATRIX_TYPE 默认类型为 double, 暂不可自定义|
-
 
 ## 矩阵创建与销毁
 

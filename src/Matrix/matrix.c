@@ -65,84 +65,92 @@ elem_pos new_elem_pos(const unsigned int row, const unsigned int col, MATRIX_TYP
  * @param a The first matrix size to compare.
  * @param b The second matrix size to compare.
  *
- * @return 0 if the matrix sizes are equal, 1 otherwise.
+ * @return 1 if the matrix sizes are equal, 0 otherwise.
  */
 inline int matrix_size_cmp(const matrix_size a, const matrix_size b) {
     if (a.cols != b.cols || a.rows != b.rows)
-        return 1;
-    return 0;
+        return 0;
+    return 1;
 }
 
+
 /**
- * Compares two arrays of the specified type.
+ * @brief Compare two arrays of integers or doubles.
  *
  * @param a Pointer to the first array.
  * @param b Pointer to the second array.
- * @param type The type of the arrays to compare.
+ * @param type The type of the arrays.
  *
- * @return 0 if the arrays are equal, 1 otherwise.
- *
- * @throws None.
+ * @return 0 if the arrays are equal, 1 if they are not equal, and 1 if the type is neither _INT_ nor _DOUBLE_.
  */
 static int array_cmp(const void *a, const void *b, enum ARRAY_CMP_TYPE type) {
+    // Check if the type is _INT_
     if (type == _INT_) {
+        // Cast the pointers to int pointers
         const int *pa = (int *) a;
         const int *pb = (int *) b;
+        // Check if the lengths of the arrays are equal
         if (LENGTH(a) != LENGTH(b)) {
             return 1;
-        } else {
-            return memcmp(pa, pb, LENGTH(a) * sizeof(int));
         }
-    } else if (type == _DOUBLE_) {
+        // Compare the arrays using memcmp
+        return memcmp(pa, pb, LENGTH(a) * sizeof(int));
+    }
+    // Check if the type is _DOUBLE_
+    if (type == _DOUBLE_) {
+        // Cast the pointers to double pointers
         const double *pa = (double *) a;
         const double *pb = (double *) b;
+        // Print the lengths of the arrays
         printf("a_len = %llu, b_len = %llu\n", LENGTH(a), LENGTH(b));
+        // Check if the lengths of the arrays are equal
         if (LENGTH(a) != LENGTH(b)) {
             return 1;
-        } else {
-            return memcmp(pa, pb, LENGTH(a) * sizeof(double));
         }
-    } else {
-        return 1;
+        // Compare the arrays using memcmp
+        return memcmp(pa, pb, LENGTH(a) * sizeof(double));
     }
+    // Return 1 if the type is neither _INT_ nor _DOUBLE_
+    return 1;
 }
 
+
 /**
- * Creates a matrix filled with ones or a specified value.
+ * Creates a matrix filled with ones.
  *
  * This function generates a matrix with the specified number of rows and columns,
- * and fills it with ones or a specified value. It supports variable number of arguments.
+ * and fills it with the value 1.0. The number of arguments determines the number
+ * of parameters to be set.
  *
  * @param num The number of arguments passed to the function.
- * @param ... Variable number of arguments. If num is 1, a single argument specifying the size of the square matrix.
- *             If num is 2, two arguments specifying the number of rows and columns.
- *             If num is 3, three arguments specifying the number of rows, columns, and the fill value.
- *
- * @return A pointer to the generated matrix, or NULL if an error occurs.
- *
- * @throws PARAMETERS_NUM_ERROR_002 If the number of arguments is not 1, 2, or 3.
- * @throws INPUT_NULL_004 If the number of rows or columns is zero.
- * @throws PARAMETER_VALUE_ERROR_001 If the generated matrix is NULL.
- * @throws VALUE_TYPE_WARNING_001 If the fill value is zero.
+ * @param ... Variable number of arguments. Can be 1, 2, or 3.
+ *             - 1 argument: The number of rows, which is also used as the number of columns.
+ *             - 2 arguments: The number of rows and columns.
+ *             - 3 arguments: The number of rows, columns, and the value to fill the matrix with.
+ * @return A pointer to the newly created matrix, or NULL on error.
  */
 Matrix *__ones_matrix(const int num, ...) {
-    unsigned int rows;
-    unsigned int cols;
-    MATRIX_TYPE value = 1.0;
+    unsigned int rows; ///< The number of rows in the matrix.
+    unsigned int cols; ///< The number of columns in the matrix.
+    MATRIX_TYPE value = 1.0; ///< The value to fill the matrix with.
 
+    // Parse the variable number of arguments
     if (num == 1) {
+        // One argument: rows = cols
         va_list ap;
         va_start(ap, num);
         rows = va_arg(ap, unsigned int);
         cols = rows;
         va_end(ap);
     } else if (num == 2) {
+        // Two arguments: rows and cols
         va_list ap;
         va_start(ap, num);
         rows = va_arg(ap, unsigned int);
         cols = va_arg(ap, unsigned int);
         va_end(ap);
     } else if (num == 3) {
+        // Three arguments: rows, cols, and value
         va_list ap;
         va_start(ap, num);
         rows = va_arg(ap, unsigned int);
@@ -150,27 +158,34 @@ Matrix *__ones_matrix(const int num, ...) {
         value = va_arg(ap, MATRIX_TYPE);
         va_end(ap);
     } else {
+        // Invalid number of arguments
         PERROR(PARAMETERS_NUM_ERROR_002, 1, 3, __FILE__, __FUNCTION__, __LINE__);
     }
 
+    // Check for invalid input
     if (rows == 0 || cols == 0) {
         PWARNING_RETURN(INPUT_NULL_004, VAR_NAME(rows), VAR_NAME(cols), __FILE__, __FUNCTION__, __LINE__);
     }
 
+    // Generate the matrix
     Matrix *mat = matrix_gen(rows, cols, NULL);
 
+    // Check for memory allocation error
     if (mat == NULL) {
         PWARNING(PARAMETER_VALUE_ERROR_001, VAR_NAME(mat), __FILE__, __FUNCTION__, __LINE__);
         return NULL;
     }
 
+    // Check for invalid value
     if (DOUBLE_COMP_EQ2ZERO(value)) {
         PWARNING(VALUE_TYPE_WARNING_001, 0, __FILE__, __FUNCTION__, __LINE__);
     }
 
+    // Fill the matrix with the specified value
     for (int i = 0; i < rows * cols; i++) {
         mat->data[i] = value;
     }
+
     return mat;
 }
 
@@ -188,31 +203,50 @@ Matrix *__ones_matrix(const int num, ...) {
  * @throws MALLOC_FAILURE_001 if memory allocation fails.
  */
 inline Matrix *matrix_gen(const unsigned int rows, const unsigned int cols, const MATRIX_TYPE *data) {
+    // Check for invalid input (zero rows or columns)
     if (rows == 0 || cols == 0) {
+        // Log error and return NULL
         PWARNING_RETURN(INPUT_NULL_004, VAR_NAME(rows), VAR_NAME(cols), __FILE__, __FUNCTION__, __LINE__);
     }
 
+    // Allocate memory for the matrix structure
     Matrix *mat = (Matrix *) malloc(sizeof(Matrix));
 
+    // Check for memory allocation failure
     if (mat == NULL) {
+        // Free any partially allocated memory and log error
         matrix_free(&mat);
         PWARNING_RETURN(MALLOC_FAILURE_001, VAR_NAME(mat), __FILE__, __FUNCTION__, __LINE__);
     }
 
+    // Initialize matrix properties
     mat->rows = rows;
     mat->cols = cols;
     mat->size = new_matrix_size(rows, cols);
+
+    // Allocate memory for the matrix data
     mat->data = (MATRIX_TYPE *) malloc(rows * cols * sizeof(MATRIX_TYPE));
 
+    // Check for memory allocation failure
     if (mat->data == NULL) {
+        // Free any partially allocated memory and log error
         matrix_free(&mat);
         PWARNING_RETURN(MALLOC_FAILURE_001, VAR_NAME(mat->data), __FILE__, __FUNCTION__, __LINE__);
     }
+
+    // Copy provided data into the matrix (if any)
     const int len = LENGTH(data);
-    memcpy(mat->data, data, len * sizeof(MATRIX_TYPE));
+    if (len > 0) {
+        // Copy data into the matrix
+        memcpy(mat->data, data, len * sizeof(MATRIX_TYPE));
+    }
+
+    // Initialize any remaining matrix elements to zero
     for (int i = len; i < rows * cols; i++) {
         mat->data[i] = 0;
     }
+
+    // Return the generated matrix
     return mat;
 }
 
@@ -233,51 +267,69 @@ inline Matrix *matrix_gen(const unsigned int rows, const unsigned int cols, cons
  * @throws VALUE_TYPE_WARNING_001 If the fill value is zero.
  */
 inline Matrix *__eye_matrix(const int num, ...) {
+    // Initialize variables to store the number of rows and columns
     unsigned int rows;
     unsigned int cols;
+
+    // Initialize the fill value to 1.0 by default
     MATRIX_TYPE value = 1.0;
+
+    // Handle variable number of arguments
     if (num == 1) {
+        // If only one argument is provided, create a square identity matrix
         va_list ap;
         va_start(ap, num);
         rows = va_arg(ap, unsigned int);
-        cols = rows;
+        cols = rows; // Set columns to equal rows for a square matrix
         va_end(ap);
     } else if (num == 2) {
+        // If two arguments are provided, create a rectangular identity matrix
         va_list ap;
         va_start(ap, num);
         rows = va_arg(ap, unsigned int);
         cols = va_arg(ap, unsigned int);
         va_end(ap);
     } else if (num == 3) {
+        // If three arguments are provided, create a rectangular identity matrix with a custom fill value
         va_list ap;
         va_start(ap, num);
         rows = va_arg(ap, unsigned int);
         cols = va_arg(ap, unsigned int);
-        value = va_arg(ap, MATRIX_TYPE);
+        value = va_arg(ap, MATRIX_TYPE); // Set the fill value to the provided value
         va_end(ap);
     } else {
+        // If an invalid number of arguments is provided, throw an error
         PERROR(PARAMETERS_NUM_ERROR_002, 1, 3, __FILE__, __FUNCTION__, __LINE__);
     }
 
+    // Check if the number of rows or columns is zero
     if (rows == 0 || cols == 0) {
+        // If either is zero, throw an error
         PWARNING_RETURN(INPUT_NULL_004, VAR_NAME(rows), VAR_NAME(cols), __FILE__, __FUNCTION__, __LINE__);
     }
 
+    // Generate a matrix with the specified number of rows and columns
     Matrix *mat = matrix_gen(rows, cols, NULL);
 
+    // Check if the generated matrix is NULL
     if (mat == NULL) {
+        // If the matrix is NULL, throw an error
         PWARNING(PARAMETER_VALUE_ERROR_001, VAR_NAME(mat), __FILE__, __FUNCTION__, __LINE__);
         return NULL;
     }
 
+    // Check if the fill value is zero
     if (DOUBLE_COMP_EQ2ZERO(value)) {
+        // If the fill value is zero, throw a warning
         PWARNING(VALUE_TYPE_WARNING_001, 0, __FILE__, __FUNCTION__, __LINE__);
     }
 
+    // Fill the diagonal of the matrix with the specified fill value
     for (int i = 0; i < MIN(rows, cols); i++) {
         mat->data[IDX(cols, i, i)] = value;
     }
 
+    // Return the generated identity matrix
     return mat;
 }
 
@@ -314,46 +366,115 @@ Matrix *ones_matrix(const unsigned int rows, const unsigned int cols) {
  * @throws PWARNING_RETURN_INPUT_NO_NULL If the input matrix is NULL.
  */
 void matrix_print(const Matrix *mat) {
+    // Check if the input matrix is NULL and return if so
     PWARNING_RETURN_INPUT_NO_NULL(mat);
+
+    // Get the number of rows and columns in the matrix
     const int rows = mat->rows, cols = mat->cols;
+
+    // Check if the matrix has a large number of rows or columns
     if (rows > MATRIX_ROWS_OMIT_PRINT_LIMIT || cols > MATRIX_COLS_OMIT_PRINT_LIMIT) {
-        for (int i = 0; i < rows; i++) {
-            if (i == 2 && rows > MATRIX_ROWS_OMIT_PRINT_LIMIT) {
-                printf("%-10s\t", "⋮");
-                for (int j = 0; j < cols; j++) {
-                    if (j == 2 && cols > MATRIX_COLS_OMIT_PRINT_LIMIT) {
-                        printf("%-10s\t", "⋮");
-                        j = cols - 2;
-                    }
-                    printf("%-10s\t", "⋮");
-                }
-                i = rows - 3;
-                printf("\n");
-                continue;
-            } else {
-                printf("%c\t", '|'); // 打印竖线
-            }
-            for (int j = 0; j < cols; j++) {
-                if (j == 2 && cols > MATRIX_COLS_OMIT_PRINT_LIMIT) {
-                    printf("%s\t", "...");
-                    j = cols - 2;
-                }
-                printf(MATRIX_DEFAULT_PRECISION, mat->data[IDX(cols, i, j)]);
-            }
-            printf("%c\t", '|'); // 打印竖线
-            printf("\n");
-        }
+        // Print the matrix with omitted elements
+        print_matrix_with_omitted_elements(mat, rows, cols);
     } else {
-        for (int i = 0; i < rows; i++) {
-            printf("%c\t", '|'); // 打印竖线
-            for (int j = 0; j < cols; j++) {
-                printf(MATRIX_DEFAULT_PRECISION, mat->data[IDX(cols, i, j)]);
-            }
-            printf("%c\t", '|'); // 打印竖线
-            printf("\n");
-        }
+        // Print the matrix without omitting any elements
+        print_matrix_without_omitting_elements(mat, rows, cols);
     }
+
+    // Print the number of rows and columns in the matrix
     printf("Matrix rows: %d, cols: %d\n", rows, cols);
+}
+
+/**
+ * Prints the matrix with omitted elements.
+ *
+ * This function prints the matrix with omitted elements, replacing them with an ellipsis.
+ *
+ * @param mat The matrix to be printed.
+ * @param rows The number of rows in the matrix.
+ * @param cols The number of columns in the matrix.
+ */
+static void print_matrix_with_omitted_elements(const Matrix *mat, int rows, int cols) {
+    for (int i = 0; i < rows; i++) {
+        // Check if we need to print an ellipsis for the current row
+        if (i == 2 && rows > MATRIX_ROWS_OMIT_PRINT_LIMIT) {
+            // Print an ellipsis for the current row
+            print_ellipsis_row(mat, cols);
+            // Skip to the last row
+            i = rows - 3;
+            continue;
+        } else {
+            // Print a vertical line to separate the rows
+            printf("%c\t", '|');
+        }
+
+        // Print the elements of the current row
+        for (int j = 0; j < cols; j++) {
+            // Check if we need to print an ellipsis for the current column
+            if (j == 2 && cols > MATRIX_COLS_OMIT_PRINT_LIMIT) {
+                // Print an ellipsis for the current column
+                printf("%s\t", "...");
+                // Skip to the last column
+                j = cols - 2;
+            }
+            // Print the element at the current position
+            printf(MATRIX_DEFAULT_PRECISION, mat->data[IDX(cols, i, j)]);
+        }
+
+        // Print a vertical line to separate the rows
+        printf("%c\t", '|');
+        // Print a newline to separate the rows
+        printf("\n");
+    }
+}
+
+/**
+ * Prints the matrix without omitting any elements.
+ *
+ * This function prints the matrix without omitting any elements.
+ *
+ * @param mat The matrix to be printed.
+ * @param rows The number of rows in the matrix.
+ * @param cols The number of columns in the matrix.
+ */
+static void print_matrix_without_omitting_elements(const Matrix *mat, int rows, int cols) {
+    for (int i = 0; i < rows; i++) {
+        // Print a vertical line to separate the rows
+        printf("%c\t", '|');
+
+        // Print the elements of the current row
+        for (int j = 0; j < cols; j++) {
+            // Print the element at the current position
+            printf(MATRIX_DEFAULT_PRECISION, mat->data[IDX(cols, i, j)]);
+        }
+
+        // Print a vertical line to separate the rows
+        printf("%c\t", '|');
+        // Print a newline to separate the rows
+        printf("\n");
+    }
+}
+
+/**
+ * Prints an ellipsis row.
+ *
+ * This function prints an ellipsis row, replacing the elements with an ellipsis.
+ *
+ * @param mat The matrix to be printed.
+ * @param cols The number of columns in the matrix.
+ */
+static void print_ellipsis_row(const Matrix *mat, int cols) {
+    // Print an ellipsis for the current row
+    printf("%-10s\t", "⋮");
+
+    // Print an ellipsis for each column
+    for (int j = 0; j < cols; j++) {
+        // Print an ellipsis for the current column
+        printf("%-10s\t", "⋮");
+    }
+
+    // Print a newline to separate the rows
+    printf("\n");
 }
 
 /**
@@ -374,29 +495,41 @@ void matrix_print(const Matrix *mat) {
 Matrix *matrix_gen_r(const unsigned int rows, const unsigned int cols, const MATRIX_TYPE *data,
                      const unsigned int data_rows,
                      const unsigned int data_cols) {
+    // Check if the data array length matches the product of data_rows and data_cols
     if (data_cols * data_rows != LENGTH(data)) {
         PERROR(INVALID_INPUT_003, VAR_NAME(data), data_rows * data_cols, __FILE__, __FUNCTION__,
                __LINE__);
     }
+
+    // If the data array is NULL or its length matches the product of rows and cols,
+    // return a matrix generated with the given data
     if (data == NULL || LENGTH(data) == rows * cols) {
         return matrix_gen(rows, cols, data);
     }
 
+    // Check if rows is less than data_rows
     if (rows < data_rows) {
         PERROR(INVALID_INPUT_002, "rows", data_rows, __FILE__, __FUNCTION__, __LINE__);
     }
+
+    // Check if cols is less than data_cols
     if (cols < data_cols) {
         PERROR(INVALID_INPUT_002, "cols", data_cols, __FILE__, __FUNCTION__, __LINE__);
     }
 
+    // Generate a matrix with the given rows and cols
     Matrix *mat = matrix_gen(rows, cols, NULL);
     PWARNING_RETURN_MALLOC(mat);
 
+    // Populate the matrix with data from the given array
     for (int i = 0; i < rows; i++) {
         for (int j = 0; j < cols; j++) {
+            // If the current index is within the bounds of the data array,
+            // copy the corresponding element into the matrix
             if (i < data_rows && j < data_cols) {
                 mat->data[IDX(cols, i, j)] = data[IDX(data_cols, i, j)];
             } else {
+                // Otherwise, set the element to 0
                 mat->data[IDX(cols, i, j)] = 0;
             }
         }
@@ -408,40 +541,53 @@ Matrix *matrix_gen_r(const unsigned int rows, const unsigned int cols, const MAT
 /**
  * Copies a matrix into another matrix.
  *
+ * This function creates a deep copy of the input matrix, allocating new memory for the copy.
+ * If the input matrix is NULL, it throws a warning and returns NULL.
+ *
  * @param _sourse_mat The matrix to be copied.
- *
  * @return A pointer to the copied matrix, or NULL if memory allocation fails.
- *
  * @throws PWARNING_RETURN_INPUT_NO_NULL If the input matrix is NULL.
  */
 Matrix *matrix_copy(const Matrix *_sourse_mat) {
+    // Check if the input matrix is NULL and throw a warning if so
     PWARNING_RETURN_INPUT(_sourse_mat);
+
+    // Create a new matrix with the same dimensions and data as the input matrix
+    // The matrix_gen function will allocate new memory for the copy
     return matrix_gen(_sourse_mat->rows, _sourse_mat->cols, _sourse_mat->data);
 }
 
 /**
  * Copies the contents of a source matrix into a destination matrix.
  *
+ * This function frees the existing contents of the destination matrix and
+ * replaces it with a copy of the source matrix.
+ *
  * @param dest The destination matrix to be copied into.
  * @param src The source matrix to be copied from.
  *
  * @return None
  *
- * @throws PWARNING_RETURN_INPUT_NO_NULL If the destination or source matrix is NULL.
+ * @throws PWARNING_RETURN_INPUT_NO_NULL If the source matrix is NULL.
  * @throws PWARNING_RETURN_MALLOC_NO_NULL If memory allocation fails.
  */
 void matrix_copy_r(Matrix **dest, const Matrix *src) {
-    // PWARNING_RETURN_INPUT_NO_NULL(dest);
+    // Check if the source matrix is NULL
     PWARNING_RETURN_INPUT_NO_NULL(src);
+
+    // Free the existing contents of the destination matrix
     matrix_free(dest);
+
+    // Copy the source matrix into the destination matrix
     *dest = matrix_copy(src);
 }
 
 /**
- * Copies the contents of a source matrix into a destination matrix and frees the source matrix.
+ * This function copies the contents of a source matrix into a destination matrix,
+ * frees the memory allocated for the source matrix, and updates the destination matrix pointer.
  *
- * @param dest The destination matrix to be copied into.
- * @param src The source matrix to be copied from and then freed.
+ * @param dest Pointer to the destination matrix.
+ * @param src Pointer to the source matrix.
  *
  * @return None
  *
@@ -449,16 +595,27 @@ void matrix_copy_r(Matrix **dest, const Matrix *src) {
  * @throws PWARNING_RETURN_MALLOC_NO_NULL If memory allocation fails.
  */
 void matrix_copy_free(Matrix **dest, Matrix **src) {
-    // PWARNING_RETURN_INPUT_NO_NULL(dest);
+    // Check if the destination matrix is NULL
+    PWARNING_RETURN_INPUT_NO_NULL(dest);
+
+    // Check if the source matrix is NULL
     PWARNING_RETURN_INPUT_NO_NULL(*src);
+
+    // Free the memory allocated for the destination matrix
     matrix_free(dest);
+
+    // Copy the contents of the source matrix into the destination matrix
     *dest = matrix_copy(*src);
+
+    // Free the memory allocated for the source matrix
     matrix_free(src);
 }
+
 
 /**
  * Frees the memory allocated for a matrix.
  *
+ * @param[in] mat Pointer to the matrix whose memory is to be freed.
  * @param mat The matrix whose memory is to be freed.
  *
  * @return None
@@ -467,6 +624,7 @@ void matrix_copy_free(Matrix **dest, Matrix **src) {
  */
 void matrix_free(Matrix **mat) {
     if (mat == NULL || *mat == NULL) {
+        // If the input matrix is NULL, return immediately
         return;
     }
     // #ifdef _CRT_USE_WINAPI_FAMILY_DESKTOP_APP
@@ -479,12 +637,18 @@ void matrix_free(Matrix **mat) {
     //     }
     // #endif
 
+    // Free the memory allocated for the matrix data
     FREE((*mat)->data);
+
+    // Free the memory allocated for the matrix structure
     FREE(*mat);
 }
 
 /**
  * Generates a matrix filled with zeros.
+ *
+ * This function creates a new matrix with the specified number of rows and columns,
+ * and initializes all elements to zero.
  *
  * @param rows The number of rows in the matrix.
  * @param cols The number of columns in the matrix.
@@ -495,11 +659,16 @@ void matrix_free(Matrix **mat) {
  * @throws MALLOC_FAILURE_001 If memory allocation fails.
  */
 Matrix *zeros_matrix(const unsigned int rows, const unsigned int cols) {
+    // Call matrix_gen to create a new matrix with the specified dimensions and NULL data
+    // This will result in a matrix filled with zeros
     return matrix_gen(rows, cols, NULL);
 }
 
 /**
  * Generates an identity matrix with the specified number of rows and columns.
+ *
+ * An identity matrix is a square matrix with ones on the main diagonal and zeros elsewhere.
+ * This function creates an identity matrix with the specified number of rows and columns.
  *
  * @param rows The number of rows in the matrix.
  * @param cols The number of columns in the matrix.
@@ -510,6 +679,8 @@ Matrix *zeros_matrix(const unsigned int rows, const unsigned int cols) {
  * @throws PARAMETER_VALUE_ERROR_001 If the generated matrix is NULL.
  */
 Matrix *eye_matrix(const unsigned int rows, const unsigned int cols) {
+    // Delegate the actual creation of the identity matrix to eye_matrix_value
+    // This allows for a simple and consistent interface while hiding the implementation details
     return eye_matrix_value(rows, cols);
 }
 
@@ -528,21 +699,32 @@ Matrix *eye_matrix(const unsigned int rows, const unsigned int cols) {
  * @throws MALLOC_FAILURE_001 If memory allocation fails.
  */
 Matrix *rand_matrix(const unsigned int rows, const unsigned int cols, MATRIX_TYPE min, MATRIX_TYPE max) {
+    // Check if the input dimensions are valid
     if (rows == 0 || cols == 0) {
+        // If not, throw an error with a descriptive message
         PWARNING_RETURN(INPUT_NULL_004, VAR_NAME(rows), VAR_NAME(cols), __FILE__, __FUNCTION__, __LINE__);
     }
+
+    // Generate a new matrix with the specified dimensions and NULL data
     Matrix *mat = matrix_gen(rows, cols, NULL);
+    // Check if the memory allocation was successful
     PWARNING_RETURN_MALLOC(mat);
 
+    // Fill the matrix with random values within the specified range
     for (int i = 0; i < rows * cols; i++) {
+        // Use the RAND function to generate a random value between min and max
         mat->data[i] = RAND(min, max, MATRIX_TYPE);
     }
 
+    // Return the generated matrix
     return mat;
 }
 
 /**
  * Compares two matrices for equality.
+ *
+ * This function checks if two matrices have the same size and identical elements.
+ * It returns 0 if the matrices are equal, and 1 otherwise.
  *
  * @param a Pointer to the first matrix.
  * @param b Pointer to the second matrix.
@@ -552,12 +734,19 @@ Matrix *rand_matrix(const unsigned int rows, const unsigned int cols, MATRIX_TYP
  * @throws INPUT_NULL_007 If either matrix is NULL.
  */
 int matrix_eq(const Matrix *a, const Matrix *b) {
+    // Check if both matrices are non-NULL
     if (a != NULL && b != NULL) {
+        // Compare the sizes of the two matrices
         if (matrix_size_cmp(a->size, b->size) != 0) {
+            // If the sizes are different, the matrices are not equal
             return 1;
         }
+
+        // Compare the elements of the two matrices
         return array_cmp(a->data, b->data, _DOUBLE_);
     }
+
+    // If either matrix is NULL, throw an error
     PWARNING(INPUT_NULL_007, VAR_NAME(a), VAR_NAME(b), 0, __FILE__, __FUNCTION__, __LINE__);
     return 1;
 }
@@ -579,54 +768,83 @@ int matrix_eq(const Matrix *a, const Matrix *b) {
  * @throws PARAMETER_VALUE_ERROR_001 If memory allocation fails.
  */
 static Matrix *__matrix_mul(Matrix *a, ...) {
+    // Check if the input matrix is valid
     PWARNING_RETURN_INPUT(a);
+
+    // Initialize the variable argument list
     va_list ap;
     va_start(ap, a);
+
+    // Get the type of multiplication from the variable argument list
     const int type_index = va_arg(ap, int);
 
-    Matrix *mat;
+    Matrix *mat; // The result matrix
+
+    // Perform matrix multiplication
     if (type_index == 0) {
+        // Get the second matrix from the variable argument list
         const Matrix *b = va_arg(ap, Matrix *);
+
+        // Check if the second matrix is valid
         if (b == NULL) {
             va_end(ap);
             return NULL;
         }
+
+        // Get the dimensions of the matrices
         const int a_rows = a->rows, a_cols = a->cols, b_cols = b->cols, b_rows = b->rows;
+
+        // Check if the matrices can be multiplied
         if (a_cols != b_rows) {
+            // Throw an error if the matrices cannot be multiplied
             PERROR(MATRIX_SIZE_ERROR_001, __FILE__, __FUNCTION__, __LINE__);
             va_end(ap);
         }
 
+        // Allocate memory for the result matrix
         mat = matrix_gen(a_rows, b_cols, NULL);
         if (mat == NULL) {
+            // Throw an error if memory allocation fails
             PWARNING(PARAMETER_VALUE_ERROR_001, VAR_NAME(mat), __FILE__, __FUNCTION__, __LINE__);
             va_end(ap);
             return NULL;
         }
 
+        // Perform the matrix multiplication
         for (int i = 0; i < a_rows; i++) {
             for (int j = 0; j < b_cols; j++) {
                 for (int k = 0; k < a_cols; k++) {
+                    // Calculate the dot product of the rows and columns
                     mat->data[IDX(b_cols, i, j)] += a->data[IDX(a_cols, i, k)] * b->data[IDX(b_cols, k, j)];
                 }
             }
         }
-    } else {
+    }
+    // Perform scalar multiplication
+    else {
+        // Get the scalar from the variable argument list
         const double scalar = va_arg(ap, double);
 
+        // Allocate memory for the result matrix
         mat = matrix_gen(a->rows, a->cols, NULL);
         if (mat == NULL) {
+            // Throw an error if memory allocation fails
             PWARNING(PARAMETER_VALUE_ERROR_001, VAR_NAME(mat), __FILE__, __FUNCTION__, __LINE__);
             va_end(ap);
             return NULL;
         }
 
+        // Perform the scalar multiplication
         for (int i = 0; i < a->rows * a->cols; i++) {
+            // Multiply each element of the matrix by the scalar
             mat->data[i] = a->data[i] * scalar;
         }
     }
 
+    // Clean up the variable argument list
     va_end(ap);
+
+    // Return the result matrix
     return mat;
 }
 
@@ -641,20 +859,24 @@ static Matrix *__matrix_mul(Matrix *a, ...) {
  * @throws MATRIX_SIZE_ERROR_001 If the number of columns in the first matrix does not match the number of rows in the second matrix.
  */
 Matrix *matrix_mul(Matrix *a, Matrix *b) {
+    // Call the __matrix_mul function with the appropriate arguments
+    // The second argument is set to 0 to indicate matrix multiplication
     return __matrix_mul(a, 0, b);
 }
 
 /**
  * Multiplies two matrices.
  *
- * @param a The first matrix.
- * @param b The second matrix.
+ * @param b The first matrix.
+ * @param a The second matrix.
  *
  * @return The product of the two matrices.
  *
  * @throws MATRIX_SIZE_ERROR_001 If the number of columns in the first matrix does not match the number of rows in the second matrix.
  */
 Matrix *matrix_right_mul(Matrix *a, Matrix *b) {
+    // Call the __matrix_mul function with the appropriate arguments
+    // The second argument is set to 0 to indicate matrix multiplication
     return __matrix_mul(b, 0, a);
 }
 
@@ -714,9 +936,7 @@ void matrix_mul_single_void(Matrix *a, const MATRIX_TYPE b) {
 }
 
 /**
- * Adds two matrices together element-wise and returns a new matrix. The second matrix
- * is subtracted from the first if the type index is 1. Returns NULL if either input
- * matrix is NULL or if the matrices have different sizes.
+ * Adds two matrices together element-wise and returns a new matrix.
  *
  * @param a Pointer to the first matrix to be added.
  * @param ... Variable number of arguments. The first argument should be an integer
@@ -731,33 +951,44 @@ void matrix_mul_single_void(Matrix *a, const MATRIX_TYPE b) {
  * @throw MALLOC_FAILURE_001 If memory allocation fails.
  */
 static Matrix *__matrix_add(Matrix *a, ...) {
+    // Check if the first matrix is NULL
     PWARNING_RETURN_INPUT(a);
+
+    // Get the variable number of arguments
     va_list ap;
     va_start(ap, a);
+
+    // Get the type index and the second matrix
     const int type_index = va_arg(ap, int);
     const Matrix *b = va_arg(ap, Matrix *);
 
+    // Check if the second matrix is NULL or its data is NULL
     if (b == NULL || b->data == NULL) {
         PWARNING(INPUT_NULL_005, VAR_NAME(b), VAR_NAME(b->data), __FILE__, __FUNCTION__, __LINE__);
         va_end(ap);
         return NULL;
     }
 
+    // Get the number of rows and columns of the first matrix
     const int a_rows = a->rows, a_cols = a->cols;
 
+    // Check if the matrices have different sizes
     if (matrix_size_cmp(a->size, b->size)) {
         PERROR(MATRIX_SIZE_ERROR_001, __FILE__, __FUNCTION__, __LINE__);
         va_end(ap);
     }
 
+    // Create a new matrix with the same size as the first matrix
     Matrix *mat = matrix_gen(a_rows, a_cols, NULL);
 
+    // Check if the new matrix is NULL
     if (mat == NULL) {
         PWARNING(PARAMETER_VALUE_ERROR_001, VAR_NAME(mat), __FILE__, __FUNCTION__, __LINE__);
         va_end(ap);
         return NULL;
     }
 
+    // Perform the element-wise addition or subtraction
     for (int i = 0; i < a_rows * a_cols; i++) {
         if (type_index == 0) {
             mat->data[i] = a->data[i] + b->data[i];
@@ -851,6 +1082,9 @@ void matrix_transpose(Matrix *mat) {
 /**
  * Returns a new matrix that is the transpose of the input matrix.
  *
+ * The transpose of a matrix is an operator which can be thought of as "swapping" the rows and columns for a matrix.
+ * For example, the transpose of a matrix A with dimensions m x n is a matrix A^T with dimensions n x m.
+ *
  * @param mat The input matrix to be transposed.
  *
  * @return A new matrix that is the transpose of the input matrix.
@@ -859,25 +1093,39 @@ void matrix_transpose(Matrix *mat) {
  * @throws MALLOC_FAILURE_001 If memory allocation fails.
  */
 Matrix *matrix_transpose_r(const Matrix *mat) {
+    // Check if the input matrix or its data is NULL
     if (mat == NULL || mat->data == NULL) {
+        // If either is NULL, print an error message and return
         PWARNING_RETURN(INPUT_NULL_005, VAR_NAME(mat), VAR_NAME(mat->data), VAR_NAME(mat->data), __FILE__, __FUNCTION__,
                         __LINE__);
     }
+
+    // Create a new matrix with the dimensions of the input matrix swapped
     Matrix *new_mat = matrix_gen(mat->cols, mat->rows, NULL);
+
+    // Check if the memory allocation for the new matrix failed
     if (new_mat == NULL) {
+        // If the allocation failed, print an error message and return
         PWARNING_RETURN(MALLOC_FAILURE_001, VAR_NAME(new_mat), __FILE__, __FUNCTION__, __LINE__);
     }
+
+    // Iterate over the elements of the input matrix
     for (int i = 0; i < mat->rows; i++) {
         for (int j = 0; j < mat->cols; j++) {
+            // Swap the row and column indices to transpose the matrix
             new_mat->data[IDX(mat->cols, i, j)] = mat->data[IDX(mat->rows, j, i)];
         }
     }
 
+    // Return the transposed matrix
     return new_mat;
 }
 
 /**
  * Converts a matrix to a 2D array.
+ *
+ * This function takes a matrix as input and returns a 2D array representation of the matrix.
+ * The function allocates memory for the 2D array and copies the matrix data into the array.
  *
  * @param mat The input matrix to be converted.
  *
@@ -887,33 +1135,51 @@ Matrix *matrix_transpose_r(const Matrix *mat) {
  * @throws MALLOC_FAILURE_001 If memory allocation fails.
  */
 MATRIX_TYPE **matrix_to_2D_array(const Matrix *mat) {
+    // Check if the input matrix or its data is NULL
     if (mat == NULL || mat->data == NULL) {
+        // If either is NULL, return an error
         PWARNING_RETURN(INPUT_NULL_005, VAR_NAME(mat), VAR_NAME(mat->data), __FILE__, __FUNCTION__, __LINE__);
     }
 
+    // Allocate memory for the 2D array
     MATRIX_TYPE **array = (MATRIX_TYPE **) malloc(sizeof(MATRIX_TYPE *) * mat->rows);
     if (array == NULL) {
+        // If memory allocation fails, return an error
         PWARNING_RETURN(MALLOC_FAILURE_001, VAR_NAME(array), __FILE__, __FUNCTION__, __LINE__);
     }
+
+    // Get the number of rows and columns in the matrix
     const int rows = mat->rows, cols = mat->cols;
+
+    // Iterate over each row in the matrix
     for (int i = 0; i < rows; i++) {
+        // Allocate memory for the current row in the 2D array
         array[i] = (MATRIX_TYPE *) malloc(sizeof(MATRIX_TYPE) * cols);
         if (array[i] == NULL) {
+            // If memory allocation fails, free any previously allocated memory and return an error
             for (int j = i; j >= 0; j--) {
                 FREE(array[j]);
             }
             FREE(array);
             PWARNING_RETURN(MALLOC_FAILURE_001, VAR_NAME(array[i]), __FILE__, __FUNCTION__, __LINE__);
         }
+
+        // Iterate over each column in the current row
         for (int j = 0; j < cols; j++) {
+            // Copy the matrix data into the 2D array
             array[i][j] = mat->data[IDX(cols, i, j)];
         }
     }
+
+    // Return the 2D array
     return array;
 }
 
 /**
  * Creates a Matrix from a 2D array.
+ *
+ * This function takes a 2D array and its dimensions as input, and returns a Matrix object.
+ * It checks for invalid input and memory allocation failures, and throws exceptions accordingly.
  *
  * @param array the 2D array to convert
  * @param rows the number of rows in the array
@@ -925,130 +1191,185 @@ MATRIX_TYPE **matrix_to_2D_array(const Matrix *mat) {
  * @throws MALLOC_FAILURE_001 if memory allocation fails
  */
 Matrix *matrix_from_2D_array(MATRIX_TYPE **array, const unsigned int rows, const unsigned int cols) {
+    // Check for invalid input: NULL array or mismatched dimensions
     if (array == NULL || LENGTH(array) != rows) {
+        // Throw exception with descriptive error message
         PWARNING_RETURN(INVALID_INPUT_003, VAR_NAME(LENGTH(array)), rows, __FILE__, __FUNCTION__, __LINE__);
     }
 
+    // Check each row of the array for mismatched column length
     for (int i = 0; i < rows; i++) {
         if (LENGTH(array[i]) != cols) {
+            // Throw exception with descriptive error message
             PWARNING_RETURN(INVALID_INPUT_003, VAR_NAME(LENGTH(array[i])), cols, __FILE__, __FUNCTION__, __LINE__);
         }
     }
 
+    // Allocate memory for the Matrix object
     Matrix *mat = matrix_gen(rows, cols, NULL);
     if (mat == NULL) {
+        // Throw exception if memory allocation fails
         PWARNING_RETURN(MALLOC_FAILURE_001, VAR_NAME(mat), __FILE__, __FUNCTION__, __LINE__);
     }
+
+    // Copy data from the 2D array to the Matrix object
     for (int i = 0; i < rows; i++) {
         for (int j = 0; j < cols; j++) {
+            // Use IDX macro to calculate index into Matrix data array
             mat->data[IDX(cols, i, j)] = array[i][j];
         }
     }
+
+    // Return the created Matrix object
     return mat;
 }
 
 /**
  * Splices two matrices together.
  *
- * @param a the first matrix to splice
- * @param b the second matrix to splice
- * @param aix the axis to splice along (0: vertical, 1: horizontal, 2: vertical from bottom, 3: horizontal from right)
+ * This function takes two matrices, `a` and `b`, and an axis `aix` to splice along.
+ * It returns a new matrix that is the result of splicing `a` and `b` along the specified axis.
  *
- * @return a new matrix that is the result of splicing a and b
+ * @param a The first matrix to splice.
+ * @param b The second matrix to splice.
+ * @param aix The axis to splice along (0: vertical, 1: horizontal, 2: vertical from bottom, 3: horizontal from right).
  *
- * @throws MATRIX_SIZE_ERROR_001 if the matrices are not the same size along the specified axis
- * @throws MALLOC_FAILURE_001 if memory allocation fails
- * @throws INVALID_INPUT_005 if aix is not one of the allowed values
+ * @return A new matrix that is the result of splicing `a` and `b`.
+ *
+ * @throws MATRIX_SIZE_ERROR_001 If the matrices are not the same size along the specified axis.
+ * @throws MALLOC_FAILURE_001 If memory allocation fails.
+ * @throws INVALID_INPUT_005 If `aix` is not one of the allowed values.
  */
 Matrix *matrix_splicing(const Matrix *a, const Matrix *b, const unsigned int aix) {
+    // Handle edge cases where one or both matrices are NULL
     if (a == NULL && b == NULL) {
+        // If both matrices are NULL, return NULL
         return NULL;
     }
     if (a == NULL) {
-        return matrix_copy(a);
-    }
-    if (b == NULL) {
+        // If only matrix `a` is NULL, return a copy of matrix `b`
         return matrix_copy(b);
     }
+    if (b == NULL) {
+        // If only matrix `b` is NULL, return a copy of matrix `a`
+        return matrix_copy(a);
+    }
 
-    Matrix *mat;
+    // Get the dimensions of the matrices
     const int a_rows = a->rows, a_cols = a->cols, b_rows = b->rows, b_cols = b->cols;
-    const int a_col_plus_b_cols = a_cols + b_cols, a_rows_cols = a_rows * a_cols,
-            b_rows_cols = b_rows * b_cols;
+
+    // Calculate the total number of columns and rows in the resulting matrix
+    const int a_col_plus_b_cols = a_cols + b_cols;
+    const int a_rows_cols = a_rows * a_cols;
+    const int b_rows_cols = b_rows * b_cols;
+
+    // Create a new matrix to store the result
+    Matrix *mat;
+
+    // Splice the matrices along the specified axis
     switch (aix) {
         case 0:
+            // Splice vertically
             if (a_cols != b_cols) {
+                // Check if the matrices have the same number of columns
                 PERROR(MATRIX_SIZE_ERROR_001, __FILE__, __FUNCTION__, __LINE__);
             }
+        // Create a new matrix with the same number of columns as the input matrices
             mat = matrix_gen(a_rows + b_rows, a_cols, NULL);
             if (mat == NULL) {
+                // Check if memory allocation failed
                 PWARNING_RETURN(MALLOC_FAILURE_001, VAR_NAME(mat), __FILE__, __FUNCTION__, __LINE__);
             }
+        // Copy the data from matrix `b` to the new matrix
             for (int i = 0; i < b_rows_cols; i++) {
                 mat->data[i] = b->data[i];
             }
+        // Copy the data from matrix `a` to the new matrix
             for (int i = b_rows_cols; i < b_rows_cols + a_rows_cols; i++) {
                 mat->data[i] = a->data[i - b_rows_cols];
             }
             break;
         case 1:
+            // Splice horizontally
             if (a_rows != b_rows) {
+                // Check if the matrices have the same number of rows
                 PERROR(MATRIX_SIZE_ERROR_001, __FILE__, __FUNCTION__, __LINE__);
             }
+        // Create a new matrix with the same number of rows as the input matrices
             mat = matrix_gen(a_rows, a_cols + b_cols, NULL);
             if (mat == NULL) {
+                // Check if memory allocation failed
                 PWARNING_RETURN(MALLOC_FAILURE_001, VAR_NAME(mat), __FILE__, __FUNCTION__, __LINE__);
             }
-
+        // Copy the data from matrix `a` to the new matrix
             for (int i = 0; i < a_rows; i++) {
                 for (int j = 0; j < a_cols; j++) {
                     mat->data[IDX(a_col_plus_b_cols, i, j)] = a->data[IDX(a_cols, i, j)];
                 }
+                // Copy the data from matrix `b` to the new matrix
                 for (int j = a_cols; j < a_col_plus_b_cols; j++) {
                     mat->data[IDX(a_col_plus_b_cols, i, j)] = b->data[IDX(b_cols, i, j - a_cols)];
                 }
             }
             break;
         case 2:
+            // Splice vertically from bottom
             if (a_cols != b_cols) {
+                // Check if the matrices have the same number of columns
                 PERROR(MATRIX_SIZE_ERROR_001, __FILE__, __FUNCTION__, __LINE__);
             }
+        // Create a new matrix with the same number of columns as the input matrices
             mat = matrix_gen(a_rows + b_rows, a_cols, NULL);
             if (mat == NULL) {
+                // Check if memory allocation failed
                 PWARNING_RETURN(MALLOC_FAILURE_001, VAR_NAME(mat), __FILE__, __FUNCTION__, __LINE__);
             }
+        // Copy the data from matrix `a` to the new matrix
             for (int i = 0; i < a_rows_cols; i++) {
                 mat->data[i] = a->data[i];
             }
+        // Copy the data from matrix `b` to the new matrix
             for (int i = a_rows_cols; i < b_rows_cols + a_rows_cols; i++) {
                 mat->data[i] = b->data[i - a_rows_cols];
             }
             break;
         case 3:
+            // Splice horizontally from right
             if (a_rows != b_rows) {
+                // Check if the matrices have the same number of rows
                 PERROR(MATRIX_SIZE_ERROR_001, __FILE__, __FUNCTION__, __LINE__);
             }
+        // Create a new matrix with the same number of rows as the input matrices
             mat = matrix_gen(a_rows, a_cols + b_cols, NULL);
             if (mat == NULL) {
+                // Check if memory allocation failed
                 PWARNING_RETURN(MALLOC_FAILURE_001, VAR_NAME(mat), __FILE__, __FUNCTION__, __LINE__);
             }
+        // Copy the data from matrix `b` to the new matrix
             for (int i = 0; i < a_rows; i++) {
                 for (int j = 0; j < b_cols; j++) {
                     mat->data[IDX(a_col_plus_b_cols, i, j)] = b->data[IDX(b_cols, i, j)];
                 }
+                // Copy the data from matrix `a` to the new matrix
                 for (int j = b_cols; j < a_col_plus_b_cols; j++) {
                     mat->data[IDX(a_col_plus_b_cols, i, j)] = a->data[IDX(a_cols, i, j - b_cols)];
                 }
             }
             break;
         default:
+            // Check if the axis is valid
             PERROR(INVALID_INPUT_005, VAR_NAME(aix), 0, 3, __FILE__, __FUNCTION__, __LINE__);
     }
+
+    // Return the resulting matrix
     return mat;
 }
 
 /**
  * Extracts a sub-matrix from the given matrix.
+ *
+ * This function creates a new matrix containing the extracted sub-matrix.
+ * The sub-matrix is defined by the given row and column indices, which are 1-indexed.
  *
  * @param a The input matrix.
  * @param begin_row The starting row index of the sub-matrix (1-indexed).
@@ -1064,31 +1385,46 @@ Matrix *matrix_splicing(const Matrix *a, const Matrix *b, const unsigned int aix
 Matrix *matrix_cat(const Matrix *a, const unsigned int begin_row, const unsigned int end_row,
                    const unsigned int begin_col,
                    const unsigned int end_col) {
+    // Get the number of rows and columns in the input matrix
     const int a_rows = a->rows, a_cols = a->cols;
 
+    // Check if the row indices are within the valid range
     if (MIN(begin_row, end_row) < 1 || MAX(begin_row, end_row) > a_rows) {
+        // If not, throw an error
         PERROR(INVALID_INPUT_006, VAR_NAME(begin_row), VAR_NAME(end_row), 1, a_rows, __FILE__, __FUNCTION__, __LINE__);
     }
 
+    // Check if the column indices are within the valid range
     if (MIN(begin_col, end_col) < 1 || MAX(begin_col, end_col) > a_cols) {
+        // If not, throw an error
         PERROR(INVALID_INPUT_006, VAR_NAME(begin_col), VAR_NAME(end_col), 1, a_cols, __FILE__, __FUNCTION__, __LINE__);
     }
 
+    // Calculate the number of rows and columns in the sub-matrix
     const int mat_rows = abs(end_row - begin_row) + 1, mat_cols = abs(end_col - begin_col) + 1;
+
+    // Create a new matrix to store the sub-matrix
     Matrix *mat = matrix_gen(mat_rows, mat_cols, NULL);
 
+    // Check if memory allocation failed
     if (mat == NULL) {
+        // If so, throw a warning and return
         PWARNING_RETURN(MALLOC_FAILURE_001, VAR_NAME(mat), __FILE__, __FUNCTION__, __LINE__);
     }
 
+    // Calculate the starting and ending indices for the sub-matrix
     const int start_rows_index = MIN(begin_row, end_row) - 1, start_cols_index = MIN(begin_col, end_col) - 1;
     const int end_rows_index = MAX(begin_row, end_row) - 1, end_cols_index = MAX(begin_col, end_col) - 1;
+
+    // Copy the data from the input matrix to the sub-matrix
     for (int i = start_rows_index; i <= end_rows_index; i++) {
         for (int j = start_cols_index; j <= end_cols_index; j++) {
+            // Use the IDX macro to calculate the index in the sub-matrix
             mat->data[IDX(mat_cols, i - start_rows_index, j - start_cols_index)] = a->data[IDX(a_cols, i, j)];
         }
     }
 
+    // Return the sub-matrix
     return mat;
 }
 
@@ -1106,74 +1442,84 @@ Matrix *matrix_cat(const Matrix *a, const unsigned int begin_row, const unsigned
  */
 void matrix_swap(const Matrix *a, const unsigned int aix, const unsigned int select_index,
                  const unsigned int aim_index) {
+    // Check for NULL input matrix
     if (a == NULL || a->data == NULL) {
+        // If NULL, print warning and return
         PWARNING_RETURN_NO_NULL(INPUT_NULL_007, VAR_NAME(a), VAR_NAME(a->data), __FILE__, __FUNCTION__, __LINE__);
     }
 
+    // Get number of rows and columns in the matrix
     const int a_rows = a->rows, a_cols = a->cols;
+
+    // Check if aix is 0 (rows) or 1 (columns)
     if (aix == 0) {
+        // Check if row indices are within range
         if (MIN(select_index, aim_index) < 0 || MAX(select_index, aim_index) >= a_rows) {
+            // If out of range, print error and return
             PERROR(INVALID_INPUT_006, VAR_NAME(select_index), VAR_NAME(aim_index), 0, a->cols - 1, __FILE__,
                    __FUNCTION__,
                    __LINE__);
         }
+
+        // Check if row indices are the same
         if (select_index == aim_index) {
+            // If same, no need to swap, return
             return;
         }
+
+        // Swap rows using memswap
         _memswap(a->data + (size_t) (select_index * a_cols), a->data + (size_t) (aim_index * a_cols),
                  a_cols * sizeof(MATRIX_TYPE));
-        /*** old version may be slow ***/
+
+        // Old version of swapping rows (commented out)
         // for (int i = 0; i < a_cols; i++) {
         //     const MATRIX_TYPE temp = a->data[IDX(a_cols, select_index, i)];
         //     a->data[IDX(a_cols, select_index, i)] = a->data[IDX(a_cols, aim_index, i)];
         //     a->data[IDX(a_cols, aim_index, i)] = temp;
         // }
+
+        // Return after swapping rows
         return;
     }
+
+    // Check if aix is 1 (columns)
     if (aix == 1) {
+        // Check if column indices are within range
         if (MIN(select_index, aim_index) < 0 || MAX(select_index, aim_index) >= a_cols) {
+            // If out of range, print error and return
             PERROR(INVALID_INPUT_006, VAR_NAME(select_index), VAR_NAME(aim_index), 0, a->cols - 1, __FILE__,
                    __FUNCTION__, __LINE__);
         }
+
+        // Check if column indices are the same
         if (select_index == aim_index) {
+            // If same, no need to swap, return
             return;
         }
+
+        // Swap columns using a loop
         for (int i = 0; i < a_rows; i++) {
             const MATRIX_TYPE temp = a->data[IDX(a_cols, i, select_index)];
             a->data[IDX(a_cols, i, select_index)] = a->data[IDX(a_cols, i, aim_index)];
             a->data[IDX(a_cols, i, aim_index)] = temp;
         }
+
+        // Return after swapping columns
         return;
     }
+
+    // If aix is not 0 or 1, print error and return
     PERROR(INVALID_INPUT_005, VAR_NAME(aix), 0, 1, __FILE__, __FUNCTION__, __LINE__);
 }
 
 /**
  * Compares two matrix elements based on the specified column index.
  *
- * @param index The column index to compare.
- * @param a The first matrix element to compare.
- * @param b The second matrix element to compare.
- *
- * @return 1 if the first element is greater, 0 if they are equal, and -1 if the first element is smaller.
- *
- * @throws None
- */
-int matrix_default_cmp(void *index, const void *a, const void *b) {
-    const uintptr_t col_index = (uintptr_t) index;
-    const MATRIX_TYPE *p1 = *(MATRIX_TYPE **) a;
-    const MATRIX_TYPE *p2 = *(MATRIX_TYPE **) b;
-    if (p1[col_index] > p2[col_index]) {
-        return 1;
-    }
-    if (p1[col_index] == p2[col_index]) {
-        return 0;
-    }
-    return -1;
-}
-
-/**
- * Compares two matrix elements based on the specified column index.
+ * This function takes in three parameters: the column index to compare, and two matrix elements.
+ * It returns an integer indicating the result of the comparison:
+ *  - 1 if the first element is greater than the second
+ *  - 0 if the two elements are equal
+ *  - -1 if the first element is smaller than the second
  *
  * @param index The column index to compare.
  * @param a The first matrix element to compare.
@@ -1184,23 +1530,31 @@ int matrix_default_cmp(void *index, const void *a, const void *b) {
  * @throws None
  */
 int matrix_default_cmp_r(void *index, const void *a, const void *b) {
+    // Cast the column index to an unsigned integer
     const uintptr_t col = (uintptr_t) index;
+
+    // Cast the matrix elements to pointers to MATRIX_TYPE
     const MATRIX_TYPE *p1 = (MATRIX_TYPE *) a;
     const MATRIX_TYPE *p2 = (MATRIX_TYPE *) b;
 
+    // Compare the elements at the specified column index
     if (p1[col] > p2[col]) {
+        // If the first element is greater, return 1
         return 1;
-    }
-
-    if (p1[col] == p2[col]) {
+    } else if (p1[col] == p2[col]) {
+        // If the elements are equal, return 0
         return 0;
+    } else {
+        // If the first element is smaller, return -1
+        return -1;
     }
-
-    return -1;
 }
 
 /**
  * Sorts a matrix by the values in the specified column.
+ *
+ * This function sorts the matrix in-place, meaning it modifies the original matrix.
+ * It uses the qsort_s function from the C standard library to perform the sort.
  *
  * @param mat The matrix to sort.
  * @param col_index The index of the column to sort by.
@@ -1211,39 +1565,21 @@ int matrix_default_cmp_r(void *index, const void *a, const void *b) {
  * @throws INVALID_INPUT_007 if the matrix or its data is NULL.
  */
 void matrix_sort_by_cols_values(const Matrix *mat, const unsigned int col_index) {
+    // Check for invalid input
     if (mat == NULL || mat->data == NULL) {
+        // If the matrix or its data is NULL, print an error message and return
         PWARNING_RETURN_NO_NULL(INPUT_NULL_007, VAR_NAME(mat), VAR_NAME(mat->data), __FILE__, __FUNCTION__, __LINE__);
     }
 
+    // Check if the column index is out of range
     if (col_index >= mat->cols) {
+        // If the column index is out of range, print an error message
         PERROR(INVALID_INPUT_006, VAR_NAME(col_index), 0, mat->cols - 1, __FILE__, __FUNCTION__, __LINE__);
     }
 
-    /**** old code may be slow ***/
-    // MATRIX_TYPE **temp_array = matrix_to_2D_array(mat);
-    // if (temp_array == NULL) {
-    //     PWARNING_RETURN_NO_NULL(MALLOC_FAILURE_001, VAR_NAME(temp_array), __FILE__, __FUNCTION__, __LINE__);
-    // }
-    //
-    // const int rows = mat->rows, cols = mat->cols;
-    // qsort_s(temp_array, rows, sizeof(MATRIX_TYPE *), matrix_default_cmp, (void *) col_index);
-    // Matrix *temp = matrix_from_2D_array(temp_array, rows, cols);
-    //
-    // if (temp == NULL || temp->data == NULL) {
-    //     for (int i = 0; i < rows; i++) {
-    //         FREE(temp_array[i]);
-    //     }
-    //     FREE(temp_array);
-    //     PWARNING_RETURN_NO_NULL(MALLOC_FAILURE_002, VAR_NAME(temp), __FILE__, __FUNCTION__, __LINE__);
-    // }
-    //
-    // matrix_copy_free(&mat, &temp);
-    //
-    // for (int i = 0; i < rows; i++) {
-    //     FREE(temp_array[i]);
-    // }
-    // FREE(temp_array);
-
+    // Perform the sort using qsort_s
+    // The comparison function is matrix_default_cmp_r, which compares two matrix elements based on the specified column index
+    // The arg parameter is used to pass the column index to the comparison function
     qsort_s(mat->data, mat->rows, sizeof(MATRIX_TYPE) * mat->cols, matrix_default_cmp_r,
             (void *) ((uintptr_t) col_index));
 }
@@ -1308,24 +1644,29 @@ void matrix_sort_by_zeros_num(const Matrix *mat) {
 /**
  * Performs a partial Gaussian elimination on the given matrix.
  *
+ * This function modifies the input matrix in-place by subtracting a multiple of one row from another row.
+ *
  * @param mat The input matrix.
- * @param select_index The index of the row to select.
- * @param aim_index The index of the row to aim.
- * @param begin_index The starting column index.
- * @param value The value to use for elimination.
+ * @param select_index The index of the row to select (i.e., the row whose multiple will be subtracted).
+ * @param aim_index The index of the row to aim (i.e., the row that will be modified).
+ * @param begin_index The starting column index for the elimination.
+ * @param value The value to use for elimination (i.e., the multiple of the selected row).
  *
  * @return None
  *
  * @throws None
  */
 void matrix_gauss_elimination_(const Matrix *mat, const unsigned int select_index, const unsigned int aim_index,
-                               const int
-                               begin_index,
-                               const MATRIX_TYPE value) {
+                               const int begin_index, const MATRIX_TYPE value) {
+    // Perform elimination for each column starting from begin_index
     for (int i = begin_index; i < mat->cols; i++) {
+        // Subtract the product of the selected row's element and the value from the aim row's element
         mat->data[IDX(mat->cols, aim_index, i)] -= mat->data[IDX(mat->cols, select_index, i)] * value;
     }
+
+    // Check if the first element of the aim row is close to zero
     if (!DOUBLE_COMP_EQ2ZERO(mat->data[IDX(mat->cols, aim_index, begin_index)])) {
+        // If not, explicitly set it to zero to avoid numerical instability
         mat->data[IDX(mat->cols, aim_index, begin_index)] = 0.0;
     }
 }
@@ -1420,6 +1761,10 @@ void matrix_normalization(const Matrix *mat) {
 /**
  * Calculates the rank of a given matrix.
  *
+ * The rank of a matrix is the maximum number of linearly independent rows or columns.
+ * This function uses Gaussian elimination to transform the matrix into row echelon form,
+ * and then counts the number of non-zero rows.
+ *
  * @param mat Pointer to the input matrix.
  *
  * @return The rank of the input matrix.
@@ -1428,24 +1773,44 @@ void matrix_normalization(const Matrix *mat) {
  * @throws MALLOC_FAILURE_001 If memory allocation fails.
  */
 int matrix_rank(const Matrix *mat) {
+    // Check for invalid input
     if (mat == NULL || mat->data == NULL) {
+        // If the input matrix or its data is NULL, print a warning and return 0
         PWARNING_RETURN_ZERO(INPUT_NULL_009, VAR_NAME(mat), VAR_NAME(mat->data), __FILE__, __FUNCTION__, __LINE__);
     }
+
+    // Create a temporary matrix to perform Gaussian elimination
     Matrix *temp_mat = matrix_gen(mat->rows, mat->cols, mat->data);
     if (temp_mat == NULL || temp_mat->data == NULL) {
+        // If memory allocation fails, print a warning and return 0
         PWARNING_RETURN_ZERO(MALLOC_FAILURE_001, VAR_NAME(temp_mat), __FILE__, __FUNCTION__, __LINE__);
     }
+
+    // Perform Gaussian elimination on the temporary matrix
     matrix_gauss_elimination(temp_mat);
+
+    // Print the transformed matrix (for debugging purposes)
     matrix_print(temp_mat);
+
+    // Initialize the rank to 0
     int rank = 0;
+
+    // Count the number of non-zero rows in the transformed matrix
     for (int i = 0; i < MIN(temp_mat->rows, temp_mat->cols); i++) {
+        // Check if the diagonal element is non-zero
         if (!DOUBLE_COMP_EQ2ZERO(temp_mat->data[IDX(temp_mat->cols, i, i)])) {
+            // If the diagonal element is non-zero, increment the rank
             rank++;
         } else {
+            // If the diagonal element is zero, break out of the loop
             break;
         }
     }
+
+    // Free the temporary matrix
     matrix_free(&temp_mat);
+
+    // Return the rank
     return rank;
 }
 
@@ -1474,51 +1839,98 @@ int matrix_default_find_cmp(const void *a, const void *b) {
  * @throws MALLOC_FAILURE_001 If memory allocation fails.
  */
 elem_pos_array *matrix_find(const Matrix *mat, MATRIX_TYPE value, __matrix_find_cmp_func cmp_func) {
+    // Check if input matrix is NULL
     if (mat == NULL) {
         PWARNING_RETURN(INPUT_NULL_005, VAR_NAME(mat), VAR_NAME(mat->data), __FILE__, __FUNCTION__, __LINE__);
     }
+
+    // Create a new list to store element positions
     List *pos_list = newList();
+
+    // Iterate over each element in the matrix
     for (int i = 0; i < mat->rows * mat->cols; i++) {
+        // Get the current element's value
         MATRIX_TYPE *temp_mat_val = &mat->data[i];
+
+        // Get the value to compare with
         MATRIX_TYPE *temp_val_cmp = &value;
+
+        // Check if the current element matches the given value using the comparison function
         if (cmp_func(temp_mat_val, temp_val_cmp)) {
+            // Create a new element position structure
             elem_pos *temp_pos = (elem_pos *) malloc(sizeof(elem_pos));
+
+            // Check if memory allocation failed
             if (temp_pos == NULL) {
                 PWARNING_RETURN(MALLOC_FAILURE_001, VAR_NAME(temp_pos), __FILE__, __FUNCTION__, __LINE__);
             }
+
+            // Set the element position's row, column, and value
             temp_pos->row = i / mat->cols;
             temp_pos->col = i % mat->cols;
             temp_pos->value = mat->data[i];
+
+            // Add the element position to the list
             listPushBack(pos_list, temp_pos);
         }
     }
+
+    // Check if any matches were found
     if (pos_list->size == 0) {
+        // Return NULL if no matches were found
         return NULL;
     }
+
+    // Create a new array to store the element positions
     elem_pos *pos_arr = (elem_pos *) malloc(sizeof(elem_pos) * pos_list->size);
+
+    // Check if memory allocation failed
     if (pos_arr == NULL) {
+        // Delete the list and return an error
         deleteList(pos_list);
         PWARNING_RETURN(MALLOC_FAILURE_001, VAR_NAME(pos_arr), __FILE__, __FUNCTION__, __LINE__);
     }
+
+    // Get the size of the list
     int size = pos_list->size;
+
+    // Iterate over each element in the list
     for (int i = 0; i < size; i++) {
+        // Get the top element from the list and remove it
         elem_pos *temp_pos = listGetTopAndPop(pos_list);
+
+        // Copy the element position to the array
         pos_arr[i] = *temp_pos;
+
+        // Free the element position structure
         free(temp_pos);
     }
+
+    // Delete the list
     deleteList(pos_list);
+
+    // Create a new element position array structure
     elem_pos_array *pos_arr_ptr = (elem_pos_array *) malloc(sizeof(elem_pos_array));
+
+    // Check if memory allocation failed
     if (pos_arr_ptr == NULL) {
+        // Free the array and return an error
         free(pos_arr);
         PWARNING_RETURN(MALLOC_FAILURE_001, VAR_NAME(pos_arr_ptr), __FILE__, __FUNCTION__, __LINE__);
     }
+
+    // Set the size and element position array of the structure
     pos_arr_ptr->size = size;
     pos_arr_ptr->elem_pos_arr = pos_arr;
+
+    // Return the element position array structure
     return pos_arr_ptr;
 }
 
 /**
  * Finds the minimum element in a matrix.
+ *
+ * This function iterates over all elements in the matrix and returns the smallest one.
  *
  * @param mat A pointer to the matrix to find the minimum element in.
  *
@@ -1527,15 +1939,25 @@ elem_pos_array *matrix_find(const Matrix *mat, MATRIX_TYPE value, __matrix_find_
  * @throws INPUT_NULL_009 If the input matrix or its data is NULL.
  */
 MATRIX_TYPE matrix_min(const Matrix *mat) {
+    // Check if the input matrix or its data is NULL
     if (mat == NULL || mat->data == NULL) {
+        // If either is NULL, return an error with a warning message
         PWARNING_RETURN_ZERO(INPUT_NULL_009, VAR_NAME(mat), VAR_NAME(mat->data), __FILE__, __FUNCTION__, __LINE__);
     }
+
+    // Initialize the minimum value to the first element of the matrix
     MATRIX_TYPE min = mat->data[0];
+
+    // Iterate over all elements in the matrix
     for (int i = 1; i < mat->rows * mat->cols; i++) {
+        // Check if the current element is smaller than the current minimum
         if (mat->data[i] < min) {
+            // If it is, update the minimum value
             min = mat->data[i];
         }
     }
+
+    // Return the minimum value found
     return min;
 }
 
@@ -1543,21 +1965,29 @@ MATRIX_TYPE matrix_min(const Matrix *mat) {
  * Finds the maximum element in a matrix.
  *
  * @param mat A pointer to the matrix to find the maximum element in.
- *
  * @return The maximum element in the matrix.
- *
  * @throws INPUT_NULL_009 If the input matrix or its data is NULL.
  */
 MATRIX_TYPE matrix_max(const Matrix *mat) {
+    // Check if the input matrix or its data is NULL
     if (mat == NULL || mat->data == NULL) {
+        // If either is NULL, return an error with a warning message
         PWARNING_RETURN_ZERO(INPUT_NULL_009, VAR_NAME(mat), VAR_NAME(mat->data), __FILE__, __FUNCTION__, __LINE__);
     }
+
+    // Initialize the maximum value to the first element of the matrix
     MATRIX_TYPE max = mat->data[0];
+
+    // Iterate over all elements in the matrix
     for (int i = 1; i < mat->rows * mat->cols; i++) {
+        // Check if the current element is greater than the current maximum
         if (mat->data[i] > max) {
+            // If it is, update the maximum value
             max = mat->data[i];
         }
     }
+
+    // Return the maximum value found
     return max;
 }
 
@@ -1585,4 +2015,96 @@ elem_pos_array *matrix_min_array(const Matrix *mat) {
  */
 elem_pos_array *matrix_max_array(const Matrix *mat) {
     return matrix_find(mat, matrix_max(mat), matrix_default_find_cmp);
+}
+
+/**
+ * Performs element-wise matrix multiplication between two matrices.
+ *
+ * This function multiplies the corresponding elements of two matrices
+ * and returns the resulting matrix.
+ *
+ * @param a A pointer to the first matrix.
+ * @param b A pointer to the second matrix.
+ *
+ * @return A pointer to the resulting matrix.
+ *
+ * @throws INPUT_NULL_005 If either of the input matrices is NULL.
+ * @throws INPUT_NULL_005 If either of the input matrices' data is NULL.
+ * @throws MATRIX_SIZE_ERROR_001 If the input matrices are not the same size.
+ */
+Matrix *matrix_dot_mul(const Matrix *a, const Matrix *b) {
+    // Check if either of the input matrices is NULL
+    if (a == NULL || b == NULL) {
+        PWARNING_RETURN(INPUT_NULL_005, VAR_NAME(a), VAR_NAME(b), __FILE__, __FUNCTION__, __LINE__);
+    }
+
+    // Check if either of the input matrices' data is NULL
+    if (a->data == NULL || b->data == NULL) {
+        PWARNING_RETURN(INPUT_NULL_005, VAR_NAME(a->data), VAR_NAME(b->data), __FILE__, __FUNCTION__, __LINE__);
+    }
+
+    // Check if the input matrices are the same size
+    if (!matrix_size_cmp(a->size, b->size)) {
+        PERROR(MATRIX_SIZE_ERROR_001, __FILE__, __FUNCTION__, __LINE__);
+    }
+
+    Matrix *temp = matrix_copy(a);
+    if (temp == NULL || temp->data == NULL) {
+        PWARNING_RETURN(MALLOC_FAILURE_002, VAR_NAME(temp), __FILE__, __FUNCTION__, __LINE__);
+    }
+
+    // Perform element-wise multiplication
+    for (int i = 0; i < a->rows * a->cols; i++) {
+        temp->data[i] *= b->data[i];
+    }
+
+    // Return the resulting matrix
+    return temp;
+}
+
+/**
+ * Performs element-wise matrix multiplication between two matrices and assigns the result to the first matrix.
+ *
+ * This function multiplies the corresponding elements of two matrices and stores the result in the first matrix.
+ *
+ * @param a A pointer to the first matrix, which will be modified to hold the result.
+ * @param b A pointer to the second matrix.
+ *
+ * @return None
+ */
+void matrix_dot_mul_void(Matrix *a, const Matrix *b) {
+    // Create a temporary matrix to hold the result of the multiplication
+    Matrix *temp = matrix_dot_mul(a, b);
+
+    // Copy the result from the temporary matrix to the first matrix and free the temporary matrix
+    matrix_copy_free(&a, &temp);
+}
+
+/**
+ * Applies a given function to each element of a matrix.
+ *
+ * This function iterates over each element of the input matrix, applies the
+ * given function to the element and the provided argument, and stores the
+ * result back in the matrix.
+ *
+ * @param mat A pointer to the matrix to be modified.
+ * @param arg A void pointer to an argument to be passed to the function.
+ * @param func A pointer to a function that takes a MATRIX_TYPE and a void*
+ *             as arguments and returns a MATRIX_TYPE.
+ *
+ * @return None
+ *
+ * @throws INPUT_NULL_005 If the input matrix or its data is NULL.
+ */
+void matrix_change(Matrix *mat, void *arg, MATRIX_TYPE (*func)(MATRIX_TYPE, void *)) {
+    // Check if the input matrix or its data is NULL
+    if (mat == NULL || mat->data == NULL) {
+        PWARNING_RETURN_NO_NULL(INPUT_NULL_005, VAR_NAME(mat), VAR_NAME(mat->data), __FILE__, __FUNCTION__, __LINE__);
+    }
+
+    // Iterate over each element of the matrix
+    for (int i = 0; i < mat->rows * mat->cols; i++) {
+        // Apply the given function to the current element and store the result
+        mat->data[i] = func(mat->data[i], arg);
+    }
 }

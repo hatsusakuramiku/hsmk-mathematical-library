@@ -25,9 +25,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-
 /**
- * Creates a new Pair object with the specified left and right elements.
+ * @brief Creates a new Pair object with the specified left and right elements.
+ *
+ * This function dynamically allocates memory for a new Pair object and initializes
+ * its left and right elements with the provided values.
  *
  * @param left The left element of the pair.
  * @param right The right element of the pair.
@@ -36,17 +38,29 @@
  *
  * @throws MALLOC_FAILURE_002 If memory allocation fails.
  */
-Pair* make_pair(pair_element_t left, pair_element_t right) {
-    Pair* pair = (Pair*)malloc(sizeof(Pair));
+Pair *make_pair(pair_element_t left, pair_element_t right) {
+    // Dynamically allocate memory for a new Pair object
+    Pair *pair = (Pair *) malloc(sizeof(Pair));
+
+    // Check if memory allocation failed
     if (pair == NULL) {
+        // Print a warning message and return NULL
         PWARNING_RETURN_MALLOC(pair);
     }
+
+    // Set the left and right elements of the Pair object
     pair->left = left;
     pair->right = right;
+
+    // Return the newly created Pair object
     return pair;
 }
+
 /**
  * Swaps the left and right elements of a Pair object.
+ *
+ * This function takes a pointer to a Pair object as input and swaps its left and right elements.
+ * If the input Pair object is NULL, the function returns immediately without performing any operation.
  *
  * @param pair The Pair object whose elements are to be swapped.
  *
@@ -55,15 +69,25 @@ Pair* make_pair(pair_element_t left, pair_element_t right) {
  * @throws None
  */
 void swap_pair(Pair *pair) {
+    // Check if the input Pair object is NULL to prevent null pointer dereferences
     if (pair == NULL) {
+        // If the Pair object is NULL, return immediately without performing any operation
         return;
     }
+
+    // Create a temporary variable to hold the value of the left element
     pair_element_t temp = pair->left;
-    pair->left = pair->right;
-    pair->right = temp;
+
+    // Swap the left and right elements of the Pair object
+    pair->left = pair->right; // Assign the value of the right element to the left element
+    pair->right = temp; // Assign the value of the temporary variable to the right element
 }
+
 /**
  * Frees the memory allocated for a Pair object and its elements.
+ *
+ * This function checks if the Pair object and its elements are not NULL before attempting to free them.
+ * It is safe to call this function with a NULL Pair object, as it will simply return without doing anything.
  *
  * @param pair The Pair object to be freed.
  *
@@ -72,14 +96,24 @@ void swap_pair(Pair *pair) {
  * @throws None
  */
 void free_pair(Pair *pair) {
+    // Check if the Pair object is NULL before attempting to free it
     if (pair == NULL) {
+        // If the Pair object is NULL, return immediately
         return;
     }
+
+    // Check if the left element of the Pair object is not NULL before attempting to free it
     if (pair->left != NULL) {
+        // Free the left element of the Pair object
         FREE(pair->left);
     }
+
+    // Check if the right element of the Pair object is not NULL before attempting to free it
     if (pair->right != NULL) {
+        // Free the right element of the Pair object
         FREE(pair->right);
     }
+
+    // Finally, free the Pair object itself
     FREE(pair);
 }
