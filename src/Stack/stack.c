@@ -1,22 +1,24 @@
-// Copyright  2024 hatsusakuramiku
-//
-// Permission is hereby granted, free of charge, to any person obtaining a copy
-// of this software and associated documentation files (the "Software"), to deal
-// in the Software without restriction, including without limitation the rights
-// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-// copies of the Software, and to permit persons to whom the Software is
-// furnished to do so, subject to the following conditions:
-//
-// The above copyright notice and this permission notice shall be included in all
-// copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-// SOFTWARE.
+/*
+ * Copyright  2024 hatsusakuramiku
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
 
 #include <stdio.h>
 #include "constDef.h"
@@ -49,6 +51,15 @@ Stack *stackInit() {
     return stack;
 }
 
+/**
+ * Clears the contents of a stack by popping all elements.
+ *
+ * @param stack The stack to be cleared.
+ *
+ * @return None
+ *
+ * @throws None
+ */
 void stackClear(Stack *stack) {
     if (stack == NULL) {
         return;
@@ -58,14 +69,34 @@ void stackClear(Stack *stack) {
     }
 }
 
-void stackDestroy(Stack *stack) {
-    if (stack == NULL) {
+/**
+ * Destroys a stack by clearing its contents and freeing the allocated memory.
+ *
+ * @param stack A double pointer to the stack to be destroyed.
+ *
+ * @return None.
+ *
+ * @throws None.
+ */
+void stackDestroy(Stack **stack) {
+    if (stack == NULL || *stack == NULL) {
         return;
     }
-    stackClear(stack);
-    free(stack);
+    stackClear(*stack);
+    FREE(*stack);
 }
 
+/**
+ * Pushes an element onto the top of the stack.
+ *
+ * @param stack The stack to push the element onto.
+ * @param elem The element to be pushed onto the stack.
+ * @param elemSize The size of the element in bytes.
+ *
+ * @return None
+ *
+ * @throws MALLOC_FAILURE_002 if memory allocation fails.
+ */
 void stackPush(Stack *stack, stackElem elem, size_t elemSize) {
     if (stack == NULL) {
         return;
@@ -76,7 +107,7 @@ void stackPush(Stack *stack, stackElem elem, size_t elemSize) {
     }
     stackElem new_elem = malloc(elemSize);
     if (new_elem == NULL) {
-        free(node);
+        FREE(node);
         PWARNING_RETURN_MALLOC_NO_NULL(new_elem);
     }
     memcpy(new_elem, elem, elemSize);
@@ -90,6 +121,15 @@ void stackPush(Stack *stack, stackElem elem, size_t elemSize) {
     stack->size++;
 }
 
+/**
+ * Removes and returns the top element from the stack.
+ *
+ * @param stack The stack from which to pop the element.
+ *
+ * @return The top element of the stack, or NULL if the stack is empty.
+ *
+ * @throws None.
+ */
 stackElem stackPop(Stack *stack) {
     if (stack == NULL) {
         return NULL;
@@ -104,10 +144,19 @@ stackElem stackPop(Stack *stack) {
         stack->tail = NULL;
     }
     stackElem elem = node->data;
-    free(node);
+    FREE(node);
     return elem;
 }
 
+/**
+ * Returns the bottom element of the stack.
+ *
+ * @param stack The stack from which to retrieve the bottom element.
+ *
+ * @return The bottom element of the stack, or NULL if the stack is empty.
+ *
+ * @throws None.
+ */
 stackElem stackBottom(Stack *stack) {
     if (stack == NULL || stack->size == 0) {
         return NULL;
@@ -115,6 +164,15 @@ stackElem stackBottom(Stack *stack) {
     return stack->tail->data;
 }
 
+/**
+ * Returns the top element of the stack.
+ *
+ * @param stack The stack from which to retrieve the top element.
+ *
+ * @return The top element of the stack, or NULL if the stack is empty.
+ *
+ * @throws None.
+ */
 stackElem stackTop(Stack *stack) {
     if (stack == NULL || stack->size == 0) {
         return NULL;
@@ -122,13 +180,32 @@ stackElem stackTop(Stack *stack) {
     return stack->head->data;
 }
 
+
+/**
+ * Returns the number of elements in the stack.
+ *
+ * @param stack The stack to retrieve the size from.
+ *
+ * @return The number of elements in the stack, or -1 if the stack is NULL.
+ *
+ * @throws None.
+ */
 int stackSize(Stack *stack) {
     if (stack == NULL) {
-        return 0;
+        return -1;
     }
     return stack->size;
 }
 
+/**
+ * Reverses the order of elements in the stack.
+ *
+ * @param stack The stack to be reversed.
+ *
+ * @return None.
+ *
+ * @throws None.
+ */
 void stackSwap(Stack *stack) {
     if (stack == NULL || stack->size < 2) {
         return;
@@ -149,6 +226,15 @@ void stackSwap(Stack *stack) {
     stack->head = prev;
 }
 
+/**
+ * Removes and returns the top element from the stack along with its size.
+ *
+ * @param stack The stack from which to pop the element.
+ *
+ * @return The top element of the stack along with its size, or {NULL, 0} if the stack is empty.
+ *
+ * @throws None.
+ */
 stackElemWithSize stackPopWithSize(Stack *stack) {
     if (stack == NULL || stack->size == 0) {
         stackElemWithSize tmp = {NULL, 0};
@@ -166,6 +252,15 @@ stackElemWithSize stackPopWithSize(Stack *stack) {
     return elem;
 }
 
+/**
+ * Returns the bottom element of the stack along with its size.
+ *
+ * @param stack The stack from which to retrieve the bottom element.
+ *
+ * @return The bottom element of the stack along with its size, or {NULL, 0} if the stack is empty.
+ *
+ * @throws None.
+ */
 stackElemWithSize stackBotWithSizetom(Stack *stack) {
     if (stack == NULL || stack->size == 0) {
         stackElemWithSize tmp = {NULL, 0};
@@ -175,6 +270,15 @@ stackElemWithSize stackBotWithSizetom(Stack *stack) {
     return elem;
 }
 
+/**
+ * Returns the top element of the stack along with its size.
+ *
+ * @param stack The stack from which to retrieve the top element.
+ *
+ * @return The top element of the stack along with its size, or {NULL, 0} if the stack is empty.
+ *
+ * @throws None
+ */
 stackElemWithSize stackTopWithSize(Stack *stack) {
     if (stack == NULL || stack->size == 0) {
         stackElemWithSize tmp = {NULL, 0};
@@ -182,4 +286,20 @@ stackElemWithSize stackTopWithSize(Stack *stack) {
     }
     stackElemWithSize elem = {stack->head->data, stack->head->elemSize};
     return elem;
+}
+
+/**
+ * Checks if a stack is empty.
+ *
+ * @param stack The stack to check for emptiness.
+ *
+ * @return 1 if the stack is empty, 0 if it's not, or -1 if the stack is NULL.
+ *
+ * @throws None
+ */
+int stackIsEmpty(Stack *stack) {
+    if (stack == NULL) {
+        return -1;
+    }
+    return stack->size == 0;
 }

@@ -1,34 +1,30 @@
-// Copyright  2024 hatsusakuramiku
-//
-// Permission is hereby granted, free of charge, to any person obtaining a copy
-// of this software and associated documentation files (the "Software"), to deal
-// in the Software without restriction, including without limitation the rights
-// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-// copies of the Software, and to permit persons to whom the Software is
-// furnished to do so, subject to the following conditions:
-//
-// The above copyright notice and this permission notice shall be included in all
-// copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-// SOFTWARE.
-
-//
-// Created by 79240 on 24-8-27.
-//
+/*
+ * Copyright  2024 hatsusakuramiku
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
 
 #include <stdio.h>
-#include "constDef.h"
 #include "sort.h"
-#include "memswap.h"
-#include <stdalign.h>
 
-#include "matrix.h"
+#include "constDef.h"
+#include "memswap.h"
 
 // 默认比较函数
 
@@ -66,7 +62,7 @@ int default_compare_example(const void *a, const void *b) {
 int default_compare_example_r(const void *a, const void *b, const void *arg) {
     const double *p1 = *(double **) a;
     const double *p2 = *(double **) b;
-    const int index = *(int *) arg;
+    const int index = (int) arg;
     if (p1[index] < p2[index]) {
         return -1;
     }
@@ -286,13 +282,20 @@ static void heapsort_r(void *array, size_t n, size_t size, default_compare_r cmp
     }
 }
 
-struct cs_msort_param {
+// This is a structure used by the msort function to sort an array of elements
+struct msort_param {
+    // size is the number of elements in the array
     size_t size;
+    // type is a enumeration that specifies the type of swap to perform
     enum swap_type_t type;
+    // comp_func is a comparison function used to compare the elements
     default_compare_r comp_func;
+    // arg is an argument passed to the comparison function
     void *arg;
+    // temp is a temporary array used to store the sorted elements
     char *temp;
 };
+
 
 /**
  * Recursively performs a merge sort on the given array using a temporary buffer.
@@ -305,7 +308,7 @@ struct cs_msort_param {
  *
  * @throws None
  */
-static void msort_with_tmp(const struct cs_msort_param *param, void *b, size_t n) {
+static void msort_with_tmp(const struct msort_param *param, void *b, size_t n) {
     char *b1, *b2;
     size_t n1, n2;
 
@@ -399,7 +402,7 @@ static void msort_with_tmp(const struct cs_msort_param *param, void *b, size_t n
  *
  * @throws None
  */
-static void __attribute__((used)) indirect_msort_with_tmp(const struct cs_msort_param *param, void *array, size_t n,
+static void __attribute__((used)) indirect_msort_with_tmp(const struct msort_param *param, void *array, size_t n,
                                                           size_t size) {
     char *ip = (char *) array;
     void **tp = (void **) (param->temp + n * sizeof(void *));
@@ -472,7 +475,7 @@ void quickSort_r(void *array, void *arg, size_t elemNum, size_t elemSize, defaul
     }
 
     if (elemSize > INDIRECT_SORT_SIZE_THRES) {
-        const struct cs_msort_param msort_param = {
+        const struct msort_param msort_param = {
             .size = elemSize,
             .type = get_swap_type(array, elemSize),
             .comp_func = compare,
@@ -481,7 +484,7 @@ void quickSort_r(void *array, void *arg, size_t elemNum, size_t elemSize, defaul
         };
         indirect_msort_with_tmp(&msort_param, array, elemNum, elemSize);
     } else {
-        const struct cs_msort_param msort_param = {
+        const struct msort_param msort_param = {
             .size = elemSize,
             .type = get_swap_type(array, elemSize),
             .comp_func = compare,
@@ -512,15 +515,25 @@ void quickSort(void *array, size_t elemNum, size_t elemSize, default_compare com
 ///Quick sort block end
 
 
-void boubleSort(void *array, size_t elemNum, size_t elemSize, default_compare compare) {
+/**
+ * Sorts an array of elements using the bubble sort algorithm.
+ *
+ * @param array The array to be sorted.
+ * @param elemNum The number of elements in the array.
+ * @param elemSize The size of each element in the array.
+ * @param compare A function that compares two elements.
+ *
+ * @return None
+ */
+void bubbleSort(void *array, size_t elemNum, size_t elemSize, default_compare compare) {
     if (elemNum <= 1 || array == NULL) {
         return;
     }
     for (size_t i = 0; i < elemNum; i++) {
         int flag = 0;
         for (size_t j = 0; j < elemNum - 1 - i; j++) {
-            if (compare(array + j * elemSize, array + (j + 1) * elemSize) > 0) {
-                _memswap(array + j * elemSize, array + (j + 1) * elemSize, elemSize);
+            if (compare((char *) array + j * elemSize, (char *) array + (j + 1) * elemSize) > 0) {
+                _memswap((char *) array + j * elemSize, (char *) array + (j + 1) * elemSize, elemSize);
                 flag = 1;
             }
         }
@@ -530,20 +543,122 @@ void boubleSort(void *array, size_t elemNum, size_t elemSize, default_compare co
     }
 }
 
-void boubleSort_r(void *array, void *arg, size_t elemNum, size_t elemSize, default_compare_r compare) {
+/**
+ * Recursively sorts an array of elements using the bubble sort algorithm.
+ *
+ * @param array The array to be sorted.
+ * @param arg An additional argument to be passed to the comparison function.
+ * @param elemNum The number of elements in the array.
+ * @param elemSize The size of each element in the array.
+ * @param compare A function that compares two elements.
+ *
+ * @return None
+ */
+void bubbleSort_r(void *array, void *arg, size_t elemNum, size_t elemSize, default_compare_r compare) {
     if (elemNum <= 1 || array == NULL) {
         return;
     }
     for (size_t i = 0; i < elemNum; i++) {
         int flag = 0;
         for (size_t j = 0; j < elemNum - 1 - i; j++) {
-            if (compare(array + j * elemSize, array + (j + 1) * elemSize, arg) > 0) {
-                _memswap(array + j * elemSize, array + (j + 1) * elemSize, elemSize);
+            if (compare((char *) array + j * elemSize, (char *) array + (j + 1) * elemSize, arg) > 0) {
+                _memswap((char *) array + j * elemSize, (char *) array + (j + 1) * elemSize, elemSize);
                 flag = 1;
             }
         }
         if (!flag) {
             return;
         }
+    }
+}
+
+/**
+ * Sorts an array of elements using the insertion sort algorithm.
+ *
+ * @param array The array to be sorted.
+ * @param elemNum The number of elements in the array.
+ * @param elemSize The size of each element in the array.
+ * @param compare A function that compares two elements.
+ *
+ * @return None
+ *
+ * @throws MALLOC_FAILURE_002 If memory allocation fails.
+ */
+void insertionSort(void *array, size_t elemNum, size_t elemSize, default_compare compare) {
+    return insertionSort_r(array, NULL, elemNum, elemSize, (default_compare_r) compare);
+}
+
+/**
+ * Recursively sorts an array of elements using the insertion sort algorithm.
+ *
+ * @param array The array to be sorted.
+ * @param arg An additional argument to be passed to the comparison function.
+ * @param elemNum The number of elements in the array.
+ * @param elemSize The size of each element in the array.
+ * @param compare A function that compares two elements.
+ *
+ * @return None
+ *
+ * @throws MALLOC_FAILURE_002 If memory allocation fails.
+ */
+void insertionSort_r(void *array, void *arg, size_t elemNum, size_t elemSize, default_compare_r compare) {
+    if (elemNum <= 1 || array == NULL || compare == NULL) {
+        return;
+    }
+    char *key = (char *) malloc(sizeof(char) * elemSize);
+    PWARNING_RETURN_MALLOC_NO_NULL(key);
+    for (size_t i = 1; i < elemNum; ++i) {
+        _memswap(key, (char *) array + i * elemSize, elemSize);
+        size_t j = i - 1;
+        while (compare((char *) array + j * elemSize, key, arg) > 0) {
+            _memswap((char *) array + j * elemSize, (char *) array + (j + 1) * elemSize, elemSize);
+            j--;
+        }
+        _memswap((char *) array + (j + 1) * elemSize, key, elemSize);
+    }
+    FREE(key);
+}
+
+/**
+ * Sorts an array of elements using the selection sort algorithm.
+ *
+ * @param array The array to be sorted.
+ * @param elemNum The number of elements in the array.
+ * @param elemSize The size of each element in the array.
+ * @param compare A function that compares two elements.
+ *
+ * @return None
+ *
+ * @throws None
+ */
+void selectionSort(void *array, size_t elemNum, size_t elemSize, default_compare compare) {
+    return selectionSort_r(array, NULL, elemNum, elemSize, (default_compare_r) compare);
+}
+
+/**
+ * Recursively sorts an array of elements using the selection sort algorithm.
+ *
+ * @param array The array to be sorted.
+ * @param arg An additional argument to be passed to the comparison function.
+ * @param elemNum The number of elements in the array.
+ * @param elemSize The size of each element in the array.
+ * @param compare A function that compares two elements.
+ *
+ * @return None
+ *
+ * @throws None
+ */
+void selectionSort_r(void *array, void *arg, size_t elemNum, size_t elemSize, default_compare_r compare) {
+    if (elemNum <= 1 || array == NULL || compare == NULL) {
+        return;
+    }
+    for (size_t i = 0; i < elemNum - 1; i++) {
+        size_t min = i;
+        for (size_t j = i + 1; j < elemNum; j++) {
+            if (compare((char *) array + j * elemSize, (char *) array + min * elemSize, arg) < 0) {
+                min = j;
+            }
+        }
+        _memswap((char *) array + i * elemSize, (char *) array + min * elemSize, elemSize);
     }
 }
