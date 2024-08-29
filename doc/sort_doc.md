@@ -200,7 +200,7 @@ Matrix rows: 4, cols: 4
 ### **quickSort**
 
 说明： 快速排序，参考开源项目[glibc](https://github.com/bminor/glibc/blob/master)
-的[实现](https://github.com/bminor/glibc/blob/master/sysdeps/posix/qsort.c)。这个排序算法非常快，平均时间复杂度为 O(n log
+的[实现](https://github.com/bminor/glibc/blob/master/stdlib/qsort.c)。这个排序算法非常快，平均时间复杂度为 O(n log
 n)。
 
 函数原型：
@@ -256,7 +256,7 @@ Matrix rows: 4, cols: 4
 ### **quickSort_r**
 
 说明： 快速排序，参考开源项目[glibc](https://github.com/bminor/glibc/blob/master)
-的[实现](https://github.com/bminor/glibc/blob/master/sysdeps/posix/qsort.c)。这个排序算法非常快，平均时间复杂度为 O(n log
+的[实现](https://github.com/bminor/glibc/blob/master/stdlib/qsort.c)。这个排序算法非常快，平均时间复杂度为 O(n log
 n)。
 
 函数原型：
