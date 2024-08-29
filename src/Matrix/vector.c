@@ -20,9 +20,6 @@
  * SOFTWARE.
  */
 
-//
-// Created by 79240 on 24-8-20.
-//
 #include <malloc.h>
 #include "constDef.h"
 #include "vector.h"
