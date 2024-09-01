@@ -39,6 +39,19 @@
 /// Matrix sort compare function type
 typedef int (*__matrix_cmp_func)(void *, const void *, const void *);
 
+/**
+ * @brief A function pointer type for comparing matrix elements.
+ *
+ * This function pointer type is used to define a custom comparison function for finding matrix elements.
+ * The function takes two `const void*` pointers as arguments, representing the elements to be compared.
+ * The function should return an integer value:
+ * - 1 if the elements satisfy the condition
+ * - 0 if the elements do not satisfy the condition
+ *
+ * First argument: Pointer to the first element to compare.
+ * Second argument: Pointer to the second element to compare.
+ * @return An integer value: 1 if the elements satisfy the condition, 0 if they do not.
+ */
 typedef int (*__matrix_find_cmp_func)(const void *, const void *);
 
 #ifndef size_t
@@ -112,7 +125,7 @@ Matrix *matrix_gen(const unsigned int rows, const unsigned int cols, const MATRI
 Matrix *matrix_gen_r(const unsigned int rows, const unsigned int cols, const MATRIX_TYPE *data,
                      const unsigned int data_rows,
                      const unsigned int data_cols); // generate matrix
-Matrix *matrix_copy(const Matrix *_sourse_mat); // copy matrix
+Matrix *matrix_copy(const Matrix *_source_mat); // copy matrix
 void matrix_copy_r(Matrix **dest, const Matrix *src);
 
 void matrix_copy_free(Matrix **dest, Matrix **src); // copy matrix
@@ -149,7 +162,6 @@ Matrix *matrix_transpose_r(const Matrix *mat); // matrix transpose
 MATRIX_TYPE **matrix_to_2D_array(const Matrix *mat); // matrix to 2D array
 Matrix *matrix_from_2D_array(MATRIX_TYPE **array, const unsigned int rows, const unsigned int cols);
 
-// 2D array to matrix
 Matrix *matrix_splicing(const Matrix *a, const Matrix *b, const unsigned int aix); // matrix splicing
 Matrix *matrix_cat(const Matrix *a, const unsigned int begin_row, const unsigned int end_row,
                    const unsigned int begin_col,

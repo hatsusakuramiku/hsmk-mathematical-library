@@ -29,6 +29,7 @@
 #include <stdlib.h>
 #include <stdarg.h>
 #include <math.h>
+#include <tgmath.h>
 
 #include "list.h"
 
@@ -542,24 +543,24 @@ Matrix *matrix_gen_r(const unsigned int rows, const unsigned int cols, const MAT
  * This function creates a deep copy of the input matrix, allocating new memory for the copy.
  * If the input matrix is NULL, it throws a warning and returns NULL.
  *
- * @param _sourse_mat The matrix to be copied.
+ * @param _source_mat The matrix to be copied.
  * @return A pointer to the copied matrix, or NULL if memory allocation fails.
  * @throws PWARNING_RETURN_INPUT_NO_NULL If the input matrix is NULL.
  */
-Matrix *matrix_copy(const Matrix *_sourse_mat) {
+Matrix *matrix_copy(const Matrix *_source_mat) {
     // Check if the input matrix is NULL and throw a warning if so
-    PWARNING_RETURN_INPUT(_sourse_mat);
+    PWARNING_RETURN_INPUT(_source_mat);
     Matrix *new_mat = malloc(sizeof(Matrix));
     PWARNING_RETURN_MALLOC(new_mat);
-    new_mat->rows = _sourse_mat->rows;
-    new_mat->cols = _sourse_mat->cols;
-    new_mat->size = _sourse_mat->size;
-    new_mat->data = malloc(sizeof(MATRIX_TYPE) * _sourse_mat->rows * _sourse_mat->cols);
+    new_mat->rows = _source_mat->rows;
+    new_mat->cols = _source_mat->cols;
+    new_mat->size = _source_mat->size;
+    new_mat->data = malloc(sizeof(MATRIX_TYPE) * _source_mat->rows * _source_mat->cols);
     if (new_mat->data == NULL) {
         matrix_free(&new_mat);
         return NULL;
     }
-    memcpy(new_mat->data, _sourse_mat->data, sizeof(MATRIX_TYPE) * _sourse_mat->rows * _sourse_mat->cols);
+    memcpy(new_mat->data, _source_mat->data, sizeof(MATRIX_TYPE) * _source_mat->rows * _source_mat->cols);
     return new_mat;
 }
 
@@ -1796,7 +1797,9 @@ int matrix_rank(const Matrix *mat) {
     matrix_gauss_elimination(temp_mat);
 
     // Print the transformed matrix (for debugging purposes)
-    matrix_print(temp_mat);
+    {
+        // matrix_print(temp_mat);
+    }
 
     // Initialize the rank to 0
     int rank = 0;
@@ -2154,30 +2157,98 @@ void matrix_swap_elem(Matrix *mat, elem_pos pos1, elem_pos pos2) {
     mat->data[IDX(mat->cols, pos2.row, pos2.col)] = temp;
 }
 
+/**
+ * Calculates the determinant of a matrix using Gaussian elimination.
+ *
+ * @param mat The input matrix.
+ * @return The determinant of the matrix.
+ */
 static inline MATRIX_TYPE __matrix_det(Matrix *mat) {
+    // Get the number of rows and columns in the matrix
     const int rows = mat->rows, cols = mat->cols;
+
+    // Base case: 2x2 matrix
     if (rows == 2) {
+        // Calculate the determinant directly
         return mat->data[IDX(cols, 0, 0)] * mat->data[IDX(cols, 1, 1)] - mat->data[IDX(cols, 0, 1)] * mat->data[
                    IDX(cols, 1, 0)];
     }
+    // Base case: 1x1 matrix
     if (rows == 1) {
+        // The determinant is the single element
         return mat->data[0];
     }
 
+    // Initialize the determinant and the number of calculations
     MATRIX_TYPE det = 1.0;
-    int caculate_times = 0;
-    Matrix *new_mat = matrix_copy(mat);
-    // Sort the matrix by the number of zeros
-    matrix_sort_by_zeros_num(new_mat);
+    int calculate_times = 0;
 
+    // Create a copy of the input matrix
+    Matrix *new_mat = matrix_copy(mat);
+
+    // Create a temporary matrix to store the number of zeros in each row
+    const int temp_cols = 2;
+    Matrix *temp = matrix_gen(rows, temp_cols, NULL);
+    if (temp == NULL || temp->data == NULL) {
+        // Handle memory allocation failure
+        matrix_free(&temp);
+        PWARNING_RETURN_ZERO(MALLOC_FAILURE_001, VAR_NAME(temp), __FILE__, __FUNCTION__, __LINE__);
+    }
+
+    // Initialize the maximum and minimum number of zeros
+    int max_zero_num = 0;
+    int min_zero_num = 0;
+
+    // Iterate through the matrix to count the number of zeros in each row
+    for (int i = 0; i < rows; i++) {
+        temp->data[IDX(temp_cols, i, 1)] = i;
+        for (int j = 0; j < cols; j++) {
+            if (DOUBLE_COMP_EQ2ZERO(mat->data[IDX(cols, i, j)])) {
+                // Increment the count of zeros for this row
+                temp->data[IDX(temp_cols, i, 0)] += 1.0;
+                continue;
+            }
+            // If a non-zero element is found, or we've reached the end of the row, break out of the loop
+            if (mat->data[IDX(cols, i, j)] != 0 || j == cols - 1) {
+                break;
+            }
+        }
+        // Update the maximum and minimum number of zeros
+        if (temp->data[IDX(temp_cols, i, 0)] > max_zero_num) {
+            max_zero_num = temp->data[IDX(1, i, 0)];
+        }
+        if (temp->data[IDX(temp_cols, i, 0)] < min_zero_num) {
+            min_zero_num = temp->data[IDX(1, i, 0)];
+        }
+    }
+
+    // If the maximum and minimum number of zeros are different, sort the rows by the number of zeros
+    if (max_zero_num != min_zero_num) {
+        matrix_sort_by_cols_values(temp, 0);
+        for (int i = rows - 1; i >= 0; i--) {
+            if ((int) temp->data[IDX(temp_cols, i, 1)] == i) {
+                continue;
+            }
+            // Swap the rows to put the row with the most zeros at the top
+            matrix_swap(new_mat, 0, (int) temp->data[IDX(temp_cols, i, 1)], i);
+            calculate_times++;
+            for (int j = 0; j <= i; j++) {
+                if ((int) temp->data[IDX(temp_cols, j, 1)] == i) {
+                    temp->data[IDX(temp_cols, j, 1)] = temp->data[IDX(temp_cols, i, 1)];
+                    break;
+                }
+            }
+        }
+    }
+
+    // Perform Gaussian elimination
     const int min = MIN(rows, cols);
-    // Iterate through the matrix
     for (int i = 0; i < min; i++) {
         // Skip if the current element is zero
         if (DOUBLE_COMP_EQ2ZERO(new_mat->data[IDX(cols, i, i)])) {
             continue;
         }
-        // Iterate through the matrix
+        // Iterate through the matrix to eliminate the elements below the pivot
         for (int j = i + 1; j < cols; j++) {
             // Skip if the current element is zero
             if (DOUBLE_COMP_EQ2ZERO(new_mat->data[IDX(cols, j, i)])) {
@@ -2185,21 +2256,41 @@ static inline MATRIX_TYPE __matrix_det(Matrix *mat) {
             }
             // Calculate the coefficient
             const MATRIX_TYPE coefficient = new_mat->data[IDX(cols, j, i)] / new_mat->data[IDX(cols, i, i)];
-            // Iterate through the matrix
+            // Eliminate the element
             matrix_gauss_elimination_(new_mat, i, j, i, coefficient);
-            caculate_times++;
+            calculate_times++;
         }
+        // Update the determinant
         det *= new_mat->data[IDX(cols, i, i)];
     }
-    return det;
+
+    // Return the determinant, taking into account the number of row swaps
+    return det * pow(-1, calculate_times);
 }
 
+
+/**
+ * Calculates the determinant of a matrix.
+ *
+ * This function checks for invalid input and then calls the internal
+ * __matrix_det function to perform the actual calculation.
+ *
+ * @param mat The input matrix.
+ * @return The determinant of the matrix.
+ */
 MATRIX_TYPE matrix_det(Matrix *mat) {
+    // Check for null input
     if (mat == NULL || mat->data == NULL) {
+        // If input is null, print a warning and return 0
         PWARNING_RETURN_ZERO(INPUT_NULL_009, VAR_NAME(mat), VAR_NAME(mat->data), __FILE__, __FUNCTION__, __LINE__);
     }
+
+    // Check if matrix is square
     if (mat->rows != mat->cols) {
+        // If matrix is not square, print an error and exit
         PERROR(MATRIX_SIZE_ERROR_002, VAR_NAME(mat), __FILE__, __FUNCTION__, __LINE__);
     }
+
+    // Perform the actual determinant calculation
     return __matrix_det(mat);
 }
