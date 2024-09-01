@@ -73,7 +73,6 @@ inline int matrix_size_cmp(const matrix_size a, const matrix_size b) {
     return 1;
 }
 
-
 /**
  * @brief Compare two arrays of integers or doubles.
  *
@@ -113,7 +112,6 @@ static int array_cmp(const void *a, const void *b, enum ARRAY_CMP_TYPE type) {
     // Return 1 if the type is neither _INT_ nor _DOUBLE_
     return 1;
 }
-
 
 /**
  * Creates a matrix filled with ones.
@@ -551,10 +549,18 @@ Matrix *matrix_gen_r(const unsigned int rows, const unsigned int cols, const MAT
 Matrix *matrix_copy(const Matrix *_sourse_mat) {
     // Check if the input matrix is NULL and throw a warning if so
     PWARNING_RETURN_INPUT(_sourse_mat);
-
-    // Create a new matrix with the same dimensions and data as the input matrix
-    // The matrix_gen function will allocate new memory for the copy
-    return matrix_gen(_sourse_mat->rows, _sourse_mat->cols, _sourse_mat->data);
+    Matrix *new_mat = malloc(sizeof(Matrix));
+    PWARNING_RETURN_MALLOC(new_mat);
+    new_mat->rows = _sourse_mat->rows;
+    new_mat->cols = _sourse_mat->cols;
+    new_mat->size = _sourse_mat->size;
+    new_mat->data = malloc(sizeof(MATRIX_TYPE) * _sourse_mat->rows * _sourse_mat->cols);
+    if (new_mat->data == NULL) {
+        matrix_free(&new_mat);
+        return NULL;
+    }
+    memcpy(new_mat->data, _sourse_mat->data, sizeof(MATRIX_TYPE) * _sourse_mat->rows * _sourse_mat->cols);
+    return new_mat;
 }
 
 /**
@@ -610,7 +616,6 @@ void matrix_copy_free(Matrix **dest, Matrix **src) {
     // Free the memory allocated for the source matrix
     matrix_free(src);
 }
-
 
 /**
  * Frees the memory allocated for a matrix.
@@ -1700,8 +1705,9 @@ void matrix_gauss_elimination(const Matrix *mat) {
     // Sort the matrix by the number of zeros
     matrix_sort_by_zeros_num(mat);
 
+    const int min = MIN(rows, cols);
     // Iterate through the matrix
-    for (int i = 0; i < MIN(rows, cols); i++) {
+    for (int i = 0; i < min; i++) {
         // Skip if the current element is zero
         if (DOUBLE_COMP_EQ2ZERO(mat->data[IDX(cols, i, i)])) {
             continue;
@@ -2032,7 +2038,7 @@ elem_pos_array *matrix_max_array(const Matrix *mat) {
  * @throws INPUT_NULL_005 If either of the input matrices' data is NULL.
  * @throws MATRIX_SIZE_ERROR_001 If the input matrices are not the same size.
  */
-Matrix *matrix_dot_mul(const Matrix *a, const Matrix *b) {
+Matrix *matrix_cdot_mul(const Matrix *a, const Matrix *b) {
     // Check if either of the input matrices is NULL
     if (a == NULL || b == NULL) {
         PWARNING_RETURN(INPUT_NULL_005, VAR_NAME(a), VAR_NAME(b), __FILE__, __FUNCTION__, __LINE__);
@@ -2072,9 +2078,9 @@ Matrix *matrix_dot_mul(const Matrix *a, const Matrix *b) {
  *
  * @return None
  */
-void matrix_dot_mul_void(Matrix *a, const Matrix *b) {
+void matrix_cdot_mul_void(Matrix *a, const Matrix *b) {
     // Create a temporary matrix to hold the result of the multiplication
-    Matrix *temp = matrix_dot_mul(a, b);
+    Matrix *temp = matrix_cdot_mul(a, b);
 
     // Copy the result from the temporary matrix to the first matrix and free the temporary matrix
     matrix_copy_free(&a, &temp);
@@ -2107,4 +2113,93 @@ void matrix_change(Matrix *mat, void *arg, MATRIX_TYPE (*func)(MATRIX_TYPE, void
         // Apply the given function to the current element and store the result
         mat->data[i] = func(mat->data[i], arg);
     }
+}
+
+/**
+ * Swaps two elements in a matrix.
+ *
+ * This function takes a matrix and two positions as input, and swaps the elements at those positions.
+ *
+ * @param mat A pointer to the matrix to be modified.
+ * @param pos1 The position of the first element to be swapped.
+ * @param pos2 The position of the second element to be swapped.
+ *
+ * @return None
+ *
+ * @throws INPUT_NULL_005 If the input matrix or its data is NULL.
+ * @throws INVALID_INPUT_006 If the row or column of either position is out of bounds.
+ */
+void matrix_swap_elem(Matrix *mat, elem_pos pos1, elem_pos pos2) {
+    // Check if the input matrix or its data is NULL
+    if (mat == NULL || mat->data == NULL) {
+        PWARNING_RETURN_NO_NULL(INPUT_NULL_005, VAR_NAME(mat), VAR_NAME(mat->data), __FILE__, __FUNCTION__, __LINE__);
+    }
+
+    // Get the number of columns and rows in the matrix
+    const unsigned int cols = mat->cols, rows = mat->rows;
+
+    // Check if the row or column of either position is out of bounds
+    if (pos1.row >= rows || pos2.row >= rows) {
+        PERROR(INVALID_INPUT_006, VAR_NAME(pos1.row), VAR_NAME(pos2.row), 0, rows - 1, __FILE__, __FUNCTION__,
+               __LINE__);
+    }
+    if (pos1.col >= cols || pos2.col >= cols) {
+        PERROR(INVALID_INPUT_006, VAR_NAME(pos1.col), VAR_NAME(pos2.col), 0, cols - 1, __FILE__, __FUNCTION__,
+               __LINE__);
+    }
+
+    // Swap the elements at the two positions
+    const MATRIX_TYPE temp = mat->data[IDX(mat->cols, pos1.row, pos1.col)];
+    mat->data[IDX(mat->cols, pos1.row, pos1.col)] = mat->data[IDX(mat->cols, pos2.row, pos2.col)];
+    mat->data[IDX(mat->cols, pos2.row, pos2.col)] = temp;
+}
+
+static inline MATRIX_TYPE __matrix_det(Matrix *mat) {
+    const int rows = mat->rows, cols = mat->cols;
+    if (rows == 2) {
+        return mat->data[IDX(cols, 0, 0)] * mat->data[IDX(cols, 1, 1)] - mat->data[IDX(cols, 0, 1)] * mat->data[
+                   IDX(cols, 1, 0)];
+    }
+    if (rows == 1) {
+        return mat->data[0];
+    }
+
+    MATRIX_TYPE det = 1.0;
+    int caculate_times = 0;
+    Matrix *new_mat = matrix_copy(mat);
+    // Sort the matrix by the number of zeros
+    matrix_sort_by_zeros_num(new_mat);
+
+    const int min = MIN(rows, cols);
+    // Iterate through the matrix
+    for (int i = 0; i < min; i++) {
+        // Skip if the current element is zero
+        if (DOUBLE_COMP_EQ2ZERO(new_mat->data[IDX(cols, i, i)])) {
+            continue;
+        }
+        // Iterate through the matrix
+        for (int j = i + 1; j < cols; j++) {
+            // Skip if the current element is zero
+            if (DOUBLE_COMP_EQ2ZERO(new_mat->data[IDX(cols, j, i)])) {
+                break;
+            }
+            // Calculate the coefficient
+            const MATRIX_TYPE coefficient = new_mat->data[IDX(cols, j, i)] / new_mat->data[IDX(cols, i, i)];
+            // Iterate through the matrix
+            matrix_gauss_elimination_(new_mat, i, j, i, coefficient);
+            caculate_times++;
+        }
+        det *= new_mat->data[IDX(cols, i, i)];
+    }
+    return det;
+}
+
+MATRIX_TYPE matrix_det(Matrix *mat) {
+    if (mat == NULL || mat->data == NULL) {
+        PWARNING_RETURN_ZERO(INPUT_NULL_009, VAR_NAME(mat), VAR_NAME(mat->data), __FILE__, __FUNCTION__, __LINE__);
+    }
+    if (mat->rows != mat->cols) {
+        PERROR(MATRIX_SIZE_ERROR_002, VAR_NAME(mat), __FILE__, __FUNCTION__, __LINE__);
+    }
+    return __matrix_det(mat);
 }

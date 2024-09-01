@@ -78,7 +78,7 @@ int default_compare_example_r(const void *a, const void *b, const void *arg) {
     const double *p2 = *(double **) b;
 
     // Extract the index from the arg parameter
-    const int index = (int) arg;
+    const int index = (uintptr_t) arg;
 
     // Compare the double values at the specified index
     if (p1[index] < p2[index]) {

@@ -51,6 +51,7 @@ typedef int (*__matrix_find_cmp_func)(const void *, const void *);
 
 /// Error define
 #define MATRIX_SIZE_ERROR_001 "@ERROR: The matrix size does not match\n@File: %s\n@Function: %s\n@Line: %d\n"
+#define MATRIX_SIZE_ERROR_002 "@ERROR: The input matrix called \"%s\" must be a square matrix\n@File: %s\n@Function: %s\n@Line: %d\n"
 
 //
 enum ARRAY_CMP_TYPE {
@@ -184,9 +185,21 @@ elem_pos_array *matrix_min_array(const Matrix *mat);
 
 elem_pos_array *matrix_max_array(const Matrix *mat);
 
-Matrix *matrix_dot_mul(const Matrix *a, const Matrix *b);
+Matrix *matrix_cdot_mul(const Matrix *a, const Matrix *b);
 
-void matrix_dot_mul_void(Matrix *a, const Matrix *b);
+void matrix_cdot_mul_void(Matrix *a, const Matrix *b);
 
 void matrix_change(Matrix *mat, void *arg, MATRIX_TYPE (*func)(MATRIX_TYPE, void *));
+
+void matrix_swap_elem(Matrix *mat, elem_pos pos1, elem_pos pos2);
+
+Matrix *matrix_invert(Matrix *mat);
+
+MATRIX_TYPE matrix_det(Matrix *mat);
+
+struct LUPMatrix {
+    Matrix *LMatrix;
+    Matrix *UMatrix;
+    Matrix *PMatrix;
+} matrix_LUP(Matrix *mat);
 #endif // _HSMK_MATH_LIB_MATRIX_H
