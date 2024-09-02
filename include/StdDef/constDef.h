@@ -46,9 +46,7 @@
             x = NULL;  \
         }              \
     }
-// get random number
-#define RAND(min, max, TYPE) \
-    ((TYPE)((min) + ((max - min) * ((TYPE)rand()) / ((TYPE)RAND_MAX + 1.0))))
+
 #ifdef _CRT_USE_WINAPI_FAMILY_DESKTOP_APP
 #define LENGTH(vector) ((vector) == NULL ? 0 : _msize((void *)vector) / sizeof(vector[0]))
 #else

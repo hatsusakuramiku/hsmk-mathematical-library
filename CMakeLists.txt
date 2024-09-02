@@ -60,6 +60,7 @@ add_library(HMLib_Static STATIC ${SRC_LIST}
         include/Sort/sort.h
         src/Queue/queue.c
         include/Queue/queue.h
+        include/Random/random.h
 )
 add_library(HMLib_Dynamic SHARED ${SRC_LIST}
         src/Matrix/matrix.c
@@ -84,6 +85,7 @@ add_library(HMLib_Dynamic SHARED ${SRC_LIST}
         include/Sort/sort.h
         src/Queue/queue.c
         include/Queue/queue.h
+        include/Random/random.h
 )
 
 # 设置最终生成的库文件名
@@ -117,4 +119,5 @@ add_executable(test ./test.c
         include/Sort/sort.h
         src/Queue/queue.c
         include/Queue/queue.h
+        include/Random/random.h
 )

@@ -291,7 +291,7 @@ Matrix *ones_matrix_value(unsigned int rows, unsigned int cols, MATRIX_TYPE valu
 |---------|--------------|-------------|-----------------------------------------------------------------------|
 | 'rows'  | unsigned int | 矩阵行数        | 必须大于 0；不可省略                                                           |
 | 'cols'  | unsigned int | 矩阵列数        | 必须大于 0；可以省略，若省略默认与 rows 取值相等                                          |
-| 'value' | MATRIX_TYPE  | 矩阵数据        | 要求调用时必须显式指定数据为 MATRIX_TYPE(double) 类型， 否则可能会生成一个全零矩阵；可以省略，若省略默认则取值为 1 |
+| 'value' | MATRIX_TYPE  | 矩阵数据        | 要求调用时必须显式指定数据为 MATRIX_TYPE(double) 类型， 否则可能会生成一个全零矩阵；可以省略，若省略则默认取值为 1 |
 
 **Output**:
 
@@ -400,7 +400,7 @@ Matrix *eye_matrix_value(unsigned int rows, unsigned int cols, MATRIX_TYPE value
 |---------|--------------|-------------|-----------------------------------------------------------------------|
 | 'rows'  | unsigned int | 矩阵行数        | 必须大于 0；不可省略                                                           |
 | 'cols'  | unsigned int | 矩阵列数        | 必须大于 0；可以省略，若省略默认与 rows 取值相等                                          |
-| 'value' | MATRIX_TYPE  | 矩阵数据        | 要求调用时必须显式指定数据为 MATRIX_TYPE(double) 类型， 否则可能会生成一个全零矩阵；可以省略，若省略默认则取值为 1 |
+| 'value' | MATRIX_TYPE  | 矩阵数据        | 要求调用时必须显式指定数据为 MATRIX_TYPE(double) 类型， 否则可能会生成一个全零矩阵；可以省略，若省略则默认取值为 1 |
 
 **Output**:
 
@@ -1700,4 +1700,140 @@ elem_pos_array *matrix_find(const Matrix *mat, MATRIX_TYPE value, __matrix_find_
 |	  3.502808	  8.959351	  8.228149	|	
 Matrix rows: 3, cols: 3
 未找到符合条件的元素
+```
+
+### **matrix_invert**
+
+说明: 构造输入矩阵的增广矩阵，使用高斯消元法求出矩阵的逆矩阵。
+
+函数原型:
+
+```C
+Matrix *matrix_invert(Matrix *mat)
+```
+
+**Input**:
+
+| name  | type    | description | required                                   |
+|-------|---------|-------------|--------------------------------------------|
+| 'mat' | Matrix* | 矩阵          | 不可省略；不可为NULL；必须为方阵，如果矩阵不为方阵或为非奇异矩阵，就返回NULL |
+
+**Output**:
+
+| type    | description                    |
+|---------|--------------------------------|
+| Matrix* | 矩阵的逆矩阵，如果矩阵不为方阵或为非奇异矩阵，就返回NULL |
+
+使用示例:
+
+```C
+    Matrix *a = eye_matrix_value(3, 3, 0.5); //生成一个 3 行 3 列的主对角线全 0.5 ，其余元素全 0的矩阵
+    printf("原始矩阵为：\n");
+    matrix_print(a); //输出原始矩阵
+    Matrix *b = matrix_invert(a); //求矩阵的逆矩阵
+    if (b != NULL) {
+        printf("矩阵的逆矩阵为：\n");
+        matrix_print(b); //输出矩阵的逆矩阵
+    } else {
+        printf("矩阵不为方阵或为非奇异矩阵，不能求逆矩阵\n");
+    }
+// 输出结果如下：
+原始矩阵为：
+|	  0.500000	  0.000000	  0.000000	|	
+|	  0.000000	  0.500000	  0.000000	|	
+|	  0.000000	  0.000000	  0.500000	|	
+Matrix rows: 3, cols: 3
+矩阵的逆矩阵为：
+|	  2.000000	  0.000000	  0.000000	|	
+|	  0.000000	  2.000000	  0.000000	|	
+|	  0.000000	  0.000000	  2.000000	|	
+Matrix rows: 3, cols: 3
+```
+
+### **isUpTriangleMatrix**
+
+说明: 判断输入矩阵是否为上三角矩阵。
+
+函数原型:
+
+```C
+int isUpTriangleMatrix(const Matrix *mat);
+```
+
+**Input**:
+
+| name  | type    | description | required     |
+|-------|---------|-------------|--------------|
+| 'mat' | Matrix* | 矩阵          | 不可省略；不可为NULL |
+
+**Output**:
+
+| type | description                           |
+|------|---------------------------------------|
+| int  | 1 表示是上三角矩阵，0 表示不是上三角矩阵，-1 表示输入矩阵为NULL |
+
+使用示例:
+
+```C
+    Matrix *a = rand_matrix(3, 3, 0, 10); //生成一个 3 行 3 列的随机矩阵
+    printf("原始矩阵为：\n");
+    matrix_print(a); //输出原始矩阵
+    if (isUpTriangleMatrix(a) == 1) {
+        printf("矩阵是上三角矩阵\n");
+    } else if (isUpTriangleMatrix(a) == 0) {
+        printf("矩阵不是上三角矩阵\n");
+    } else {
+        printf("矩阵为NULL，不能判断\n");
+    }
+// 输出结果如下：
+原始矩阵为：
+|	  8.424683	  9.682922	  1.461487	|	
+|	  5.926208	  8.751831	  9.755859	|	
+|	  8.882141	  8.345642	  4.658203	|	
+Matrix rows: 3, cols: 3
+矩阵不是上三角矩阵
+```
+
+### **isLowerTriangleMatrix**
+
+说明: 判断输入矩阵是否为下三角矩阵。
+
+函数原型:
+
+```C
+int isLowerTriangleMatrix(const Matrix *mat);
+```
+
+**Input**:
+
+| name  | type    | description | required     |
+|-------|---------|-------------|--------------|
+| 'mat' | Matrix* | 矩阵          | 不可省略；不可为NULL |
+
+**Output**:
+
+| type | description                           |
+|------|---------------------------------------|
+| int  | 1 表示是下三角矩阵，0 表示不是下三角矩阵，-1 表示输入矩阵为NULL |
+
+使用示例:
+
+```C
+    Matrix *a = rand_matrix(3, 3, 0, 10); //生成一个 3 行 3 列的随机矩阵
+    printf("原始矩阵为：\n");
+    matrix_print(a); //输出原始矩阵
+    if (isLowerTriangleMatrix(a) == 1) {
+        printf("矩阵是下三角矩阵\n");
+    } else if (isLowerTriangleMatrix(a) == 0) {
+        printf("矩阵不是下三角矩阵\n");
+    } else {
+        printf("矩阵为NULL，不能判断\n");
+    }
+// 输出结果如下：
+原始矩阵为：
+|	  8.424683	  9.682922	  1.461487	|	
+|	  5.926208	  8.751831	  9.755859	|	
+|	  8.882141	  8.345642	  4.658203	|	
+Matrix rows: 3, cols: 3
+矩阵不是下三角矩阵
 ```

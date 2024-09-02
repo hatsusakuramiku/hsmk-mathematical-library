@@ -205,6 +205,13 @@ void matrix_change(Matrix *mat, void *arg, MATRIX_TYPE (*func)(MATRIX_TYPE, void
 
 void matrix_swap_elem(Matrix *mat, elem_pos pos1, elem_pos pos2);
 
+int isUpTriangleMatrix(const Matrix *mat);
+
+int isLowerTriangleMatrix(const Matrix *mat);
+
+// inline int isSquareMatrix(const Matrix *mat);
+
+
 Matrix *matrix_invert(Matrix *mat);
 
 MATRIX_TYPE matrix_det(Matrix *mat);

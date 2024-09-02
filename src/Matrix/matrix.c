@@ -24,12 +24,12 @@
 #include "constDef.h"
 #include "matrix.h"
 #include "memswap.h"
+#include "random.h"
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
 #include <stdarg.h>
 #include <math.h>
-#include <tgmath.h>
 
 #include "list.h"
 
@@ -1302,7 +1302,7 @@ Matrix *matrix_splicing(const Matrix *a, const Matrix *b, const unsigned int aix
                 PERROR(MATRIX_SIZE_ERROR_001, __FILE__, __FUNCTION__, __LINE__);
             }
         // Create a new matrix with the same number of rows as the input matrices
-            mat = matrix_gen(a_rows, a_cols + b_cols, NULL);
+            mat = matrix_gen(a_rows, a_col_plus_b_cols, NULL);
             if (mat == NULL) {
                 // Check if memory allocation failed
                 PWARNING_RETURN(MALLOC_FAILURE_001, VAR_NAME(mat), __FILE__, __FUNCTION__, __LINE__);
@@ -2221,6 +2221,10 @@ static inline MATRIX_TYPE __matrix_det(Matrix *mat) {
             min_zero_num = temp->data[IDX(1, i, 0)];
         }
     }
+    if (max_zero_num == min_zero_num && min_zero_num != 0) {
+        matrix_free(&temp);
+        return 0.0;
+    }
 
     // If the maximum and minimum number of zeros are different, sort the rows by the number of zeros
     if (max_zero_num != min_zero_num) {
@@ -2240,6 +2244,8 @@ static inline MATRIX_TYPE __matrix_det(Matrix *mat) {
             }
         }
     }
+    // Free the temporary matrix
+    matrix_free(&temp);
 
     // Perform Gaussian elimination
     const int min = MIN(rows, cols);
@@ -2249,7 +2255,7 @@ static inline MATRIX_TYPE __matrix_det(Matrix *mat) {
             continue;
         }
         // Iterate through the matrix to eliminate the elements below the pivot
-        for (int j = i + 1; j < cols; j++) {
+        for (int j = cols - 1; j > i; j--) {
             // Skip if the current element is zero
             if (DOUBLE_COMP_EQ2ZERO(new_mat->data[IDX(cols, j, i)])) {
                 break;
@@ -2262,12 +2268,17 @@ static inline MATRIX_TYPE __matrix_det(Matrix *mat) {
         }
         // Update the determinant
         det *= new_mat->data[IDX(cols, i, i)];
+        // 如果最后一行最后一位为0，说明矩阵不满秩，直接返回0
+        if (DOUBLE_COMP_EQ2ZERO(new_mat->data[(rows-1)*(cols-1)])) {
+            matrix_free(&new_mat);
+            return 0.0;
+        }
     }
+    matrix_free(&new_mat);
 
     // Return the determinant, taking into account the number of row swaps
     return det * pow(-1, calculate_times);
 }
-
 
 /**
  * Calculates the determinant of a matrix.
@@ -2293,4 +2304,269 @@ MATRIX_TYPE matrix_det(Matrix *mat) {
 
     // Perform the actual determinant calculation
     return __matrix_det(mat);
+}
+
+/**
+ * Performs a division operation on two input values.
+ *
+ * This function checks for division by zero and returns an error value in that case.
+ *
+ * @param a The dividend.
+ * @param b The divisor.
+ * @return The result of the division operation, or an error value if b is zero.
+ */
+static inline MATRIX_TYPE divide(const MATRIX_TYPE a, const MATRIX_TYPE b) {
+    if (b == 0) {
+        // Handle division by zero
+        // This could involve returning an error value, printing an error message, or throwing an exception
+        return NAN; // Return Not a Number
+    }
+
+    // Perform the division operation
+    return a / b;
+}
+
+/**
+ * Calculates a new value for a row or column of a matrix.
+ *
+ * This function applies a given calculation function to each element of a row or column of a matrix.
+ *
+ * @param mat The input matrix.
+ * @param select_index The index of the row or column to calculate.
+ * @param start_index The starting index for the calculation (not used in this implementation).
+ * @param caculate_c A constant value used in the calculation.
+ * @param aix A flag indicating whether to calculate a row (0) or column (non-0).
+ * @param caculate_func A function pointer to the calculation function to apply.
+ */
+static inline void matrix_row_or_col_calculate(Matrix *mat, const int select_index, const int start_index,
+                                               const MATRIX_TYPE caculate_c, const
+                                               unsigned int aix,
+                                               MATRIX_TYPE (*caculate_func)(const MATRIX_TYPE, const MATRIX_TYPE)) {
+    // Get the number of rows and columns in the matrix
+    const int rows = mat->rows;
+    const int cols = mat->cols;
+
+    // Determine whether to calculate a row or column based on the aix flag
+    if (aix == 0) {
+        // Calculate a row
+        for (int i = 0; i < cols; i++) {
+            // Calculate the index of the current element
+            const int index = IDX(cols, select_index, i);
+            // Apply the calculation function to the current element
+            mat->data[index] = caculate_func(mat->data[index], caculate_c);
+        }
+    } else {
+        // Calculate a column
+        for (int i = 0; i < rows; i++) {
+            // Calculate the index of the current element
+            const int index = IDX(cols, i, select_index);
+            // Apply the calculation function to the current element
+            mat->data[index] = caculate_func(mat->data[index], caculate_c);
+        }
+    }
+}
+
+/**
+ * Checks if a matrix is an upper triangular matrix.
+ *
+ * An upper triangular matrix is a square matrix where all the elements below the main diagonal are zero.
+ *
+ * @param mat The input matrix to check.
+ * @return 1 if the matrix is upper triangular, 0 if not, and -1 if the input matrix is null or invalid.
+ */
+inline int isUpTriangleMatrix(const Matrix *mat) {
+    // Check for null input
+    if (mat == NULL || mat->data == NULL) {
+        // If input is null, return an error code
+        return -1;
+    }
+
+    // Get the number of columns and rows in the matrix
+    const int cols = mat->cols;
+    const int rows = mat->rows;
+
+    // Iterate over each row in the matrix
+    for (int i = 0; i < rows; i++) {
+        // Reset the zero counter for each row
+        int zeros_count = 0;
+
+        // Iterate over each column in the row
+        for (int j = 0; j < cols; j++) {
+            // Calculate the index of the current element in the matrix data array
+            const int index = IDX(cols, i, j);
+
+            // Check if the current element is zero
+            if (DOUBLE_COMP_EQ2ZERO(mat->data[index])) {
+                // If the element is zero, increment the zero counter
+                zeros_count++;
+
+                // If we've reached the end of the row or the next element is not zero, break out of the inner loop
+                if (j == cols - 1 || !DOUBLE_COMP_EQ2ZERO(mat->data[index + 1])) {
+                    break;
+                }
+            } else {
+                if (j == 0) {
+                    break;
+                }
+            }
+        }
+
+        // Check if the number of zeros in the row is equal to the row index
+        if (zeros_count != i) {
+            // If not, the matrix is not upper triangular, so return 0
+            return 0;
+        }
+    }
+
+    // If we've made it through all the rows without returning, the matrix is upper triangular, so return 1
+    return 1;
+}
+
+/**
+ * Checks if a matrix is a lower triangular matrix.
+ *
+ * A lower triangular matrix is a square matrix where all the elements above the main diagonal are zero.
+ *
+ * @param mat The input matrix to check.
+ * @return 1 if the matrix is lower triangular, 0 if not, and -1 if the input matrix is null or invalid.
+ */
+inline int isLowerTriangleMatrix(const Matrix *mat) {
+    // Check for null input
+    if (mat == NULL || mat->data == NULL) {
+        // If input is null, return an error code
+        return -1;
+    }
+
+    // Initialize a counter for zeros in each row
+    int zeros_count = 0;
+
+    // Get the number of columns and rows in the matrix
+    const int cols = mat->cols;
+    const int rows = mat->rows;
+
+    // Iterate over each row in the matrix
+    for (int i = 0; i < rows; i++) {
+        // Reset the zero counter for each row
+        zeros_count = 0;
+
+        // Iterate over each column in the row, starting from the last column
+        for (int j = cols - 1; j >= 0; j--) {
+            // Calculate the index of the current element in the matrix data array
+            const int index = IDX(cols, i, j);
+
+            // Check if the current element is zero
+            if (DOUBLE_COMP_EQ2ZERO(mat->data[index])) {
+                // If the element is zero, increment the zero counter
+                zeros_count++;
+
+                // If we've reached the first column or the previous element is not zero, break out of the inner loop
+                if (j == 0 || !DOUBLE_COMP_EQ2ZERO(mat->data[index - 1])) {
+                    break;
+                }
+            } else {
+                if (j == cols - 1) {
+                    break;
+                }
+            }
+        }
+
+        // Check if the number of zeros in the row is equal to the number of columns minus the row index minus 1
+        if (zeros_count != cols - i - 1) {
+            // If not, the matrix is not lower triangular, so return 0
+            return 0;
+        }
+    }
+
+    // If we've made it through all the rows without returning, the matrix is lower triangular, so return 1
+    return 1;
+}
+
+/**
+ * @brief Performs Gaussian inversion on a matrix.
+ *
+ * This function takes a matrix as input, performs Gaussian elimination, and returns the inverted matrix.
+ *
+ * @param mat The input matrix to be inverted.
+ * @return Matrix* The inverted matrix, or NULL if the input matrix is singular.
+ */
+static inline Matrix *__matrix_gauss_invertion(Matrix *mat) {
+    // Check for NULL input matrix or data
+    if (mat == NULL || mat->data == NULL) {
+        PWARNING_RETURN(INPUT_NULL_005, VAR_NAME(mat), VAR_NAME(mat->data), __FILE__, __FUNCTION__, __LINE__);
+    }
+
+    // Check if matrix is square
+    if (mat->rows != mat->cols) {
+        PERROR(MATRIX_SIZE_ERROR_002, __FILE__, __FUNCTION__, __LINE__);
+    }
+
+    const int rows = mat->rows;
+    const int cols = mat->cols;
+
+    // Create an identity matrix of the same size as the input matrix
+    Matrix *temp_mat = eye_matrix(rows, cols);
+    if (temp_mat == NULL) {
+        PWARNING_RETURN(MALLOC_FAILURE_001, VAR_NAME(temp_mat), __FILE__, __FUNCTION__, __LINE__);
+    }
+
+    // Splice the input matrix with the identity matrix
+    Matrix *new_mat = matrix_splicing(mat, temp_mat, 1);
+    matrix_free(&temp_mat);
+
+    // Check for NULL output matrix
+    if (new_mat == NULL) {
+        PWARNING_RETURN(MALLOC_FAILURE_001, VAR_NAME(new_mat), __FILE__, __FUNCTION__, __LINE__);
+    }
+
+    // Perform Gaussian elimination on the new matrix
+    matrix_gauss_elimination(new_mat);
+
+    // Check if the input matrix is singular
+    if (DOUBLE_COMP_EQ2ZERO(new_mat->data[IDX(2*cols,rows-1, cols-1)])) {
+        matrix_free(&new_mat);
+        PWARNING_RETURN(
+            "The input matrix is singular, so it does not have an inverse.\n Will return NULL\n @File:%s\n@Function:%s\n@Line:%d",
+            __FILE__, __FUNCTION__,
+            __LINE__);
+    }
+
+    const int new_mat_cols = 2 * cols;
+
+    // Perform back substitution to find the inverted matrix
+    for (int i = rows - 1; i >= 0; i--) {
+        const int index_i = IDX(new_mat_cols, i, i);
+        matrix_row_or_col_calculate(new_mat, i, i, new_mat->data[index_i], 0, divide);
+        for (int j = i - 1; j >= 0; j--) {
+            const int index = IDX(new_mat_cols, i, j);
+            if (DOUBLE_COMP_EQ2ZERO(new_mat->data[index])) {
+                continue;
+            }
+            const MATRIX_TYPE confience = new_mat->data[index] / new_mat->data[index_i];
+            matrix_gauss_elimination_(new_mat, i, j, j, confience);
+        }
+    }
+
+    // Extract the inverted matrix from the new matrix
+    Matrix *result_mat = matrix_cat(new_mat, 1, rows, cols + 1, new_mat_cols);
+    matrix_free(&new_mat);
+
+    // Check for NULL output matrix
+    if (result_mat == NULL) {
+        PWARNING_RETURN(MALLOC_FAILURE_001, VAR_NAME(result_mat), __FILE__, __FUNCTION__, __LINE__);
+    }
+
+    return result_mat;
+}
+
+/**
+ * @brief Inverts a given matrix using Gaussian elimination.
+ *
+ * This function takes a matrix as input and returns its inverse.
+ *
+ * @param mat The input matrix to be inverted.
+ * @return Matrix* The inverted matrix, or NULL if the input matrix is singular.
+ */
+Matrix *matrix_invert(Matrix *mat) {
+    // Call the internal Gaussian inversion function to perform the inversion
+    return __matrix_gauss_invertion(mat);
 }
