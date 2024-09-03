@@ -26,6 +26,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "matrix.h"
+
 /**
  * Initializes a new stack by allocating memory and setting its head and size.
  *
@@ -36,15 +38,13 @@
  *
  * @throws PWARNING_RETURN_MALLOC if memory allocation fails.
  */
-Stack *stackInit()
-{
+Stack *stackInit() {
     // Allocate memory for the stack using malloc
     // The sizeof(Stack) operator returns the size of the Stack struct
-    Stack *stack = (Stack *)malloc(sizeof(Stack));
+    Stack *stack = (Stack *) malloc(sizeof(Stack));
 
     // Check if memory allocation failed
-    if (stack == NULL)
-    {
+    if (stack == NULL) {
         // If allocation failed, throw a warning and return NULL
         PWARNING_RETURN_MALLOC(stack);
     }
@@ -75,18 +75,15 @@ Stack *stackInit()
  *
  * @throws None
  */
-void stackClear(Stack *stack)
-{
+void stackClear(Stack *stack) {
     // Check if the stack is NULL to prevent potential crashes
-    if (stack == NULL)
-    {
+    if (stack == NULL) {
         // If the stack is NULL, there's nothing to clear, so return immediately
         return;
     }
 
     // Continue popping elements from the stack until it's empty
-    while (stackSize(stack) > 0)
-    {
+    while (stackSize(stack) > 0) {
         // Pop the top element from the stack
         stackPop(stack);
     }
@@ -104,11 +101,9 @@ void stackClear(Stack *stack)
  *
  * @throws None.
  */
-void stackDestroy(Stack **stack)
-{
+void stackDestroy(Stack **stack) {
     // Check if the stack or its contents are NULL to prevent potential crashes
-    if (stack == NULL || *stack == NULL)
-    {
+    if (stack == NULL || *stack == NULL) {
         // If either is NULL, there's nothing to destroy, so return immediately
         return;
     }
@@ -137,27 +132,23 @@ void stackDestroy(Stack **stack)
  *
  * @throws MALLOC_FAILURE_002 if memory allocation fails.
  */
-void stackPush(Stack *stack, stackElem elem, size_t elemSize)
-{
+void stackPush(Stack *stack, stackElem elem, size_t elemSize) {
     // Check if the stack is NULL to prevent potential crashes
-    if (stack == NULL)
-    {
+    if (stack == NULL) {
         // If the stack is NULL, there's nothing to push onto, so return immediately
         return;
     }
 
     // Allocate memory for a new node
-    StackNode *node = (StackNode *)malloc(sizeof(StackNode));
-    if (node == NULL)
-    {
+    StackNode *node = (StackNode *) malloc(sizeof(StackNode));
+    if (node == NULL) {
         // If memory allocation fails, print a warning and return
         PWARNING_RETURN_MALLOC_NO_NULL(node);
     }
 
     // Allocate memory for the new element
     stackElem new_elem = malloc(elemSize);
-    if (new_elem == NULL)
-    {
+    if (new_elem == NULL) {
         // If memory allocation fails, free the node and print a warning
         FREE(node);
         PWARNING_RETURN_MALLOC_NO_NULL(new_elem);
@@ -173,8 +164,7 @@ void stackPush(Stack *stack, stackElem elem, size_t elemSize)
 
     // Update the stack's head and tail if necessary
     stack->head = node;
-    if (stack->size == 0)
-    {
+    if (stack->size == 0) {
         // If the stack was empty, set the tail to the new node
         stack->tail = node;
     }
@@ -196,18 +186,15 @@ void stackPush(Stack *stack, stackElem elem, size_t elemSize)
  *
  * @throws None.
  */
-stackElem stackPop(Stack *stack)
-{
+stackElem stackPop(Stack *stack) {
     // Check if the stack is null
-    if (stack == NULL)
-    {
+    if (stack == NULL) {
         // If null, return null
         return NULL;
     }
 
     // Check if the stack is empty
-    if (stack->size == 0)
-    {
+    if (stack->size == 0) {
         // If empty, return null
         return NULL;
     }
@@ -222,8 +209,7 @@ stackElem stackPop(Stack *stack)
     stack->size--;
 
     // If the stack is now empty, update the tail pointer
-    if (stack->size == 0)
-    {
+    if (stack->size == 0) {
         // Set the tail pointer to null
         stack->tail = NULL;
     }
@@ -250,11 +236,9 @@ stackElem stackPop(Stack *stack)
  *
  * @throws None.
  */
-stackElem stackBottom(Stack *stack)
-{
+stackElem stackBottom(Stack *stack) {
     // Check if the stack is NULL or empty
-    if (stack == NULL || stack->size == 0)
-    {
+    if (stack == NULL || stack->size == 0) {
         // If the stack is empty or NULL, return NULL
         return NULL;
     }
@@ -275,11 +259,9 @@ stackElem stackBottom(Stack *stack)
  *
  * @throws None.
  */
-stackElem stackTop(Stack *stack)
-{
+stackElem stackTop(Stack *stack) {
     // Check if the stack is null or empty
-    if (stack == NULL || stack->size == 0)
-    {
+    if (stack == NULL || stack->size == 0) {
         // If null or empty, return null
         return NULL;
     }
@@ -301,11 +283,9 @@ stackElem stackTop(Stack *stack)
  *
  * @throws None.
  */
-int stackSize(Stack *stack)
-{
+int stackSize(Stack *stack) {
     // Check if the stack is NULL to prevent null pointer dereferences
-    if (stack == NULL)
-    {
+    if (stack == NULL) {
         // If the stack is NULL, return -1 to indicate an error
         return -1;
     }
@@ -327,12 +307,10 @@ int stackSize(Stack *stack)
  *
  * @throws None.
  */
-void stackSwap(Stack *stack)
-{
+void stackSwap(Stack *stack) {
     // Check if the stack is null or has less than 2 elements
     // In these cases, the stack is already "reversed" (i.e., no-op)
-    if (stack == NULL || stack->size < 2)
-    {
+    if (stack == NULL || stack->size < 2) {
         return;
     }
 
@@ -345,8 +323,7 @@ void stackSwap(Stack *stack)
     stack->tail = stack->head;
 
     // Iterate through the stack, reversing the direction of the links
-    while (current != NULL)
-    {
+    while (current != NULL) {
         // Store the next node in the list
         next = current->next;
 
@@ -375,11 +352,9 @@ void stackSwap(Stack *stack)
  *
  * @throws None.
  */
-stackElemWithSize stackPopWithSize(Stack *stack)
-{
+stackElemWithSize stackPopWithSize(Stack *stack) {
     // Check if the stack is null or empty
-    if (stack == NULL || stack->size == 0)
-    {
+    if (stack == NULL || stack->size == 0) {
         // If null or empty, return {NULL, 0}
         stackElemWithSize tmp = {NULL, 0};
         return tmp;
@@ -398,8 +373,7 @@ stackElemWithSize stackPopWithSize(Stack *stack)
     stack->size--;
 
     // If the stack is now empty, update the tail pointer
-    if (stack->size == 0)
-    {
+    if (stack->size == 0) {
         // Set the tail pointer to null
         stack->tail = NULL;
     }
@@ -423,11 +397,9 @@ stackElemWithSize stackPopWithSize(Stack *stack)
  *
  * @throws None.
  */
-stackElemWithSize stackBotWithSizetom(Stack *stack)
-{
+stackElemWithSize stackBotWithSizetom(Stack *stack) {
     // Check if the stack is null or empty
-    if (stack == NULL || stack->size == 0)
-    {
+    if (stack == NULL || stack->size == 0) {
         // If null or empty, return a default value {NULL, 0}
         stackElemWithSize tmp = {NULL, 0}; // Initialize a default return value
         return tmp; // Return the default value
@@ -450,11 +422,9 @@ stackElemWithSize stackBotWithSizetom(Stack *stack)
  *
  * @throws None
  */
-stackElemWithSize stackTopWithSize(Stack *stack)
-{
+stackElemWithSize stackTopWithSize(Stack *stack) {
     // Check if the stack is null or empty
-    if (stack == NULL || stack->size == 0)
-    {
+    if (stack == NULL || stack->size == 0) {
         // If null or empty, return a default value {NULL, 0}
         stackElemWithSize tmp = {NULL, 0}; // Initialize a default return value
         return tmp; // Return the default value
@@ -480,11 +450,9 @@ stackElemWithSize stackTopWithSize(Stack *stack)
  *
  * @throws None
  */
-int stackIsEmpty(Stack *stack)
-{
+int stackIsEmpty(Stack *stack) {
     // Check if the stack is NULL to avoid dereferencing a null pointer
-    if (stack == NULL)
-    {
+    if (stack == NULL) {
         // If the stack is NULL, return -1 to indicate an invalid state
         return -1;
     }
@@ -492,4 +460,51 @@ int stackIsEmpty(Stack *stack)
     // Check if the stack's size is 0 to determine if it's empty
     // The size of the stack is assumed to be a non-negative integer
     return stack->size == 0 ? 1 : 0;
+}
+
+/**
+ * Checks if a given element is a member of the stack.
+ *
+ * This function iterates through the stack and uses a provided comparison function
+ * to check if the given element is present in the stack.
+ *
+ * @param stack The stack to search for the element.
+ * @param elem The element to search for, along with its size.
+ * @param cmp A comparison function that takes two const void pointers as arguments.
+ *            The function should return an integer indicating the result of the comparison.
+ *
+ * @return 1 if the element is found in the stack, 0 if it's not found, or -1 if the stack is NULL, empty, or the comparison function is NULL.
+ */
+int isStackMember(Stack *stack, stackElemWithSize elem, int (*cmp)(const void *, const void *)) {
+    // Check for invalid input: NULL stack, empty stack, or NULL comparison function
+    if (stack == NULL || stack->size == 0 || cmp == NULL) {
+        // If any of these conditions are true, return an error code (-1)
+        return -1;
+    }
+
+    // Initialize a pointer to the head of the stack
+    StackNode *node = stack->head;
+
+    // Extract the size and data of the element to search for
+    size_t elem_size = elem.elemSize;
+    stackElem elem_data = elem.data;
+
+    // Iterate through the stack until we find the element or reach the end
+    while (node != NULL) {
+        // Extract the size and data of the current node
+        size_t node_size = node->elemSize;
+        stackElem node_data = node->data;
+
+        // Check if the current node matches the element we're searching for
+        if (elem_size == node_size && cmp(elem_data, node_data)) {
+            // If we find a match, return 1 to indicate success
+            return 1;
+        }
+
+        // Move to the next node in the stack
+        node = node->next;
+    }
+
+    // If we reach the end of the stack without finding the element, return 0 to indicate failure
+    return 0;
 }

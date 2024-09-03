@@ -23,8 +23,7 @@
 #ifndef _HSMK_MATH_LIB_STACK_H
 #define _HSMK_MATH_LIB_STACK_H
 
-enum STACK_TYPE_SIZE
-{
+enum STACK_TYPE_SIZE {
     STACK_TYPE_SIZE_INT = sizeof(int),
     STACK_TYPE_SIZE_LONG = sizeof(long),
     STACK_TYPE_SIZE_FLOAT = sizeof(float),
@@ -36,22 +35,19 @@ enum STACK_TYPE_SIZE
 
 typedef void *stackElem;
 
-typedef struct _StackNode
-{
+typedef struct _StackNode {
     stackElem data;
     struct _StackNode *next;
     size_t elemSize;
 } StackNode;
 
-typedef struct _Stack
-{
+typedef struct _Stack {
     StackNode *head;
     StackNode *tail;
     int size;
 } Stack;
 
-typedef struct _stackElemWithSize
-{
+typedef struct _stackElemWithSize {
     stackElem data;
     size_t elemSize;
 } stackElemWithSize;
@@ -81,5 +77,7 @@ int stackSize(Stack *stack);
 void stackSwap(Stack *stack);
 
 int stackIsEmpty(Stack *stack);
+
+int isStackMember(Stack *stack, stackElemWithSize elem, int (*cmp)(const void *, const void *));
 
 #endif //_HSMK_MATH_LIB_STACK_H

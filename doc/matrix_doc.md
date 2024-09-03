@@ -974,7 +974,7 @@ matrix_print(mat);
 Matrix rows: 2, cols: 3
 ```
 
-1### **matrix_mul_single_int_void**
+### **matrix_mul_single_int_void**
 
 说明: 矩阵乘以一个整数
 
@@ -1011,7 +1011,7 @@ matrix_print(mat);
 Matrix rows: 3, cols: 3
 ```
 
-1### **matrix_mul_single_double_void**
+### **matrix_mul_single_double_void**
 
 说明: 矩阵乘以一个浮点数
 
@@ -1124,14 +1124,14 @@ Matrix rows: 3, cols: 3
 
 ## 矩阵变换
 
-### **matrixTo2Array**
+### **matrix_to_2D_array**
 
 说明: 将矩阵转换为二维数组
 
 函数原型:
 
 ```C
-MATRIX_TYPE **matrixTo2Array(Matrix *mat)
+MATRIX_TYPE **matrix_to_2D_array(Matrix *mat)
 ```
 
 **Input**:
@@ -1150,7 +1150,7 @@ MATRIX_TYPE **matrixTo2Array(Matrix *mat)
 
 ```C
 Matrix *mat = ones_matrix_value(3, 3, 1.0);//创建一个3*3的全 1 矩阵
-MATRIX_TYPE **array = matrixTo2Array(mat);
+MATRIX_TYPE **array = matrix_to_2D_array(mat);
 for (int i = 0; i < mat->rows; i++){
     for (int j = 0; j < mat->cols; j++){
         printf("%f ", array[i][j]);
@@ -1163,14 +1163,14 @@ for (int i = 0; i < mat->rows; i++){
 1.000000 1.000000 1.000000
 ```
 
-### **twoArrayToMatrix**
+### **matrix_from_2D_array**
 
 说明: 将二维数组转换为矩阵
 
 函数原型:
 
 ```C
-Matrix *arrayToMatrix(MATRIX_TYPE *array,unsigned int rows,unsigned int cols)
+Matrix *matrix_from_2D_array(MATRIX_TYPE *array,unsigned int rows,unsigned int cols)
 ```
 
 **Input**:
@@ -1197,7 +1197,7 @@ for (int i = 0; i < 3; i++){
         array[i][j] = (i + 1) * (j + 1);
     }
 }
-Matrix *mat = arrayToMatrix(array, 3, 3);
+Matrix *mat = matrix_from_2D_array(array, 3, 3);
 matrix_print(mat);
 // 输出结果如下：
 |       1.000000        2.000000        3.000000        |
@@ -1836,4 +1836,43 @@ int isLowerTriangleMatrix(const Matrix *mat);
 |	  8.882141	  8.345642	  4.658203	|	
 Matrix rows: 3, cols: 3
 矩阵不是下三角矩阵
+```
+
+### **matrix_det**
+
+说明: 计算输入矩阵的行列式。
+
+函数原型:
+
+```C
+MATRIX_TYPE matrix_det(Matrix *mat)
+```
+
+**Input**:
+
+| name  | type    | description | required                         |
+|-------|---------|-------------|----------------------------------|
+| 'mat' | Matrix* | 矩阵          | 不可省略；不可为NULL；必须为方阵，如果矩阵不为方阵就终止程序 |
+
+**Output**:
+
+| type        | description |
+|-------------|-------------|
+| MATRIX_TYPE | 矩阵的行列式      |
+
+使用示例:
+
+```C
+    Matrix *a = rand_matrix(3, 3, 0, 10); //生成一个 3 行 3 列的随机矩阵
+    printf("原始矩阵为：\n");
+    matrix_print(a); //输出原始矩阵
+    MATRIX_TYPE b = matrix_det(a); //计算矩阵的行列式
+    printf("矩阵的行列式为：%.6lf\n", b);
+// 输出结果如下：
+原始矩阵为：
+|	  0.129089	  8.745117	  3.889771	|	
+|	  3.380432	  1.418457	  8.922119	|	
+|	  3.116455	  0.745544	  1.241150	|	
+Matrix rows: 3, cols: 3
+矩阵的行列式为：-198.446993
 ```
