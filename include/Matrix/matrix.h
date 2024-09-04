@@ -67,45 +67,33 @@ typedef int (*__matrix_find_cmp_func)(const void *, const void *);
 #define MATRIX_SIZE_ERROR_002 "@ERROR: The input matrix called \"%s\" must be a square matrix\n@File: %s\n@Function: %s\n@Line: %d\n"
 
 //
-enum ARRAY_CMP_TYPE
-{
+enum ARRAY_CMP_TYPE {
     _INT_,
     _DOUBLE_
 };
 
 /// Matrix struct
-typedef struct _matrix_size
-{
-    unsigned int rows;
-    unsigned int cols;
-} matrix_size;
 
-typedef struct _elem_pos
-{
+typedef struct _elem_pos {
     unsigned int row;
     unsigned int col;
     MATRIX_TYPE value;
 } elem_pos;
 
-typedef struct _elem_pos_array
-{
+typedef struct _elem_pos_array {
     struct _elem_pos *elem_pos_arr;
     unsigned int size;
 } elem_pos_array;
 
-matrix_size new_matrix_size(const unsigned int rows, const unsigned int cols);
 
 elem_pos new_elem_pos(const unsigned int row, const unsigned int col, MATRIX_TYPE value);
 
-int matrix_size_cmp(const matrix_size a, const matrix_size b);
 
 static int array_cmp(const void *a, const void *b, enum ARRAY_CMP_TYPE type);
 
-typedef struct _Matrix
-{
+typedef struct _Matrix {
     unsigned int rows;
     unsigned int cols;
-    matrix_size size;
     MATRIX_TYPE *data;
 } Matrix;
 
@@ -130,11 +118,11 @@ Matrix *matrix_gen(const unsigned int rows, const unsigned int cols, const MATRI
 Matrix *matrix_gen_r(const unsigned int rows, const unsigned int cols, const MATRIX_TYPE *data,
                      const unsigned int data_rows,
                      const unsigned int data_cols); // generate matrix
-Matrix *matrix_copy(const Matrix *_source_mat);     // copy matrix
+Matrix *matrix_copy(const Matrix *_source_mat); // copy matrix
 void matrix_copy_r(Matrix **dest, const Matrix *src);
 
 void matrix_copy_free(Matrix **dest, Matrix **src); // copy matrix
-void matrix_free(Matrix **mat);                     // free matrix
+void matrix_free(Matrix **mat); // free matrix
 
 void matrix_print(const Matrix *mat); // print matrix
 static void print_matrix_without_omitting_elements(const Matrix *mat, int rows, int cols);
@@ -143,27 +131,27 @@ static void print_matrix_with_omitted_elements(const Matrix *mat, int rows, int 
 
 static void print_ellipsis_row(const Matrix *mat, int cols);
 
-Matrix *ones_matrix(const unsigned int rows, const unsigned int cols);  // generate ones matrix
+Matrix *ones_matrix(const unsigned int rows, const unsigned int cols); // generate ones matrix
 Matrix *zeros_matrix(const unsigned int rows, const unsigned int cols); // generate zeros matrix
-Matrix *eye_matrix(const unsigned int rows, const unsigned int cols);   // generate eye matrix
+Matrix *eye_matrix(const unsigned int rows, const unsigned int cols); // generate eye matrix
 Matrix *rand_matrix(const unsigned int rows, const unsigned int cols, MATRIX_TYPE min, MATRIX_TYPE max);
 
 // generate random matrix
 int matrix_eq(const Matrix *a, const Matrix *b); // matrix equal
-Matrix *matrix_mul(Matrix *a, Matrix *b);        // matrix multiply
-Matrix *matrix_right_mul(Matrix *a, Matrix *b);  // matrix right multiply
+Matrix *matrix_mul(Matrix *a, Matrix *b); // matrix multiply
+Matrix *matrix_right_mul(Matrix *a, Matrix *b); // matrix right multiply
 Matrix *matrix_mul_single(Matrix *a, const MATRIX_TYPE b);
 
-void matrix_mul_void(Matrix *a, Matrix *b);       // matrix multiply
+void matrix_mul_void(Matrix *a, Matrix *b); // matrix multiply
 void matrix_right_mul_void(Matrix *a, Matrix *b); // matrix right multiply
 void matrix_mul_single_void(Matrix *a, const MATRIX_TYPE b);
 
-Matrix *matrix_add(Matrix *a, Matrix *b);            // matrix add
-Matrix *matrix_sub(Matrix *a, Matrix *b);            // matrix su
-void matrix_add_void(Matrix *a, Matrix *b);          // matrix add
-void matrix_sub_void(Matrix *a, Matrix *b);          // matrix sub
-void matrix_transpose(Matrix *mat);                  // matrix transpose
-Matrix *matrix_transpose_r(const Matrix *mat);       // matrix transpose
+Matrix *matrix_add(Matrix *a, Matrix *b); // matrix add
+Matrix *matrix_sub(Matrix *a, Matrix *b); // matrix su
+void matrix_add_void(Matrix *a, Matrix *b); // matrix add
+void matrix_sub_void(Matrix *a, Matrix *b); // matrix sub
+void matrix_transpose(Matrix *mat); // matrix transpose
+Matrix *matrix_transpose_r(const Matrix *mat); // matrix transpose
 MATRIX_TYPE **matrix_to_2D_array(const Matrix *mat); // matrix to 2D array
 Matrix *matrix_from_2D_array(MATRIX_TYPE **array, const unsigned int rows, const unsigned int cols);
 
@@ -181,7 +169,7 @@ void matrix_sort_by_zeros_num(const Matrix *mat);
 
 void matrix_gauss_elimination_(const Matrix *mat, const unsigned int select_index, const unsigned int aim_index,
                                const int
-                                   begin_index,
+                               begin_index,
                                const MATRIX_TYPE value);
 
 void matrix_gauss_elimination(const Matrix *mat);
@@ -220,53 +208,23 @@ Matrix *matrix_invert(Matrix *mat);
 
 elem_pos_array *matrix_find_unique(const Matrix *mat);
 
+int isMatrixMember(const Matrix *mat, MATRIX_TYPE value);
+
 MATRIX_TYPE matrix_det(Matrix *mat);
 
-/**
- * @struct eigenStruct
- * @brief Represents an eigenvalue and its corresponding eigenvector.
- */
-typedef struct _eigenStruct
-{
-    /**
-     * @var eigenValue
-     * @brief The eigenvalue of the matrix.
-     */
-    MATRIX_TYPE eigenValue;
+Matrix *matrix_eigen_matrix(Matrix *mat);
 
-    /**
-     * @var eigenValueTimes
-     * @brief The number of times the eigenvalue appears in the matrix.
-     */
-    unsigned int eigenValueTimes;
+typedef Matrix MVector;
 
-    /**
-     * @var eigenVector
-     * @brief A pointer to the eigenvector corresponding to the eigenvalue.
-     */
-    Matrix *eigenVector;
-} eigenStruct;
+MVector *getMatrixRowVector(Matrix *mat, unsigned int row_index);
 
-/**
- * @struct _EigenStructArray
- * @brief Represents an array of eigenvalue-eigenvector pairs.
- */
-typedef struct _EigenStructArray
-{
-    /**
-     * @var eigenStructArr
-     * @brief A pointer to an array of eigenvalue-eigenvector pairs.
-     */
-    struct _eigenStruct *eigenStructArr;
+MVector *getMatrixColVector(Matrix *mat, unsigned int col_index);
 
-    /**
-     * @var size
-     * @brief The number of eigenvalue-eigenvector pairs in the array.
-     */
-    unsigned int size;
-} EigenStructArray;
+MVector *getMatrixDiagonalVector(Matrix *mat);
 
-EigenStructArray *getMatrixEigenValuesAndVector(Matrix *mat);
+MVector *getMatrixDiagonalVector_p(Matrix *mat, int aix);
+
+MVector *matrix_eigen_vector(Matrix *mat);
 
 // struct LUPMatrix {
 //     Matrix *LMatrix;

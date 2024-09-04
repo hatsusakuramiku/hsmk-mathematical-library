@@ -35,18 +35,6 @@
 #include "stack.h"
 #include "toolbox.h"
 
-/**
- * Creates a new matrix size structure with the given number of rows and columns.
- *
- * @param rows The number of rows in the matrix.
- * @param cols The number of columns in the matrix.
- *
- * @return A matrix_size structure containing the specified rows and columns.
- */
-inline matrix_size new_matrix_size(const unsigned int rows, const unsigned int cols) {
-    matrix_size new_size = {rows, cols};
-    return new_size;
-}
 
 /**
  * Creates a new element position structure with the given row, column, and value.
@@ -62,19 +50,6 @@ elem_pos new_elem_pos(const unsigned int row, const unsigned int col, MATRIX_TYP
     return new_pos;
 }
 
-/**
- * Compares the size of two matrices.
- *
- * @param a The first matrix size to compare.
- * @param b The second matrix size to compare.
- *
- * @return 1 if the matrix sizes are equal, 0 otherwise.
- */
-inline int matrix_size_cmp(const matrix_size a, const matrix_size b) {
-    if (a.cols != b.cols || a.rows != b.rows)
-        return 0;
-    return 1;
-}
 
 /**
  * @brief Compare two arrays of integers or doubles.
@@ -223,7 +198,7 @@ inline Matrix *matrix_gen(const unsigned int rows, const unsigned int cols, cons
     // Initialize matrix properties
     mat->rows = rows;
     mat->cols = cols;
-    mat->size = new_matrix_size(rows, cols);
+    // mat->size = new_matrix_size(rows, cols);
 
     // Allocate memory for the matrix data
     mat->data = (MATRIX_TYPE *) malloc(rows * cols * sizeof(MATRIX_TYPE));
@@ -556,7 +531,7 @@ Matrix *matrix_copy(const Matrix *_source_mat) {
     PWARNING_RETURN_MALLOC(new_mat);
     new_mat->rows = _source_mat->rows;
     new_mat->cols = _source_mat->cols;
-    new_mat->size = _source_mat->size;
+    // new_mat->size = _source_mat->size;
     new_mat->data = malloc(sizeof(MATRIX_TYPE) * _source_mat->rows * _source_mat->cols);
     if (new_mat->data == NULL) {
         matrix_free(&new_mat);
@@ -635,15 +610,6 @@ void matrix_free(Matrix **mat) {
         // If the input matrix is NULL, return immediately
         return;
     }
-    // #ifdef _CRT_USE_WINAPI_FAMILY_DESKTOP_APP
-    //     if (mat == NULL || _msize(*mat) >= UNSIGEND_INT_MAX) {
-    //         return;
-    //     }
-    // #else
-    //     if (mat == NULL || malloc_usable_size(*mat)>= UNSIGEND_INT_MAX) {
-    //         return;
-    //     }
-    // #endif
 
     // Free the memory allocated for the matrix data
     FREE((*mat)->data);
@@ -744,9 +710,7 @@ Matrix *rand_matrix(const unsigned int rows, const unsigned int cols, MATRIX_TYP
 int matrix_eq(const Matrix *a, const Matrix *b) {
     // Check if both matrices are non-NULL
     if (a != NULL && b != NULL) {
-        // Compare the sizes of the two matrices
-        if (matrix_size_cmp(a->size, b->size) != 0) {
-            // If the sizes are different, the matrices are not equal
+        if (a->cols != b->cols || a->rows != b->rows) {
             return 1;
         }
 
@@ -980,10 +944,10 @@ static Matrix *__matrix_add(Matrix *a, ...) {
     // Get the number of rows and columns of the first matrix
     const int a_rows = a->rows, a_cols = a->cols;
 
-    // Check if the matrices have different sizes
-    if (matrix_size_cmp(a->size, b->size)) {
-        PERROR(MATRIX_SIZE_ERROR_001, __FILE__, __FUNCTION__, __LINE__);
+
+    if (a_rows != b->rows || a_cols != b->cols) {
         va_end(ap);
+        PERROR(MATRIX_SIZE_ERROR_001, __FILE__, __FUNCTION__, __LINE__);
     }
 
     // Create a new matrix with the same size as the first matrix
@@ -1072,61 +1036,80 @@ void matrix_sub_void(Matrix *a, Matrix *b) {
     matrix_copy_free(&a, (Matrix **) __matrix_add(a, 1, b));
 }
 
+
 /**
- * Transposes the input matrix and stores the result in the original matrix.
+ * @brief Transposes a matrix in-place.
  *
- * @param mat The input matrix to be transposed.
+ * This function takes a matrix as input and transposes it in-place.
  *
- * @return None
+ * @param mat Pointer to the matrix to be transposed.
+ *
+ * @throws INPUT_NULL_005 If either the input matrix or its data is NULL.
+ */
+void matrix_transpose(Matrix *mat) {
+    // Check if the input matrix or its data is NULL
+    if (mat == NULL || mat->data == NULL) {
+        // If either is NULL, print an error message and return
+        PWARNING_RETURN_NO_NULL(INPUT_NULL_005, VAR_NAME(mat), VAR_NAME(mat->data), VAR_NAME(mat->data), __FILE__,
+                                __FUNCTION__,
+                                __LINE__);
+    }
+
+    // Calculate the new number of columns and rows
+    const int rows = mat->rows;
+    const int cols = mat->cols;
+
+    // Create a new matrix size struct
+    // const matrix_size new_size = {new_rows, new_cols};
+
+    // If the matrix is a 1x1 or 1xn or nx1 matrix, just update the size and return
+    if (cols == 1 || rows == 1) {
+        mat->cols = rows;
+        mat->rows = cols;
+        return;
+    }
+    Matrix *new_mat = matrix_gen(cols, rows,NULL);
+    if (new_mat == NULL) {
+        PWARNING_RETURN_MALLOC_NO_NULL(new_mat);
+    }
+    for (int i = 0; i < rows; i++) {
+        for (int j = 0; j < cols; j++) {
+            const int index = IDX(cols, i, j);
+            const int index2 = IDX(rows, j, i);
+            new_mat->data[index2] = mat->data[index];
+        }
+    }
+    matrix_copy_free(&mat, &new_mat);
+}
+
+
+/**
+ * Creates a new transposed matrix from the input matrix.
+ *
+ * This function creates a copy of the input matrix, transposes it, and returns the transposed matrix.
+ *
+ * @param mat Pointer to the input matrix to be transposed.
+ *
+ * @return Pointer to the transposed matrix, or NULL on failure.
  *
  * @throws INPUT_NULL_005 If the input matrix is NULL.
  * @throws MALLOC_FAILURE_001 If memory allocation fails.
  */
-void matrix_transpose(Matrix *mat) {
-    Matrix *temp = matrix_transpose_r(mat);
-    matrix_copy_free(&mat, &temp);
-}
-
-/**
- * Returns a new matrix that is the transpose of the input matrix.
- *
- * The transpose of a matrix is an operator which can be thought of as "swapping" the rows and columns for a matrix.
- * For example, the transpose of a matrix A with dimensions m x n is a matrix A^T with dimensions n x m.
- *
- * @param mat The input matrix to be transposed.
- *
- * @return A new matrix that is the transpose of the input matrix.
- *
- * @throws INPUT_NULL_005 If the input matrix or its data is NULL.
- * @throws MALLOC_FAILURE_001 If memory allocation fails.
- */
 Matrix *matrix_transpose_r(const Matrix *mat) {
-    // Check if the input matrix or its data is NULL
-    if (mat == NULL || mat->data == NULL) {
-        // If either is NULL, print an error message and return
-        PWARNING_RETURN(INPUT_NULL_005, VAR_NAME(mat), VAR_NAME(mat->data), VAR_NAME(mat->data), __FILE__, __FUNCTION__,
-                        __LINE__);
+    // Create a copy of the input matrix
+    Matrix *new = matrix_copy(mat);
+
+    // Check if the copy operation failed
+    if (new == NULL) {
+        // If the copy operation failed, print an error message and return NULL
+        PWARNING_RETURN_MALLOC(new);
     }
 
-    // Create a new matrix with the dimensions of the input matrix swapped
-    Matrix *new_mat = matrix_gen(mat->cols, mat->rows, NULL);
-
-    // Check if the memory allocation for the new matrix failed
-    if (new_mat == NULL) {
-        // If the allocation failed, print an error message and return
-        PWARNING_RETURN(MALLOC_FAILURE_001, VAR_NAME(new_mat), __FILE__, __FUNCTION__, __LINE__);
-    }
-
-    // Iterate over the elements of the input matrix
-    for (int i = 0; i < mat->rows; i++) {
-        for (int j = 0; j < mat->cols; j++) {
-            // Swap the row and column indices to transpose the matrix
-            new_mat->data[IDX(mat->cols, i, j)] = mat->data[IDX(mat->rows, j, i)];
-        }
-    }
+    // Transpose the copied matrix
+    matrix_transpose(new);
 
     // Return the transposed matrix
-    return new_mat;
+    return new;
 }
 
 /**
@@ -2055,7 +2038,7 @@ Matrix *matrix_cdot_mul(const Matrix *a, const Matrix *b) {
     }
 
     // Check if the input matrices are the same size
-    if (!matrix_size_cmp(a->size, b->size)) {
+    if (a->rows != b->rows || a->cols != b->cols) {
         PERROR(MATRIX_SIZE_ERROR_001, __FILE__, __FUNCTION__, __LINE__);
     }
 
@@ -2700,90 +2683,186 @@ int isMatrixMember(const Matrix *mat, MATRIX_TYPE value) {
 }
 
 /**
- * @brief Compare two values of type MATRIX_TYPE.
+ * Calculates the eigen matrix of a given square matrix.
  *
- * This function compares two values of type MATRIX_TYPE.
+ * This function takes a square matrix as input, performs Gaussian elimination,
+ * and returns the resulting eigen matrix.
  *
- * @param a The first value to compare.
- * @param b The second value to compare.
+ * @param mat The input square matrix.
  *
- * @return 1 if the values are equal, 0 otherwise.
+ * @return The eigen matrix of the input matrix, or NULL if memory allocation fails.
  */
-static int getMatrixEigenValuesAndVectorsCmp(const void *a, const void *b) {
-    return *(MATRIX_TYPE *) a == *(MATRIX_TYPE *) b;
-}
-
-/**
- * @brief Get the eigenvalues and eigenvectors of a matrix.
- *
- * This function calculates the eigenvalues and eigenvectors of a given matrix.
- * It returns an array of eigenStruct, where each eigenStruct contains an eigenvalue,
- * its multiplicity, and a pointer to the corresponding eigenvector.
- *
- * @param mat The input matrix.
- * @return An array of eigenStruct, or NULL on failure.
- */
-EigenStructArray *getMatrixEigenValuesAndVector(Matrix *mat) {
-    // Check for invalid input
-    if (mat == NULL || mat->data == NULL) {
+Matrix *matrix_eigen_matrix(Matrix *mat) {
+    // Check if the input matrix is NULL
+    if (mat == NULL) {
         PWARNING_RETURN(INPUT_NULL_005, VAR_NAME(mat), VAR_NAME(mat->data), __FILE__, __FUNCTION__, __LINE__);
     }
 
+    // Check if the input matrix is square
+    if (mat->cols != mat->rows) {
+        PERROR("@ERROR: This function only supports square matrices\n@FILE: %s\n@FUNCTION: %s\n@LINE: %d\n", __FILE__,
+               __FUNCTION__, __LINE__);
+    }
+
     // Create a copy of the input matrix
-    Matrix *temp_mat = matrix_copy(mat);
-    if (temp_mat == NULL) {
-        PWARNING_RETURN(MALLOC_FAILURE_001, VAR_NAME(mat), __FILE__, __FUNCTION__, __LINE__);
+    Matrix *new_mat = matrix_copy(mat);
+    if (new_mat == NULL) {
+        PWARNING_RETURN_MALLOC(new_mat);
     }
 
-    // Perform Gaussian elimination on the temporary matrix
-    matrix_gauss_elimination(temp_mat);
+    // Perform Gaussian elimination on the copied matrix
+    matrix_gauss_elimination(new_mat);
 
-    // Get the number of rows and columns in the temporary matrix
-    const int rows = temp_mat->rows;
-    const int cols = temp_mat->cols;
+    // Get the number of columns in the matrix
+    const int cols = new_mat->cols;
 
-    // Allocate an array to store the eigenvalues
-    MATRIX_TYPE *temp_arr = (MATRIX_TYPE *) malloc(temp_mat->rows * sizeof(MATRIX_TYPE));
-    if (temp_arr == NULL) {
-        PWARNING_RETURN(MALLOC_FAILURE_001, VAR_NAME(temp_arr), __FILE__, __FUNCTION__, __LINE__);
+    // Create an identity matrix with the same dimensions as the input matrix
+    Matrix *result_mat = eye_matrix(cols, cols);
+    if (result_mat == NULL) {
+        PWARNING_RETURN_MALLOC(result_mat);
     }
 
-    // Create a stack to store the unique eigenvalues
-    Stack *new_stack = getUniqueStack(temp_arr, sizeof(MATRIX_TYPE), rows, getMatrixEigenValuesAndVectorsCmp);
-    if (new_stack == NULL) {
-        PWARNING_RETURN(MALLOC_FAILURE_001, VAR_NAME(new_stack), __FILE__, __FUNCTION__, __LINE__);
+    // Copy the diagonal elements of the Gaussian-eliminated matrix to the result matrix
+    for (int i = 0; i < cols; i++) {
+        const int index = IDX(cols, i, i);
+        result_mat->data[index] = new_mat->data[index];
     }
 
-    // Allocate an array to store the eigenStruct
-    EigenStructArray *eigen_struct_array = (EigenStructArray *) malloc(sizeof(EigenStructArray));
-    if (eigen_struct_array == NULL) {
-        PWARNING_RETURN(MALLOC_FAILURE_001, VAR_NAME(eigen_struct), __FILE__, __FUNCTION__, __LINE__);
+    // Free the memory allocated for the copied matrix
+    matrix_free(&new_mat);
+
+    // Return the resulting eigen matrix
+    return result_mat;
+}
+
+/**
+ * Extracts a row vector from a matrix.
+ *
+ * @param mat The input matrix.
+ * @param row_index The index of the row to extract (0-based).
+ *
+ * @return A new MVector object containing the extracted row, or NULL on error.
+ */
+MVector *getMatrixRowVector(Matrix *mat, unsigned int row_index) {
+    // Check for invalid input
+    if (mat == NULL || mat->data == NULL) {
+        // Log warning and return NULL if input is invalid
+        PWARNING_RETURN(INPUT_NULL_005, VAR_NAME(mat), VAR_NAME(mat->data), __FILE__, __FUNCTION__, __LINE__);
     }
 
-    // Initialize the eigenStructArray
-    eigen_struct_array->size = new_stack->size;
-    eigen_struct_array->eigenStructArr = (eigenStruct *) malloc(eigen_struct_array->size * sizeof(eigenStruct));
+    // Get matrix dimensions
+    const int rows = mat->rows;
+    const int cols = mat->cols;
 
-    // Iterate over the unique eigenvalues and calculate their multiplicity
-    int count = 0;
-    while (new_stack->size) {
-        eigenStruct new_eigen_struct = {*(MATRIX_TYPE *) stackPop(new_stack), 0, NULL};
+    // Check if row index is within bounds
+    if (row_index < 0 || row_index >= rows) {
+        // Log error and return NULL if row index is out of bounds
+        PERROR(INVALID_INPUT_005, VAR_NAME(row_index), 0, rows - 1, __FILE__, __FUNCTION__, __LINE__);
+    }
 
-        // Count the multiplicity of the current eigenvalue
-        for (int i = 0; i < rows; i++) {
-            if (new_eigen_struct.eigenValue == temp_arr[i]) {
-                new_eigen_struct.eigenValueTimes++;
-            }
+    // Allocate memory for new vector
+    MVector *new_vector = (MVector *) malloc(sizeof(MVector));
+    if (new_vector == NULL) {
+        // Log warning and return NULL if memory allocation fails
+        PWARNING_RETURN_MALLOC(new_vector);
+    }
+
+    // Allocate memory for vector data
+    new_vector->data = (MATRIX_TYPE *) malloc(sizeof(MATRIX_TYPE) * cols);
+    if (new_vector->data == NULL) {
+        // Log warning and return NULL if memory allocation fails
+        PWARNING_RETURN_MALLOC(new_vector->data);
+    }
+
+    // Copy row data from matrix to new vector
+    memcpy(new_vector->data, mat->data + IDX(cols, row_index, 0) * sizeof(MATRIX_TYPE), sizeof(MATRIX_TYPE) * cols);
+
+    // Set vector dimensions
+    new_vector->cols = cols;
+    new_vector->rows = 1;
+
+    // Return new vector
+    return new_vector;
+}
+
+MVector *getMatrixColVector(Matrix *mat, unsigned int col_index) {
+    if (mat == NULL || mat->data == NULL) {
+        PWARNING_RETURN(INPUT_NULL_005, VAR_NAME(mat), VAR_NAME(mat->data), __FILE__, __FUNCTION__, __LINE__);
+    }
+    const int rows = mat->rows;
+    const int cols = mat->cols;
+    if (col_index < 0 || col_index >= cols) {
+        PERROR(INVALID_INPUT_005, VAR_NAME(col_index), 0, cols - 1, __FILE__, __FUNCTION__, __LINE__);
+    }
+    MVector *new_vector = (MVector *) malloc(sizeof(MVector));
+    if (new_vector == NULL) {
+        PWARNING_RETURN_MALLOC(new_vector);
+    }
+    new_vector->data = (MATRIX_TYPE *) malloc(sizeof(MATRIX_TYPE) * rows);
+    if (new_vector->data == NULL) {
+        PWARNING_RETURN_MALLOC(new_vector->data);
+    }
+    for (int i = 0; i < rows; i++) {
+        new_vector->data[i] = mat->data[IDX(cols, i, col_index)];
+    }
+    new_vector->cols = 1;
+    new_vector->rows = rows;
+    return new_vector;
+}
+
+MVector *getMatrixDiagonalVector(Matrix *mat) {
+    return getMatrixDiagonalVector_p(mat, 0);
+}
+
+MVector *getMatrixDiagonalVector_p(Matrix *mat, int aix) {
+    if (mat == NULL || mat->data == NULL) {
+        PWARNING_RETURN(INPUT_NULL_005, VAR_NAME(mat), VAR_NAME(mat->data), __FILE__, __FUNCTION__, __LINE__);
+    }
+    const int rows = mat->rows;
+    const int cols = mat->cols;
+
+    if (aix < 1 - rows || aix > cols - 1) {
+        PERROR(INVALID_INPUT_005, VAR_NAME(aix), -rows+1, cols - 1, __FILE__, __FUNCTION__, __LINE__);
+    }
+    int len;
+    MVector *new_vector = (MVector *) malloc(sizeof(MVector));
+    if (new_vector == NULL) {
+        PWARNING_RETURN_MALLOC(new_vector);
+    }
+    const int abs_aix = abs(aix);
+    if (aix < 0) {
+        len = rows - abs_aix;
+        const int min = MIN(len, cols);
+        new_vector->cols = min;
+        new_vector->rows = 1;
+        new_vector->data = (MATRIX_TYPE *) malloc(sizeof(MATRIX_TYPE) * min);
+        if (new_vector->data == NULL) {
+            PWARNING_RETURN_MALLOC(new_vector->data);
         }
-
-        // Store the eigenStruct in the array
-        eigen_struct_array->eigenStructArr[count] = new_eigen_struct;
-        count++;
+        for (int i = 0; i < min; i++) {
+            const int index = IDX(cols, i+abs_aix, i);
+            new_vector->data[i] = mat->data[index];
+        }
+        return new_vector;
     }
+    len = cols - abs_aix;
+    const int min = MIN(len, rows);
+    new_vector->cols = min;
+    new_vector->rows = 1;
+    new_vector->data = (MATRIX_TYPE *) malloc(sizeof(MATRIX_TYPE) * min);
+    if (new_vector->data == NULL) {
+        PWARNING_RETURN_MALLOC(new_vector->data);
+    }
+    for (int i = 0; i < min; i++) {
+        const int index = IDX(cols, i, i+abs_aix);
+        new_vector->data[i] = mat->data[index];
+    }
+    return new_vector;
+}
 
-    // Clean up
-    stackDestroy(&new_stack);
-    FREE(temp_arr);
-
-    return eigen_struct_array;
+MVector *matrix_eigen_vector(Matrix *mat) {
+    Matrix *eigen_mat = matrix_eigen_matrix(mat);
+    MVector *eigen_vector = getMatrixDiagonalVector(eigen_mat);
+    matrix_free(&eigen_mat);
+    return eigen_vector;
 }

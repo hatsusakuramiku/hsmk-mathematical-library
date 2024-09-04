@@ -15,14 +15,6 @@ typedef double MATRIX_TYPE;
 ```
 
 ```C
-// 矩阵的大小
-typedef struct _matrix_size {
-    unsigned int rows; /// 矩阵行数
-    unsigned int cols; /// 矩阵列数
-} matrix_size;
-```
-
-```C
 // 矩阵元素位置
 typedef struct _elem_pos {
     unsigned int row;/// 所在行索引
@@ -44,7 +36,6 @@ typedef struct _Matrix
 {
     unsigned int rows; /// 矩阵行数
     unsigned int cols; /// 矩阵列数
-    matrix_size size;  /// 矩阵的大小数据
     MATRIX_TYPE *data; /// 矩阵的数据
 } Matrix;
 ```
