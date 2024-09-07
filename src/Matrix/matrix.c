@@ -2509,7 +2509,7 @@ static inline Matrix *__matrix_gauss_invertion(Matrix *mat) {
     if (DOUBLE_COMP_EQ2ZERO(new_mat->data[IDX(2 * cols, rows - 1, cols - 1)])) {
         matrix_free(&new_mat);
         PWARNING_RETURN(
-            "The input matrix is singular, so it does not have an inverse.\n Will return NULL\n @File:%s\n@Function:%s\n@Line:%d",
+            "The input matrix is singular, so it does not have an inverse.\nWill return NULL\n@File:%s\n@Function:%s\n@Line:%d\n",
             __FILE__, __FUNCTION__,
             __LINE__);
     }
@@ -2785,28 +2785,55 @@ MVector *getMatrixRowVector(Matrix *mat, unsigned int row_index) {
     return new_vector;
 }
 
+/**
+ * Extracts a column vector from a matrix.
+ *
+ * @param mat The input matrix.
+ * @param col_index The index of the column to extract (0-based).
+ *
+ * @return A new MVector object containing the extracted column vector, or NULL on error.
+ */
 MVector *getMatrixColVector(Matrix *mat, unsigned int col_index) {
+    // Check for invalid input
     if (mat == NULL || mat->data == NULL) {
+        // Log warning and return NULL if input is invalid
         PWARNING_RETURN(INPUT_NULL_005, VAR_NAME(mat), VAR_NAME(mat->data), __FILE__, __FUNCTION__, __LINE__);
     }
+
+    // Get matrix dimensions
     const int rows = mat->rows;
     const int cols = mat->cols;
+
+    // Check if column index is within bounds
     if (col_index < 0 || col_index >= cols) {
+        // Log error and return NULL if column index is out of bounds
         PERROR(INVALID_INPUT_005, VAR_NAME(col_index), 0, cols - 1, __FILE__, __FUNCTION__, __LINE__);
     }
+
+    // Allocate memory for new vector
     MVector *new_vector = (MVector *) malloc(sizeof(MVector));
     if (new_vector == NULL) {
+        // Log warning and return NULL if memory allocation fails
         PWARNING_RETURN_MALLOC(new_vector);
     }
+
+    // Allocate memory for vector data
     new_vector->data = (MATRIX_TYPE *) malloc(sizeof(MATRIX_TYPE) * rows);
     if (new_vector->data == NULL) {
+        // Log warning and return NULL if memory allocation fails
         PWARNING_RETURN_MALLOC(new_vector->data);
     }
+
+    // Copy column data from matrix to new vector
     for (int i = 0; i < rows; i++) {
         new_vector->data[i] = mat->data[IDX(cols, i, col_index)];
     }
+
+    // Set vector dimensions
     new_vector->cols = 1;
     new_vector->rows = rows;
+
+    // Return new vector
     return new_vector;
 }
 
@@ -2814,55 +2841,171 @@ MVector *getMatrixDiagonalVector(Matrix *mat) {
     return getMatrixDiagonalVector_p(mat, 0);
 }
 
+/**
+ * Returns a diagonal vector of a matrix.
+ *
+ * This function extracts a diagonal vector from a given matrix.
+ * The diagonal vector is defined by the axis parameter (aix).
+ * If aix is negative, the diagonal vector is extracted from the top-left to the bottom-right.
+ * If aix is positive, the diagonal vector is extracted from the top-right to the bottom-left.
+ *
+ * @param mat The input matrix.
+ * @param aix The axis parameter.
+ * @return A diagonal vector of the matrix.
+ */
 MVector *getMatrixDiagonalVector_p(Matrix *mat, int aix) {
+    // Check for null input
     if (mat == NULL || mat->data == NULL) {
         PWARNING_RETURN(INPUT_NULL_005, VAR_NAME(mat), VAR_NAME(mat->data), __FILE__, __FUNCTION__, __LINE__);
     }
+
+    // Get the number of rows and columns in the matrix
     const int rows = mat->rows;
     const int cols = mat->cols;
 
+    // Check if the axis parameter is within the valid range
     if (aix < 1 - rows || aix > cols - 1) {
         PERROR(INVALID_INPUT_005, VAR_NAME(aix), -rows+1, cols - 1, __FILE__, __FUNCTION__, __LINE__);
     }
+
+    // Calculate the length of the diagonal vector
     int len;
+
+    // Allocate memory for the diagonal vector
     MVector *new_vector = (MVector *) malloc(sizeof(MVector));
     if (new_vector == NULL) {
         PWARNING_RETURN_MALLOC(new_vector);
     }
+
+    // Calculate the absolute value of the axis parameter
     const int abs_aix = abs(aix);
+
+    // Extract the diagonal vector from the top-left to the bottom-right (aix < 0)
     if (aix < 0) {
+        // Calculate the length of the diagonal vector
         len = rows - abs_aix;
+
+        // Calculate the minimum length between the diagonal vector and the number of columns
         const int min = MIN(len, cols);
+
+        // Set the number of columns and rows in the diagonal vector
         new_vector->cols = min;
         new_vector->rows = 1;
+
+        // Allocate memory for the diagonal vector data
         new_vector->data = (MATRIX_TYPE *) malloc(sizeof(MATRIX_TYPE) * min);
         if (new_vector->data == NULL) {
             PWARNING_RETURN_MALLOC(new_vector->data);
         }
+
+        // Extract the diagonal vector data from the matrix
         for (int i = 0; i < min; i++) {
+            // Calculate the index of the diagonal vector data in the matrix
             const int index = IDX(cols, i+abs_aix, i);
+
+            // Copy the diagonal vector data from the matrix to the diagonal vector
             new_vector->data[i] = mat->data[index];
         }
+
+        // Return the diagonal vector
         return new_vector;
     }
+
+    // Extract the diagonal vector from the top-right to the bottom-left (aix >= 0)
+    // Calculate the length of the diagonal vector
     len = cols - abs_aix;
+
+    // Calculate the minimum length between the diagonal vector and the number of rows
     const int min = MIN(len, rows);
+
+    // Set the number of columns and rows in the diagonal vector
     new_vector->cols = min;
     new_vector->rows = 1;
+
+    // Allocate memory for the diagonal vector data
     new_vector->data = (MATRIX_TYPE *) malloc(sizeof(MATRIX_TYPE) * min);
     if (new_vector->data == NULL) {
         PWARNING_RETURN_MALLOC(new_vector->data);
     }
+
+    // Extract the diagonal vector data from the matrix
     for (int i = 0; i < min; i++) {
+        // Calculate the index of the diagonal vector data in the matrix
         const int index = IDX(cols, i, i+abs_aix);
+
+        // Copy the diagonal vector data from the matrix to the diagonal vector
         new_vector->data[i] = mat->data[index];
     }
+
+    // Return the diagonal vector
     return new_vector;
 }
 
+/**
+ * Calculates the eigen vector of a given matrix.
+ *
+ * This function takes a matrix as input, calculates its eigen matrix using the
+ * matrix_eigen_matrix function, and then extracts the diagonal vector from the
+ * eigen matrix using the getMatrixDiagonalVector function.
+ *
+ * @param mat The input matrix.
+ *
+ * @return A pointer to the eigen vector of the input matrix.
+ */
 MVector *matrix_eigen_vector(Matrix *mat) {
+    // Calculate the eigen matrix of the input matrix
     Matrix *eigen_mat = matrix_eigen_matrix(mat);
+
+    // Extract the diagonal vector from the eigen matrix
     MVector *eigen_vector = getMatrixDiagonalVector(eigen_mat);
+
+    // Free the memory allocated for the eigen matrix
     matrix_free(&eigen_mat);
+
+    // Return the eigen vector
     return eigen_vector;
+}
+
+/**
+ * Solves a matrix equation of the form Ax = b, where A is a square matrix and b is a column vector.
+ *
+ * This function first checks if the input matrices are valid, then checks if the matrix A is square and
+ * has the same number of rows as the number of rows in matrix b. If these conditions are met, it
+ * inverts matrix A and multiplies the result by matrix b to solve for x.
+ *
+ * @param aMat The square matrix A in the equation Ax = b.
+ * @param bMat The column vector b in the equation Ax = b.
+ *
+ * @return A pointer to the solution matrix x.
+ *
+ * @throws INPUT_NULL_005 If either of the input matrices is NULL.
+ * @throws MATRIX_SIZE_ERROR_002 If matrix A is not square.
+ * @throws MATRIX_SIZE_ERROR_001 If matrix A and matrix b do not have the same number of rows.
+ */
+Matrix *matrixEquation(Matrix *aMat, Matrix *bMat) {
+    // Check if either of the input matrices is NULL
+    if (aMat == NULL || bMat == NULL) {
+        PWARNING_RETURN(INPUT_NULL_005, VAR_NAME(aMat), VAR_NAME(bMat), __FILE__, __FUNCTION__, __LINE__);
+    }
+
+    // Get the dimensions of the input matrices
+    const int rows_a = aMat->rows;
+    const int cols_a = aMat->cols;
+    const int rows_b = bMat->rows;
+
+    // Check if matrix A is square
+    if (rows_a != cols_a) {
+        PERROR(MATRIX_SIZE_ERROR_002, __FILE__, __FUNCTION__, __LINE__);
+    }
+
+    // Check if matrix A and matrix b have the same number of rows
+    if (rows_a != rows_b) {
+        PERROR(MATRIX_SIZE_ERROR_001, __FILE__, __FUNCTION__, __LINE__);
+    }
+
+    // Invert matrix A
+    Matrix *aMat_inv = matrix_invert(aMat);
+
+    // Multiply the inverse of matrix A by matrix b to solve for x
+    return matrix_mul(aMat_inv, bMat);
 }

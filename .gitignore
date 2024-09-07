@@ -7,3 +7,4 @@ test.c
 cmake-build-windows/
 cmake-build-wsl/
 CMakeLists.txt
+temp/

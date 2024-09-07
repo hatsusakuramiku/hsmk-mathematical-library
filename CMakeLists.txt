@@ -63,6 +63,8 @@ add_library(HMLib_Static STATIC ${SRC_LIST}
         include/Random/random.h
         src/Toolbox/toolbox.c
         include/Toolbox/toolbox.h
+        src/Integral/integral.c
+        include/Integral/integral.h
 )
 add_library(HMLib_Dynamic SHARED ${SRC_LIST}
         src/Matrix/matrix.c
@@ -90,6 +92,8 @@ add_library(HMLib_Dynamic SHARED ${SRC_LIST}
         include/Random/random.h
         src/Toolbox/toolbox.c
         include/Toolbox/toolbox.h
+        src/Integral/integral.c
+        include/Integral/integral.h
 )
 
 # 设置最终生成的库文件名
@@ -126,4 +130,6 @@ add_executable(test ./test.c
         include/Random/random.h
         src/Toolbox/toolbox.c
         include/Toolbox/toolbox.h
+        src/Integral/integral.c
+        include/Integral/integral.h
 )

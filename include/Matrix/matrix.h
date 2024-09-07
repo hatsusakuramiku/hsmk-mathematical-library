@@ -20,14 +20,6 @@
  * SOFTWARE.
  */
 
-/**
- *@file matrix.h
- *@brief Matrix
- *@author hatsusakuramiku
- *@version 0.1
- *@date 2024-8-17
- */
-
 #ifndef _HSMK_MATH_LIB_MATRIX_H
 #define _HSMK_MATH_LIB_MATRIX_H
 
@@ -109,8 +101,38 @@ static Matrix *__matrix_mul(Matrix *a, ...);
 
 static Matrix *__matrix_add(Matrix *a, ...);
 
+/**
+ * Creates a matrix filled with ones.
+ *
+ * This function generates a matrix with the specified number of rows and columns,
+ * and fills it with the value 1.0. The number of arguments determines the number
+ * of parameters to be set.
+ *
+ * @param num The number of arguments passed to the function.
+ * @param ... Variable number of arguments. Can be 1, 2, or 3.
+ *             - 1 argument: The number of rows, which is also used as the number of columns.
+ *             - 2 arguments: The number of rows and columns.
+ *             - 3 arguments: The number of rows, columns, and the value to fill the matrix with.
+ * @return A pointer to the newly created matrix, or NULL on error.
+ */
 #define ones_matrix_value(...) __ones_matrix(ARGC(__VA_ARGS__), __VA_ARGS__)
 
+/**
+ * Creates an identity matrix with the specified number of rows and columns,
+ * and fills it with ones or a specified value. It supports variable number of arguments.
+ *
+ * @param num The number of arguments passed to the function.
+ * @param ... Variable number of arguments. If num is 1, a single argument specifying the size of the square identity matrix.
+ *             If num is 2, two arguments specifying the number of rows and columns.
+ *             If num is 3, three arguments specifying the number of rows, columns, and the fill value.
+ *
+ * @return A pointer to the generated identity matrix, or NULL if an error occurs.
+ *
+ * @throws PARAMETERS_NUM_ERROR_002 If the number of arguments is not 1, 2, or 3.
+ * @throws INPUT_NULL_004 If the number of rows or columns is zero.
+ * @throws PARAMETER_VALUE_ERROR_001 If the generated matrix is NULL.
+ * @throws VALUE_TYPE_WARNING_001 If the fill value is zero.
+ */
 #define eye_matrix_value(...) __eye_matrix(ARGC(__VA_ARGS__), __VA_ARGS__)
 
 // Matrix function
@@ -225,6 +247,8 @@ MVector *getMatrixDiagonalVector(Matrix *mat);
 MVector *getMatrixDiagonalVector_p(Matrix *mat, int aix);
 
 MVector *matrix_eigen_vector(Matrix *mat);
+
+Matrix *matrixEquation(Matrix *aMat, Matrix *bMat);
 
 // struct LUPMatrix {
 //     Matrix *LMatrix;
