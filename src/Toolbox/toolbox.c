@@ -79,7 +79,8 @@ inline int isMember(const void *ptr, const void *base, size_t elemSize, size_t c
  *
  * @return A new stack containing unique elements, or NULL if any input parameters are invalid.
  */
-inline Stack *getUniqueStack(const void *base, size_t elemSize, size_t count, int (*cmp)(const void *, const void *)) {
+inline Stack *getUniqueStackFromArray(const void *base, size_t elemSize, size_t count,
+                                      int (*cmp)(const void *, const void *)) {
     // Check for invalid input parameters
     if (base == NULL || elemSize == 0 || count == 0 || cmp == NULL) {
         // Return NULL to indicate an error
@@ -98,7 +99,7 @@ inline Stack *getUniqueStack(const void *base, size_t elemSize, size_t count, in
         const stackElemWithSize new_elem = {ptr, elemSize};
 
         // Check if the new element is already in the stack
-        if (isStackMember(new_stack, new_elem, cmp) == 0 || stackIsEmpty(new_stack)) {
+        if (isStackMember(new_stack, new_elem, cmp) == 0 || isStackEmpty(new_stack)) {
             // Push the new element onto the stack if it's not already present
             stackPush(new_stack, ptr, elemSize);
         }
@@ -106,4 +107,40 @@ inline Stack *getUniqueStack(const void *base, size_t elemSize, size_t count, in
 
     // Return the new stack containing unique elements
     return new_stack;
+}
+
+/**
+ * Returns a unique array of elements from the given base array.
+ *
+ * The uniqueness of elements is determined by the custom comparison function `cmp`.
+ *
+ * @param base The base array to extract unique elements from.
+ * @param elemSize The size of each element in the base array.
+ * @param count The number of elements in the base array.
+ * @param cmp A custom comparison function that takes two void pointers
+ *            as arguments and returns an integer indicating whether the
+ *            elements are equal. It should return 1 if the elements are
+ *            equal and 0 if they are not.
+ *
+ * @return A unique array of elements, or NULL if any input parameters are invalid.
+ */
+inline void *getUniqueArrayFromArray(const void *base, size_t elemSize, size_t count,
+                                     int (*cmp)(const void *, const void *)) {
+    // Get a stack of unique elements from the base array
+    Stack *uniqueStack = getUniqueStackFromArray(base, elemSize, count, cmp);
+
+    // Check if the stack is not NULL
+    if (uniqueStack != NULL) {
+        // Convert the stack to an array
+        void *uniqueArray = stackToArray(uniqueStack);
+
+        // Destroy the stack to free memory
+        stackDestroy(&uniqueStack);
+
+        // Return the unique array
+        return uniqueArray;
+    }
+
+    // Return NULL if any input parameters are invalid
+    return NULL;
 }

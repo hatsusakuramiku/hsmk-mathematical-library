@@ -46,11 +46,14 @@
             x = NULL;  \
         }              \
     }
-
+#define IS_STATIC_ARRAY(x) (void*)(&x) == (void*)(&x[0])
 #ifdef _CRT_USE_WINAPI_FAMILY_DESKTOP_APP
-#define LENGTH(vector) ((vector) == NULL ? 0 : _msize((void *)vector) / sizeof(vector[0]))
+#define LENGTH(vector) ((vector) == NULL ? 0 : IS_STATIC_ARRAY(vector) ? sizeof(vector) / sizeof(vector[0]) \
+                                                                       : _msize((void *)vector) / sizeof(vector[0]))
 #else
-#define LENGTH(vector) ((vector) == NULL ? 0 : malloc_usable_size((void *)vector) / sizeof(vector[0]))
+#define uintptr_t  int
+#define LENGTH(vector) ((vector) == NULL ? 0 : IS_STATIC_ARRAY(vector) ? sizeof(vector) / sizeof(vector[0]) \
+                                                                       : malloc_usable_size((void *)vector) / sizeof(vector[0]))
 #endif
 // get vector length
 

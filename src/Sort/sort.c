@@ -483,9 +483,9 @@ void quickSort_r(void *array, void *arg, size_t elemNum, size_t elemSize, defaul
     if (total_size <= sizeof tmp) {
         buf = tmp;
     } else {
-        int save = errno;
+        // int save = errno;
         buf = malloc(total_size);
-        _set_errno(save);
+        // _set_errno(save);
         if (buf == NULL) {
             heapsort_r(array, elemNum - 1, elemSize, compare, arg);
             return;

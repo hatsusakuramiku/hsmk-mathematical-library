@@ -238,6 +238,12 @@ Matrix *matrix_eigen_matrix(Matrix *mat);
 
 typedef Matrix MVector;
 
+MVector *rangeVector(const double begin, const double end, const unsigned int nodeNum);
+
+MVector *genMVector(unsigned int length, unsigned int aix, MATRIX_TYPE *arr);
+
+int isMVector(const MVector *vec);
+
 MVector *getMatrixRowVector(Matrix *mat, unsigned int row_index);
 
 MVector *getMatrixColVector(Matrix *mat, unsigned int col_index);
@@ -249,6 +255,10 @@ MVector *getMatrixDiagonalVector_p(Matrix *mat, int aix);
 MVector *matrix_eigen_vector(Matrix *mat);
 
 Matrix *matrixEquation(Matrix *aMat, Matrix *bMat);
+
+Matrix *diagMatrix_p(MVector *vec, const int aix);
+
+Matrix *diagMatrix(MVector *vec);
 
 // struct LUPMatrix {
 //     Matrix *LMatrix;

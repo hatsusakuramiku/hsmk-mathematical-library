@@ -397,7 +397,7 @@ stackElemWithSize stackPopWithSize(Stack *stack) {
  *
  * @throws None.
  */
-stackElemWithSize stackBotWithSizetom(Stack *stack) {
+stackElemWithSize stackBottomWithSize(Stack *stack) {
     // Check if the stack is null or empty
     if (stack == NULL || stack->size == 0) {
         // If null or empty, return a default value {NULL, 0}
@@ -450,7 +450,7 @@ stackElemWithSize stackTopWithSize(Stack *stack) {
  *
  * @throws None
  */
-int stackIsEmpty(Stack *stack) {
+int isStackEmpty(Stack *stack) {
     // Check if the stack is NULL to avoid dereferencing a null pointer
     if (stack == NULL) {
         // If the stack is NULL, return -1 to indicate an invalid state
@@ -507,4 +507,95 @@ int isStackMember(Stack *stack, stackElemWithSize elem, int (*cmp)(const void *,
 
     // If we reach the end of the stack without finding the element, return 0 to indicate failure
     return 0;
+}
+
+/**
+ * Converts the elements of a stack into an array.
+ *
+ * This function allocates memory for an array of the same length as the stack,
+ * then copies the elements from the stack into the array. The stack is emptied
+ * in the process.
+ *
+ * @param stack The stack to convert into an array.
+ * @return A pointer to the allocated array, or NULL if the stack is empty or
+ *         memory allocation fails.
+ */
+void *stackToArray(Stack *stack) {
+    // Check if the stack is NULL or empty
+    if (stack == NULL || isStackEmpty(stack)) {
+        // If so, return NULL immediately
+        return NULL;
+    }
+
+    Stack *newStack = stackCopy(stack);
+    if (newStack == NULL) {
+        PWARNING_RETURN_MALLOC(newStack);
+    }
+
+    // Get the size of each element in the stack
+    const size_t elemSize = newStack->head->elemSize;
+
+    // Get the number of elements in the stack
+    const size_t length = newStack->size;
+
+    // Allocate memory for an array of the same length as the stack
+    void *array = malloc(length * elemSize);
+
+    // Check if memory allocation failed
+    if (array == NULL) {
+        // If so, print a warning message and return NULL
+        PWARNING_RETURN_MALLOC(array);
+    }
+
+    // Initialize a pointer to the beginning of the array
+    void *ptr = array;
+
+    // Iterate through the stack, popping elements and copying them into the array
+    while (!isStackEmpty(newStack)) {
+        // Pop the next element from the stack
+        stackElem elem = stackPop(newStack);
+
+        // for debugging
+        // {
+        //     int data = *(int *) elem;
+        //     printf("pop element from stack: %d\n", data);
+        // }
+
+        // Check if the pop operation failed
+        if (&elem == NULL) {
+            stackDestroy(&newStack);
+            // If so, free the allocated array and return NULL
+            FREE(array);
+            return NULL;
+        }
+
+        // Copy the element into the array
+        memcpy(ptr, elem, elemSize);
+
+        // Move the pointer to the next position in the array
+        ptr += elemSize;
+    }
+
+    // Free the stack
+    stackDestroy(&newStack);
+    // Return the allocated array
+    return array;
+}
+
+Stack *stackCopy(Stack *stack) {
+    if (stack == NULL) {
+        return NULL;
+    }
+    Stack *newStack = stackInit();
+    if (newStack == NULL) {
+        PWARNING_RETURN_MALLOC(newStack);
+    }
+    StackNode *ptr = stack->head;
+    while (ptr != NULL) {
+        stackPush(newStack, ptr->data, ptr->elemSize);
+        ptr = ptr->next;
+    }
+    FREE(ptr);
+    stackSwap(newStack);
+    return newStack;
 }

@@ -2608,7 +2608,7 @@ elem_pos_array *matrix_find_unique(const Matrix *mat) {
             stackElemWithSize newElem = {&newElemPos, sizeof(elem_pos)};
 
             // Check if the current element is unique or the stack is empty
-            if (isStackMember(uniqeStack, newElem, isElemPosArrayMemberCmp) == 0 || stackIsEmpty(uniqeStack)) {
+            if (isStackMember(uniqeStack, newElem, isElemPosArrayMemberCmp) == 0 || isStackEmpty(uniqeStack)) {
                 // Push the new stack element onto the stack
                 stackPush(uniqeStack, newElem.data, newElem.elemSize);
             }
@@ -2985,27 +2985,288 @@ MVector *matrix_eigen_vector(Matrix *mat) {
 Matrix *matrixEquation(Matrix *aMat, Matrix *bMat) {
     // Check if either of the input matrices is NULL
     if (aMat == NULL || bMat == NULL) {
+        // If either matrix is NULL, throw an error and return NULL
         PWARNING_RETURN(INPUT_NULL_005, VAR_NAME(aMat), VAR_NAME(bMat), __FILE__, __FUNCTION__, __LINE__);
     }
 
     // Get the dimensions of the input matrices
-    const int rows_a = aMat->rows;
-    const int cols_a = aMat->cols;
-    const int rows_b = bMat->rows;
+    const int rows_a = aMat->rows; // Number of rows in matrix A
+    const int cols_a = aMat->cols; // Number of columns in matrix A
+    const int rows_b = bMat->rows; // Number of rows in matrix b
 
-    // Check if matrix A is square
+    // Check if matrix A is square (i.e., number of rows equals number of columns)
     if (rows_a != cols_a) {
+        // If matrix A is not square, throw an error
         PERROR(MATRIX_SIZE_ERROR_002, __FILE__, __FUNCTION__, __LINE__);
     }
 
     // Check if matrix A and matrix b have the same number of rows
     if (rows_a != rows_b) {
+        // If matrix A and matrix b do not have the same number of rows, throw an error
         PERROR(MATRIX_SIZE_ERROR_001, __FILE__, __FUNCTION__, __LINE__);
+    }
+
+    // Create an augmented matrix by concatenating matrix A and matrix b
+    Matrix *new_matrix = matrix_splicing(aMat, bMat, 1);
+    if (new_matrix == NULL) {
+        // If memory allocation fails, throw an error
+        PERROR(MALLOC_FAILURE_001, __FILE__, __FUNCTION__, __LINE__);
+    }
+
+    // Calculate the rank of matrix A and the augmented matrix
+    const int a_rank = matrix_rank(aMat); // Rank of matrix A
+    const int new_rank = matrix_rank(new_matrix); // Rank of the augmented matrix
+
+    // Free the memory allocated for the augmented matrix
+    matrix_free(&new_matrix);
+
+    // Check if the rank of matrix A is equal to the rank of the augmented matrix
+    if (a_rank != new_rank) {
+        // If the ranks are not equal, the system of equations has no solution
+        PWARNING(
+            "@WARNING: The rank of the coefficient matrix A is not equal to the rank of its augmented matrix,\nand the system of equations has no solution.\n@FILE: %s\n@FUNCTION: %s\n@LINE: %d\n",
+            __FILE__, __FUNCTION__, __LINE__);
+        return NULL;
+    }
+
+    // Check if matrix A is a full rank matrix (i.e., rank equals number of rows)
+    if (a_rank != rows_a) {
+        // If matrix A is not a full rank matrix, the equation system has no unique solution
+        PWARNING(
+            "@WARNING: The coefficient matrix A is a non-full rank matrix,\nthe equation system has no unique solution and cannot be calculated\n@FILE: %s\n@FUNCTION: %s\n@LINE: %d\n",
+            __FILE__, __FUNCTION__, __LINE__);
+        return NULL;
     }
 
     // Invert matrix A
     Matrix *aMat_inv = matrix_invert(aMat);
 
     // Multiply the inverse of matrix A by matrix b to solve for x
-    return matrix_mul(aMat_inv, bMat);
+    Matrix *result = matrix_mul(aMat_inv, bMat);
+
+    // Free the memory allocated for the inverse of matrix A
+    matrix_free(&aMat_inv);
+
+    // Return the solution matrix x
+    return result;
+}
+
+/**
+ * @brief Creates a vector of equally spaced values between a beginning and an end.
+ *
+ * @param begin The beginning of the range.
+ * @param end The end of the range.
+ * @param nodeNum The number of nodes in the range.
+ *
+ * @return A pointer to the created vector.
+ *
+ * @throws INVALID_INPUT_002 if nodeNum is zero.
+ * @throws ERROR_001 if the begin value is greater than or equal to the end value.
+ *
+ * @note The memory for the vector and its data must be freed using the matrix_free function.
+ */
+MVector *rangeVector(const double begin, const double end, const unsigned int nodeNum) {
+    // Check if nodeNum is zero
+    if (nodeNum == 0) {
+        PERROR(INVALID_INPUT_002, VAR_NAME(length), 1, __FILE__, __FUNCTION__, __LINE__);
+    }
+
+    // Check if begin is greater than or equal to end
+    if (begin >= end) {
+        PERROR("@ERROR: The begin value must be less than the end value\n@File: %s\n@Function: %s\n@Line: %d\n",
+               __FILE__, __FUNCTION__, __LINE__);
+    }
+
+    // Calculate the step size
+    const double step = (end - begin) / (nodeNum + 1);
+
+    // Calculate the length of the vector
+    const int length = nodeNum + 2;
+
+    // Allocate memory for the vector
+    MVector *new_vec = (MVector *) malloc(sizeof(MVector));
+    if (new_vec == NULL) {
+        PWARNING_RETURN_MALLOC(new_vec);
+    }
+
+    // Allocate memory for the data in the vector
+    new_vec->data = (MATRIX_TYPE *) malloc(sizeof(MATRIX_TYPE) * length);
+    if (new_vec->data == NULL) {
+        matrix_free(&new_vec);
+        PWARNING_RETURN_MALLOC(new_vec->data);
+    }
+
+    // Set the number of rows and columns in the vector
+    new_vec->rows = 1;
+    new_vec->cols = length;
+
+    // Calculate the values in the vector
+    for (int i = 0; i < length; i++) {
+        new_vec->data[i] = begin + step * i;
+    }
+
+    // Return the created vector
+    return new_vec;
+}
+
+/**
+ * Generates a matrix with the specified length and axis.
+ *
+ * @param length The length of the matrix.
+ * @param aix The axis of the matrix (0 for row, 1 for column).
+ * @param arr The array to copy data from.
+ *
+ * @return A pointer to the generated matrix.
+ */
+MVector *genMVector(unsigned int length, unsigned int aix, MATRIX_TYPE *arr) {
+    // Check if the axis is valid (0 or 1)
+    if (aix > 1) {
+        PERROR(INVALID_INPUT_005, VAR_NAME(aix), 0, 1, __FILE__, __FUNCTION__, __LINE__);
+    }
+
+    // Check if the length is valid (non-zero)
+    if (length == 0) {
+        PERROR(INVALID_INPUT_002, VAR_NAME(length), 1, __FILE__, __FUNCTION__, __LINE__);
+    }
+
+    // Allocate memory for the new matrix
+    MVector *new_vec = (MVector *) malloc(sizeof(MVector));
+    if (new_vec == NULL) {
+        // Handle memory allocation error
+        PWARNING_RETURN_MALLOC(new_vec);
+    }
+    // Allocate memory for the matrix data
+    new_vec->data = (MATRIX_TYPE *) malloc(sizeof(MATRIX_TYPE) * length);
+    if (new_vec->data == NULL) {
+        // Handle memory allocation error and free the matrix
+        matrix_free(&new_vec);
+        PWARNING_RETURN_MALLOC(new_vec->data);
+    }
+
+    // Set the number of rows and columns based on the axis
+    if (aix == 0) {
+        // Row matrix
+        new_vec->cols = length;
+        new_vec->rows = 1;
+    } else {
+        // Column matrix
+        new_vec->cols = 1;
+        new_vec->rows = length;
+    }
+
+    // Calculate the length of the input array
+    unsigned int arr_len = LENGTH(arr);
+    unsigned int min = MIN(arr_len, length);
+
+    // Copy data from the input array to the matrix
+    memcpy(new_vec->data, arr, sizeof(MATRIX_TYPE) * min);
+
+    // Initialize the remaining elements to zero
+    for (int i = min; i < length; i++) {
+        new_vec->data[i] = 0;
+    }
+
+    // Return the generated matrix
+    return new_vec;
+}
+
+/**
+ * @brief Check if the given MVector is a matrix (i.e., not a row or column vector)
+ *
+ * @param vec Pointer to the MVector to check
+ * @return 1 if the MVector is a matrix, -1 if it is NULL or its data is NULL, 0 otherwise
+ */
+int isMVector(const MVector *vec) {
+    // Check if the vector is NULL or its data is NULL
+    if (vec == NULL || vec->data == NULL) {
+        return -1;
+    }
+    // Check if the vector is a matrix (i.e., not a row or column vector)
+    if (vec->cols == 1 || vec->rows == 1) {
+        return 1;
+    }
+    return 0;
+}
+
+
+/**
+ * @brief Creates a diagonal matrix from a given vector.
+ *
+ * This function takes a vector and an axis as input, and returns a diagonal matrix
+ * where the elements of the vector are placed on the specified diagonal.
+ *
+ * @param vec The input vector.
+ * @param aix The axis on which to place the elements of the vector.
+ * @return A pointer to the created diagonal matrix, or NULL if an error occurs.
+ */
+Matrix *diagMatrix_p(MVector *vec, const int aix) {
+    // Check if the input vector is valid
+    if (isMVector(vec) != 1) {
+        // If not, print an error message and return NULL
+        PERROR("@ERROR: The input is not a vector\n@File: %s\n@Function: %s\n@Line: %d\n", __FILE__, __FUNCTION__,
+               __LINE__);
+        return NULL;
+    }
+
+    // Get the dimensions of the input vector
+    const int rows = vec->rows;
+    const int cols = vec->cols;
+    const int abs_aix = abs(aix);
+
+    // Calculate the length of the diagonal matrix
+    const int vec_len = MAX(rows, cols);
+    const int len = vec_len + abs_aix;
+
+    // Allocate memory for the diagonal matrix
+    Matrix *diag = (Matrix *) malloc(sizeof(Matrix));
+    if (diag == NULL) {
+        // If memory allocation fails, print a warning message and return NULL
+        PWARNING_RETURN_MALLOC(diag);
+        return NULL;
+    }
+
+    // Allocate memory for the matrix data
+    diag->data = (MATRIX_TYPE *) calloc(len * len, sizeof(MATRIX_TYPE));
+    if (diag->data == NULL) {
+        // If memory allocation fails, free the matrix and print a warning message
+        matrix_free(&diag);
+        PWARNING_RETURN_MALLOC(diag->data);
+        return NULL;
+    }
+
+    // Set the dimensions of the diagonal matrix
+    diag->rows = len;
+    diag->cols = len;
+
+    // Populate the diagonal matrix with the elements of the input vector
+    if (aix >= 0) {
+        // Place elements on the upper diagonal
+        for (int i = 0; i < vec_len; i++) {
+            const int index = IDX(len, i, i + abs_aix);
+            diag->data[index] = vec->data[i];
+        }
+    } else {
+        // Place elements on the lower diagonal
+        for (int i = 0; i < vec_len; i++) {
+            const int index = IDX(len, i + abs_aix, i);
+            diag->data[index] = vec->data[i];
+        }
+    }
+
+    // Return the created diagonal matrix
+    return diag;
+}
+
+/**
+ * @brief Creates a diagonal matrix from a given vector.
+ *
+ * This function is a convenience wrapper around diagMatrix_p, which creates a diagonal matrix
+ * with the elements of the input vector on the main diagonal (i.e., axis 0).
+ *
+ * @param vec The input vector.
+ * @return A pointer to the created diagonal matrix.
+ */
+Matrix *diagMatrix(MVector *vec) {
+    // Call diagMatrix_p with axis 0 to create a diagonal matrix on the main diagonal
+    return diagMatrix_p(vec, 0);
 }

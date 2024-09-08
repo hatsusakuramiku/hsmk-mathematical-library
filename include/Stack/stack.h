@@ -68,7 +68,7 @@ stackElem stackTop(Stack *stack);
 
 stackElemWithSize stackPopWithSize(Stack *stack);
 
-stackElemWithSize stackBotWithSizetom(Stack *stack);
+stackElemWithSize stackBottomWithSize(Stack *stack);
 
 stackElemWithSize stackTopWithSize(Stack *stack);
 
@@ -76,8 +76,12 @@ int stackSize(Stack *stack);
 
 void stackSwap(Stack *stack);
 
-int stackIsEmpty(Stack *stack);
+int isStackEmpty(Stack *stack);
 
 int isStackMember(Stack *stack, stackElemWithSize elem, int (*cmp)(const void *, const void *));
+
+void *stackToArray(Stack *stack);
+
+Stack *stackCopy(Stack *stack);
 
 #endif //_HSMK_MATH_LIB_STACK_H
