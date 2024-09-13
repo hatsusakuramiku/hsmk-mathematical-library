@@ -95,7 +95,7 @@ stackClear(stack);
 
 ### **stackDestroy**
 
-说明: 释放栈，释放栈中所有节点的内存，并且释放栈本身并将指向该栈的指针设置为 NULL。
+说明: 释放栈，释放栈中所有节点的内存，并且释放栈的内存并将指向该栈的指针设置为 NULL。
 
 函数原型:
 
@@ -502,9 +502,9 @@ Stack *stackCopy(Stack *stack);
 
 **Input**
 
-| name  | type    | description | required               |
-|-------|---------|-------------|------------------------|
-| stack | Stack * | 指向栈的指针      | 不可为NULL；要求栈中每一个元素的大小相同 |
+| name  | type    | description | required |
+|-------|---------|-------------|----------|
+| stack | Stack * | 指向栈的指针      | 不可为NULL  |
 
 **Output**
 

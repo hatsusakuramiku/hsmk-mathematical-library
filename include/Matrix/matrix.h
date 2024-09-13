@@ -184,7 +184,9 @@ Matrix *matrix_cat(const Matrix *a, const unsigned int begin_row, const unsigned
 void matrix_swap(const Matrix *a, const unsigned int aix, const unsigned int select_index,
                  const unsigned int aim_index);
 
-int matrix_default_cmp_r(void *index, const void *a, const void *b);
+int matrix_default_cmp_for_qsort_s(void *index, const void *a, const void *b);
+
+int matrix_default_cmp_for_quickSort_r(const void *a, const void *b, void *index);
 
 void matrix_sort_by_cols_values(const Matrix *mat, const unsigned int col_index); // matrix sort by rows values
 void matrix_sort_by_zeros_num(const Matrix *mat);

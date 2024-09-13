@@ -43,7 +43,7 @@ Interval newInterval(const double a, const double b);
 
 double trapzoid(const Interval interval, const unsigned int intervalNum, const __integral_func func);
 
-/// @ref: https://oi-wiki.org/math/numerical/integral/
+
 double adaptiveSimpson(const Interval interval, const __integral_func func);
 
 double simpson(const Interval interval, const unsigned int intervalNum, const __integral_func func);

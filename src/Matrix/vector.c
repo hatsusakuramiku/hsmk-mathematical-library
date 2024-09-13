@@ -61,7 +61,7 @@ Vector *vector_p(const unsigned int length, const void *data, const enum VectorT
 Vector *vector_gen_p(const unsigned int length, const void *data, const enum VectorType type) {
     // Check if the length is zero and throw an error if so
     if (length == 0) {
-        PWARNING_RETURN(INPUT_NULL_004, VAR_NAME(length), __FILE__, __FUNCTION__, __LINE__);
+        PWARNING_RETURN(INPUT_NULL_003, VAR_NAME(length), __FILE__, __FUNCTION__, __LINE__);
     }
 
     // Allocate memory for the new Vector instance
@@ -72,7 +72,7 @@ Vector *vector_gen_p(const unsigned int length, const void *data, const enum Vec
     }
 
     // Determine the minimum length between the specified length and the length of the data
-    const int min_len = MIN(length, LENGTH(data));
+    const int min_len = MIN(length, VECTOR_LENGTH(data));
 
     // Initialize the data for the new Vector instance based on the type
     switch (type) {

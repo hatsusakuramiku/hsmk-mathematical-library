@@ -22,14 +22,19 @@
 
 #ifndef _HSMK_MATH_LIB_MEMSWAP_H
 #define _HSMK_MATH_LIB_MEMSWAP_H
-#include <stdlib.h>
+// #include <stdlib.h>
 #include <string.h>
 
-#ifndef _CRT_USE_WINAPI_FAMILY_DESKTOP_APP
-inline void *mempcpy(void *dest, const void *src, size_t n) {
-   return memcpy(dest, src, n) + n;
+// #if !__has_function(mempcpy)
+// inline void *mempcpy(void *dest, const void *src, size_t n) {
+//    return memcpy(dest, src, n) + n;
+// }
+// #endif
+
+static inline void *__mempcpy(void *dest, const void *src, size_t len) {
+   memcpy(dest, src, len);
+   return dest + len;
 }
-#endif
 
 /**
  * @brief Swap two memory blocks of size @p n.
@@ -42,7 +47,7 @@ inline void *mempcpy(void *dest, const void *src, size_t n) {
  * @param p2 The second memory block to swap.
  * @param n  The size of the memory blocks to swap.
  */
-static inline void _memswap(void *__restrict p1, void *__restrict p2, size_t n) {
+static inline void __memswap(void *__restrict p1, void *__restrict p2, size_t n) {
    /* Use multiple small memcpys with constant size to enable inlining on most
       targets.  */
    enum {
@@ -51,8 +56,8 @@ static inline void _memswap(void *__restrict p1, void *__restrict p2, size_t n) 
    while (n > SWAP_GENERIC_SIZE) {
       unsigned char tmp[SWAP_GENERIC_SIZE];
       memcpy(tmp, p1, SWAP_GENERIC_SIZE);
-      p1 = mempcpy(p1, p2, SWAP_GENERIC_SIZE);
-      p2 = mempcpy(p2, tmp, SWAP_GENERIC_SIZE);
+      p1 = __mempcpy(p1, p2, SWAP_GENERIC_SIZE);
+      p2 = __mempcpy(p2, tmp, SWAP_GENERIC_SIZE);
       n -= SWAP_GENERIC_SIZE;
    }
    while (n > 0) {

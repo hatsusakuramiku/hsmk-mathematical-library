@@ -32,6 +32,7 @@
 #include <math.h>
 
 #include "list.h"
+#include "sort.h"
 #include "stack.h"
 #include "toolbox.h"
 
@@ -67,11 +68,11 @@ static int array_cmp(const void *a, const void *b, enum ARRAY_CMP_TYPE type) {
         const int *pa = (int *) a;
         const int *pb = (int *) b;
         // Check if the lengths of the arrays are equal
-        if (LENGTH(a) != LENGTH(b)) {
+        if (VECTOR_LENGTH(a) != VECTOR_LENGTH(b)) {
             return 1;
         }
         // Compare the arrays using memcmp
-        return memcmp(pa, pb, LENGTH(a) * sizeof(int));
+        return memcmp(pa, pb, VECTOR_LENGTH(a) * sizeof(int));
     }
     // Check if the type is _DOUBLE_
     if (type == _DOUBLE_) {
@@ -79,13 +80,13 @@ static int array_cmp(const void *a, const void *b, enum ARRAY_CMP_TYPE type) {
         const double *pa = (double *) a;
         const double *pb = (double *) b;
         // Print the lengths of the arrays
-        printf("a_len = %llu, b_len = %llu\n", LENGTH(a), LENGTH(b));
+        printf("a_len = %llu, b_len = %llu\n", VECTOR_LENGTH(a), VECTOR_LENGTH(b));
         // Check if the lengths of the arrays are equal
-        if (LENGTH(a) != LENGTH(b)) {
+        if (VECTOR_LENGTH(a) != VECTOR_LENGTH(b)) {
             return 1;
         }
         // Compare the arrays using memcmp
-        return memcmp(pa, pb, LENGTH(a) * sizeof(double));
+        return memcmp(pa, pb, VECTOR_LENGTH(a) * sizeof(double));
     }
     // Return 1 if the type is neither _INT_ nor _DOUBLE_
     return 1;
@@ -211,7 +212,7 @@ inline Matrix *matrix_gen(const unsigned int rows, const unsigned int cols, cons
     }
 
     // Copy provided data into the matrix (if any)
-    const int len = LENGTH(data);
+    const int len = VECTOR_LENGTH(data);
     if (len > 0) {
         // Copy data into the matrix
         memcpy(mat->data, data, len * sizeof(MATRIX_TYPE));
@@ -446,7 +447,9 @@ static void print_ellipsis_row(const Matrix *mat, int cols) {
     // Print an ellipsis for each column
     for (int j = 0; j < cols; j++) {
         // Print an ellipsis for the current column
-        printf("%-10s\t", "⋮");
+        if (j <= 2 || j == cols - 2) {
+            printf("%-10s\t", "⋮");
+        }
     }
 
     // Print a newline to separate the rows
@@ -472,14 +475,14 @@ Matrix *matrix_gen_r(const unsigned int rows, const unsigned int cols, const MAT
                      const unsigned int data_rows,
                      const unsigned int data_cols) {
     // Check if the data array length matches the product of data_rows and data_cols
-    if (data_cols * data_rows != LENGTH(data)) {
+    if (data_cols * data_rows != VECTOR_LENGTH(data)) {
         PERROR(INVALID_INPUT_003, VAR_NAME(data), data_rows * data_cols, __FILE__, __FUNCTION__,
                __LINE__);
     }
 
     // If the data array is NULL or its length matches the product of rows and cols,
     // return a matrix generated with the given data
-    if (data == NULL || LENGTH(data) == rows * cols) {
+    if (data == NULL || VECTOR_LENGTH(data) == rows * cols) {
         return matrix_gen(rows, cols, data);
     }
 
@@ -1183,14 +1186,14 @@ MATRIX_TYPE **matrix_to_2D_array(const Matrix *mat) {
  */
 Matrix *matrix_from_2D_array(MATRIX_TYPE **array, const unsigned int rows, const unsigned int cols) {
     // Check for invalid input: NULL array or mismatched dimensions
-    if (array == NULL || LENGTH(array) != rows) {
+    if (array == NULL || VECTOR_LENGTH(array) != rows) {
         // Throw exception with descriptive error message
         PWARNING_RETURN(INVALID_INPUT_003, VAR_NAME(LENGTH(array)), rows, __FILE__, __FUNCTION__, __LINE__);
     }
 
     // Check each row of the array for mismatched column length
     for (int i = 0; i < rows; i++) {
-        if (LENGTH(array[i]) != cols) {
+        if (VECTOR_LENGTH(array[i]) != cols) {
             // Throw exception with descriptive error message
             PWARNING_RETURN(INVALID_INPUT_003, VAR_NAME(LENGTH(array[i])), cols, __FILE__, __FUNCTION__, __LINE__);
         }
@@ -1459,8 +1462,8 @@ void matrix_swap(const Matrix *a, const unsigned int aix, const unsigned int sel
         }
 
         // Swap rows using memswap
-        _memswap(a->data + (size_t) (select_index * a_cols), a->data + (size_t) (aim_index * a_cols),
-                 a_cols * sizeof(MATRIX_TYPE));
+        __memswap(a->data + (size_t) (select_index * a_cols), a->data + (size_t) (aim_index * a_cols),
+                  a_cols * sizeof(MATRIX_TYPE));
 
         // Old version of swapping rows (commented out)
         // for (int i = 0; i < a_cols; i++) {
@@ -1520,7 +1523,7 @@ void matrix_swap(const Matrix *a, const unsigned int aix, const unsigned int sel
  *
  * @throws None
  */
-int matrix_default_cmp_r(void *index, const void *a, const void *b) {
+int matrix_default_cmp_for_qsort_s(void *index, const void *a, const void *b) {
     // Cast the column index to an unsigned integer
     const uintptr_t col = (uintptr_t) index;
 
@@ -1541,38 +1544,65 @@ int matrix_default_cmp_r(void *index, const void *a, const void *b) {
     }
 }
 
+int matrix_default_cmp_for_quickSort_r(const void *a, const void *b, void *index) {
+    // Cast the column index to an unsigned integer
+    const int col = (uintptr_t) index;
+
+    // Cast the matrix elements to pointers to MATRIX_TYPE
+    const MATRIX_TYPE *p1 = (MATRIX_TYPE *) a;
+    const MATRIX_TYPE *p2 = (MATRIX_TYPE *) b;
+
+    // Compare the elements at the specified column index
+    if (p1[col] > p2[col]) {
+        // If the first element is greater, return 1
+        return 1;
+    } else if (p1[col] == p2[col]) {
+        // If the elements are equal, return 0
+        return 0;
+    } else {
+        // If the first element is smaller, return -1
+        return -1;
+    }
+}
+
+
 /**
- * Sorts a matrix by the values in the specified column.
+ * Sorts a matrix by the values in a specified column.
  *
- * This function sorts the matrix in-place, meaning it modifies the original matrix.
- * It uses the qsort_s function from the C standard library to perform the sort.
+ * This function takes a matrix and a column index as input, and sorts the matrix
+ * in ascending order based on the values in the specified column.
  *
- * @param mat The matrix to sort.
+ * @param mat The matrix to be sorted.
  * @param col_index The index of the column to sort by.
- *
- * @return None
- *
- * @throws INVALID_INPUT_006 if the column index is out of range.
- * @throws INVALID_INPUT_007 if the matrix or its data is NULL.
  */
 void matrix_sort_by_cols_values(const Matrix *mat, const unsigned int col_index) {
     // Check for invalid input
     if (mat == NULL || mat->data == NULL) {
         // If the matrix or its data is NULL, print an error message and return
+        // This check is necessary to prevent null pointer dereferences.
         PWARNING_RETURN_NO_NULL(INPUT_NULL_007, VAR_NAME(mat), VAR_NAME(mat->data), __FILE__, __FUNCTION__, __LINE__);
     }
 
     // Check if the column index is out of range
     if (col_index >= mat->cols) {
         // If the column index is out of range, print an error message
+        // This check is necessary to prevent array index out of bounds errors.
         PERROR(INVALID_INPUT_006, VAR_NAME(col_index), 0, mat->cols - 1, __FILE__, __FUNCTION__, __LINE__);
     }
 
     // Perform the sort using qsort_s
-    // The comparison function is matrix_default_cmp_r, which compares two matrix elements based on the specified column index
+    // The comparison function is matrix_default_cmp_for_qsort_s, which compares two matrix elements based on the specified column index
     // The arg parameter is used to pass the column index to the comparison function
-    qsort_s(mat->data, mat->rows, sizeof(MATRIX_TYPE) * mat->cols, matrix_default_cmp_r,
-            (void *) ((uintptr_t) col_index));
+    // We use qsort_s on Windows and quickSort_s on other platforms.
+    // #ifdef _WIN32
+    // qsort_s(mat->data, mat->rows, sizeof(MATRIX_TYPE) * mat->cols, matrix_default_cmp_for_qsort_s,
+    //         (void *) col_index);
+    // #else
+    mergeSort_s(mat->data, mat->rows, sizeof(MATRIX_TYPE) * mat->cols,
+                matrix_default_cmp_for_quickSort_r, (void *) col_index);
+    // bubbleSort_s(mat->data, (void *) col_index, mat->rows, sizeof(MATRIX_TYPE) * mat->cols,
+    //              matrix_default_cmp_for_quickSort_r);
+    // #endif
 }
 
 /**
@@ -2142,6 +2172,20 @@ void matrix_swap_elem(Matrix *mat, elem_pos pos1, elem_pos pos2) {
     mat->data[IDX(mat->cols, pos2.row, pos2.col)] = temp;
 }
 
+int pow_int(int x, int y) {
+    if (x == 0) return 0;
+    if (y == 0) return 1;
+    if (y < 0) return 1 / pow_int(x, -y);
+
+    int result = 1;
+    while (y > 0) {
+        if (y % 2 == 1) result *= x;
+        x *= x;
+        y /= 2;
+    }
+    return result;
+}
+
 /**
  * Calculates the determinant of a matrix using Gaussian elimination.
  *
@@ -2262,7 +2306,7 @@ static inline MATRIX_TYPE __matrix_det(Matrix *mat) {
     matrix_free(&new_mat);
 
     // Return the determinant, taking into account the number of row swaps
-    return det * pow(-1, calculate_times);
+    return det * pow_int(-1, calculate_times);
 }
 
 /**
@@ -3155,7 +3199,7 @@ MVector *genMVector(unsigned int length, unsigned int aix, MATRIX_TYPE *arr) {
     }
 
     // Calculate the length of the input array
-    unsigned int arr_len = LENGTH(arr);
+    unsigned int arr_len = VECTOR_LENGTH(arr);
     unsigned int min = MIN(arr_len, length);
 
     // Copy data from the input array to the matrix

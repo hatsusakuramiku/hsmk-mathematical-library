@@ -36,7 +36,7 @@
  *   - Zero if the elements are equal
  *   - Positive if the first element is greater than the second element
  */
-typedef int (*default_compare_r)(const void *, const void *, const void *);
+typedef int (*default_compare_s)(const void *, const void *, void *);
 
 /**
  * @brief Function pointer type for a comparison function.
@@ -53,22 +53,30 @@ typedef int (*default_compare)(const void *, const void *);
 
 int default_compare_example(const void *a, const void *b);
 
-int default_compare_example_r(const void *a, const void *b, const void *arg);
+int default_compare_example_s(const void *a, const void *b, const void *arg);
 
 void quickSort(void *array, size_t elemNum, size_t elemSize, default_compare compare);
 
-void quickSort_r(void *array, void *arg, size_t elemNum, size_t elemSize, default_compare_r compare);
+void quickSort_s(void *array, size_t elemNum, size_t elemSize, default_compare_s compare, void *arg);
 
 void bubbleSort(void *array, size_t elemNum, size_t elemSize, default_compare compare);
 
-void bubbleSort_r(void *array, void *arg, size_t elemNum, size_t elemSize, default_compare_r compare);
+void bubbleSort_s(void *array, size_t elemNum, size_t elemSize, default_compare_s compare, void *arg);
 
 void insertionSort(void *array, size_t elemNum, size_t elemSize, default_compare compare);
 
-void insertionSort_r(void *array, void *arg, size_t elemNum, size_t elemSize, default_compare_r compare);
+void insertionSort_s(void *array, size_t elemNum, size_t elemSize, default_compare_s compare, void *arg);
 
 void selectionSort(void *array, size_t elemNum, size_t elemSize, default_compare compare);
 
-void selectionSort_r(void *array, void *arg, size_t elemNum, size_t elemSize, default_compare_r compare);
+void selectionSort_s(void *array, size_t elemNum, size_t elemSize, default_compare_s compare, void *arg);
+
+void mergeSort(void *array, size_t elemNum, size_t elemSize, default_compare compare);
+
+void mergeSort_s(void *array, size_t elemNum, size_t elemSize, default_compare_s compare, void *arg);
+
+void heapSort_s(void *array, size_t elemNum, size_t elemSize, default_compare_s compare, void *arg);
+
+void heapSort(void *array, size_t elemNum, size_t elemSize, default_compare compare);
 
 #endif //_HSMK_MATH_LIB_SORT_H

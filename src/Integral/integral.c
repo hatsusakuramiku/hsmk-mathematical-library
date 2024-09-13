@@ -174,6 +174,8 @@ static inline double asr(const Interval interval, double eps, double ans, int st
  * @param func The function to integrate.
  *
  * @return The adaptive Simpson's rule approximation of the function.
+ *
+ * @ref https://oi-wiki.org/math/numerical/integral/
  */
 double adaptiveSimpson(const Interval interval, const __integral_func func) {
  // Set the desired error tolerance and initial approximation

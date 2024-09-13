@@ -24,6 +24,10 @@
 #ifndef _HSMK_MATH_LIB_CONSTDEF_H
 #define _HSMK_MATH_LIB_CONSTDEF_H
 
+#if __STDC_VERSION__ < 201112L
+#error "This library requires C11 or later"
+#endif
+
 // double precision
 #define DOUBLE_EPSILON 1e-32
 #define DOUBLE_COMP_EQ2ZERO(x) (x == 0.0 || fabs(x) <= DOUBLE_EPSILON)
@@ -46,14 +50,15 @@
             x = NULL;  \
         }              \
     }
-#define IS_STATIC_ARRAY(x) (void*)(&x) == (void*)(&x[0])
-#ifdef _CRT_USE_WINAPI_FAMILY_DESKTOP_APP
-#define LENGTH(vector) ((vector) == NULL ? 0 : IS_STATIC_ARRAY(vector) ? sizeof(vector) / sizeof(vector[0]) \
-                                                                       : _msize((void *)vector) / sizeof(vector[0]))
-#else
-#define uintptr_t  int
-#define LENGTH(vector) ((vector) == NULL ? 0 : IS_STATIC_ARRAY(vector) ? sizeof(vector) / sizeof(vector[0]) \
-                                                                       : malloc_usable_size((void *)vector) / sizeof(vector[0]))
+// #define IS_STATIC_ARRAY(x) (void *)(&x) == (void *)(&x[0])
+#define IS_STATIC_ARRAY(x) (sizeof(x) == sizeof(x[0]) * (sizeof(x) / sizeof(x[0])))
+#ifdef _WIN32
+#define VECTOR_LENGTH(vector) ((vector) == NULL ? 0 : IS_STATIC_ARRAY(vector) ? sizeof(vector) / sizeof(vector[0]) \
+                                                                                 : _msize((void*)vector) / sizeof(vector[0]))
+#elif defined __linux__
+#define uintptr_t unsigned int
+#define VECTOR_LENGTH(vector) ((vector) == NULL ? 0 : IS_STATIC_ARRAY(vector) ? sizeof(vector) / sizeof(vector[0]) \
+                                                                                 : malloc_usable_size((void*)vector) / sizeof(vector[0]))
 #endif
 // get vector length
 

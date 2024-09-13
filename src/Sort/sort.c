@@ -22,9 +22,9 @@
 
 #include <stdio.h>
 #include "sort.h"
-
 #include "constDef.h"
 #include "memswap.h"
+#include "stdlib.h"
 
 // 默认比较函数
 
@@ -72,7 +72,7 @@ int default_compare_example(const void *a, const void *b) {
  *
  * @throws None
  */
-int default_compare_example_r(const void *a, const void *b, const void *arg) {
+int default_compare_example_s(const void *a, const void *b, const void *arg) {
     // Cast the void pointers to double pointers to access the double values
     const double *p1 = *(double **) a;
     const double *p2 = *(double **) b;
@@ -93,367 +93,6 @@ int default_compare_example_r(const void *a, const void *b, const void *arg) {
     }
 }
 
-// Quick sort block start
-//  快速排序的实现借鉴(抄的)自开源项目 https://github.com/bminor/glibc/blob/master
-/// Quick sort code @ref https://github.com/bminor/glibc/blob/master/stdlib/qsort.c
-
-/**
- * Swap SIZE bytes between addresses A and B.  These helpers are provided
- * along the generic one as an optimization.
- */
-enum swap_type_t {
-    SWAP_WORDS_64,
-    SWAP_WORDS_32,
-    SWAP_VOID_ARGS,
-    SWAP_BYTES
-};
-
-typedef unsigned long int uint32_t;
-typedef unsigned long long int uint64_t;
-
-typedef uint32_t __attribute__((__may_alias__)) uint32_alias_t;
-typedef uint64_t __attribute__((__may_alias__)) uint64_alias_t;
-#define QSORT_STACK_SIZE 1024
-#define INDIRECT_SORT_SIZE_THRES 32
-
-/**
- * Swaps 64-bit words between two memory addresses.
- *
- * @param a The first memory address.
- * @param b The second memory address.
- * @param n The number of 64-bit words to swap.
- *
- * @return None
- *
- * @throws None
- */
-static inline void swap_words_64(void *__restrict a, void *__restrict b, size_t n) {
-    do {
-        n -= 8;
-        const uint64_alias_t tmp = *(uint64_alias_t *) (a + n);
-        *(uint64_alias_t *) (a + n) = *(uint64_alias_t *) (b + n);
-        *(uint64_alias_t *) (b + n) = tmp;
-    } while (n);
-}
-
-/**
- * Swaps 32-bit words between two memory addresses.
- *
- * @param a The first memory address.
- * @param b The second memory address.
- * @param n The number of 32-bit words to swap.
- *
- * @return None
- *
- * @throws None
- */
-static inline void swap_words_32(void *__restrict a, void *__restrict b, size_t n) {
-    do {
-        n -= 4;
-        const uint32_alias_t tmp = *(uint32_alias_t *) (a + n);
-        *(uint32_alias_t *) (a + n) = *(uint32_alias_t *) (b + n);
-        *(uint32_alias_t *) (b + n) = tmp;
-    } while (n);
-}
-
-/**
- * Performs a swap operation on a block of memory using the specified swap type.
- *
- * @param a The starting memory address of the block.
- * @param b The ending memory address of the block.
- * @param n The size of the block in bytes.
- * @param type The type of swap operation to perform.
- *
- * @return None.
- *
- * @throws None.
- */
-static void do_swap(void *__restrict a, void *__restrict b, size_t n, enum swap_type_t type) {
-    if (type == SWAP_WORDS_64) {
-        swap_words_64(a, b, n);
-    } else if (type == SWAP_WORDS_32) {
-        swap_words_32(a, b, n);
-    } else {
-        _memswap(a, b, n);
-    }
-}
-
-/**
- * Siftdown operation to maintain heap property in a binary heap.
- *
- * This function takes an array, its size, an index k, the total number of elements n,
- * a swap type, a comparison function, and an argument for the comparison function.
- * It ensures that the heap property is maintained by comparing the element at index k
- * with its children and swapping if necessary.
- *
- * @param array The array representing the binary heap.
- * @param size The size of each element in the array.
- * @param k The index of the element to start the siftdown operation from.
- * @param n The total number of elements in the heap.
- * @param type The type of swap operation to perform.
- * @param cmp The comparison function to use for comparing elements.
- * @param arg The argument to pass to the comparison function.
- *
- * @return None
- *
- * @throws None
- */
-static inline void siftdown(void *array, size_t size, size_t k, size_t n, enum swap_type_t type,
-                            default_compare_r cmp, void *arg) {
-    /* There can only be a heap condition violation if there are
-     children.  */
-    while (2 * k + 1 <= n) {
-        /* Left child.  */
-        size_t j = 2 * k + 1;
-        /* If the right child is larger, use it.  */
-        if (j < n && cmp(array + (j * size), array + ((j + 1) * size), arg) < 0) {
-            j++;
-        }
-
-        /* If k is already >= to its children, we are done.  */
-        if (j == k || cmp(array + (k * size), array + (j * size), arg) >= 0) {
-            break;
-        }
-
-        /* Heal the violation.  */
-        do_swap(array + (k * size), array + (j * size), size, type);
-
-        /* Swapping with j may have introduced a violation at j.  Fix
-     it in the next loop iteration.  */
-        k = j;
-    }
-}
-
-/**
- * Builds a max heap from an array by repeatedly performing the siftdown operation.
- *
- * @param array The array to heapify.
- * @param size The size of each element in the array.
- * @param n The number of elements in the array.
- * @param type The type of swap operation to perform.
- * @param cmp The comparison function to use for comparing elements.
- * @param arg The argument to pass to the comparison function.
- *
- * @return None
- *
- * @throws None
- */
-static inline void cs_heapify(void *array, size_t size, size_t n, enum swap_type_t type, default_compare_r cmp,
-                              void *arg) {
-    size_t k = n / 2;
-
-    while (1) {
-        siftdown(array, size, k, n, type, cmp, arg);
-        if (k-- == 0) {
-            break;
-        }
-    }
-}
-
-/**
- * Determines the swap type based on the size and alignment of the given array.
- *
- * @param parray The array to check.
- * @param size The size of the array.
- *
- * @return The swap type, either SWAP_WORDS_32, SWAP_WORDS_64, or SWAP_BYTES.
- *
- * @throws None
- */
-static enum swap_type_t get_swap_type(void *const parray, size_t size) {
-    if ((size & (sizeof(uint32_t) - 1)) == 0 && ((uintptr_t) parray) % __alignof__(uint32_t) == 0) {
-        if (size == sizeof(uint32_t))
-            return SWAP_WORDS_32;
-        if (size == sizeof(uint64_t) && ((uintptr_t) parray) % __alignof__(uint64_t) == 0)
-            return SWAP_WORDS_64;
-    }
-    return SWAP_BYTES;
-}
-
-/**
- * Performs a heap sort on the given array in-place.
- *
- * @param array The array to sort.
- * @param n The number of elements in the array.
- * @param size The size of each element in the array.
- * @param cmp The comparison function to use for comparing elements.
- * @param arg The argument to pass to the comparison function.
- *
- * @return None
- *
- * @throws None
- */
-static void heapsort_r(void *array, size_t n, size_t size, default_compare_r cmp, void *arg) {
-    if (n == 0) {
-        return;
-    }
-
-    enum swap_type_t type = get_swap_type(array, size);
-    cs_heapify(array, size, n, type, cmp, arg);
-    while (1) {
-        /* 索引0 .. n包含二叉堆。提取最大的元素并将其放入数组中的最终位置。  */
-        do_swap(array, array + (n * size), size, type);
-        /* 堆现在少了一个元素。  */
-        n--;
-        if (n == 0)
-            break;
-        siftdown(array, size, 0, n, type, cmp, arg);
-    }
-}
-
-// This is a structure used by the msort function to sort an array of elements
-struct msort_param {
-    // size is the number of elements in the array
-    size_t size;
-    // type is a enumeration that specifies the type of swap to perform
-    enum swap_type_t type;
-    // comp_func is a comparison function used to compare the elements
-    default_compare_r comp_func;
-    // arg is an argument passed to the comparison function
-    void *arg;
-    // temp is a temporary array used to store the sorted elements
-    char *temp;
-};
-
-/**
- * Recursively performs a merge sort on the given array using a temporary buffer.
- *
- * @param param A pointer to the merge sort parameters, including the size of each element, the swap type, the comparison function, and the temporary buffer.
- * @param b The array to sort.
- * @param n The number of elements in the array.
- *
- * @return None
- *
- * @throws None
- */
-static void msort_with_tmp(const struct msort_param *param, void *b, size_t n) {
-    char *b1, *b2;
-    size_t n1, n2;
-
-    if (n <= 1)
-        return;
-
-    n1 = n / 2;
-    n2 = n - n1;
-    b1 = b;
-    b2 = (char *) b + (n1 * param->size);
-    msort_with_tmp(param, b1, n1);
-    msort_with_tmp(param, b2, n2);
-
-    char *tmp = param->temp;
-    const size_t size = param->size;
-    default_compare_r cmp = param->comp_func;
-    void *arg = param->arg;
-
-    switch (param->type) {
-        case SWAP_WORDS_32:
-            while (n1 > 0 && n2 > 0) {
-                if (cmp(b1, b2, arg) <= 0) {
-                    *(uint32_alias_t *) tmp = *(uint32_alias_t *) b1;
-                    b1 += sizeof(uint32_alias_t);
-                    --n1;
-                } else {
-                    *(uint32_alias_t *) tmp = *(uint32_alias_t *) b2;
-                    b2 += sizeof(uint32_alias_t);
-                    --n2;
-                }
-                tmp += sizeof(uint32_alias_t);
-            }
-            break;
-        case SWAP_WORDS_64:
-            while (n1 > 0 && n2 > 0) {
-                if (cmp(b1, b2, arg) <= 0) {
-                    *(uint64_alias_t *) tmp = *(uint64_alias_t *) b1;
-                    b1 += sizeof(uint64_alias_t);
-                    --n1;
-                } else {
-                    *(uint64_alias_t *) tmp = *(uint64_alias_t *) b2;
-                    b2 += sizeof(uint64_alias_t);
-                    --n2;
-                }
-                tmp += sizeof(uint64_alias_t);
-            }
-            break;
-        case SWAP_VOID_ARGS:
-            while (n1 > 0 && n2 > 0) {
-                if (cmp(*(const void **) b1, *(const void **) b2, arg) <= 0) {
-                    *(void **) tmp = *(void **) b1;
-                    b1 += sizeof(void *);
-                    --n1;
-                } else {
-                    *(void **) tmp = *(void **) b2;
-                    b2 += sizeof(void *);
-                    --n2;
-                }
-                tmp += sizeof(void *);
-            }
-            break;
-        default:
-            while (n1 > 0 && n2 > 0) {
-                if (cmp(b1, b2, arg) <= 0) {
-                    tmp = (char *) mempcpy(tmp, b1, size);
-                    b1 += size;
-                    --n1;
-                } else {
-                    tmp = (char *) mempcpy(tmp, b2, size);
-                    b2 += size;
-                    --n2;
-                }
-                tmp++;
-            }
-            break;
-    }
-    if (n1 > 0)
-        memcpy(tmp, b1, n1 * size);
-    memcpy(b, param->temp, (n - n2) * size);
-}
-
-/**
- * Performs an indirect merge sort on an array using a temporary storage.
- *
- * @param param A pointer to a cs_msort_param structure containing the sorting parameters.
- * @param array The array to be sorted.
- * @param n The number of elements in the array.
- * @param size The size of each element in the array.
- *
- * @return None
- *
- * @throws None
- */
-static void __attribute__((used)) indirect_msort_with_tmp(const struct msort_param *param, void *array, size_t n,
-                                                          size_t size) {
-    char *ip = (char *) array;
-    void **tp = (void **) (param->temp + n * sizeof(void *));
-    void **tmp = tp;
-    void *tmp_storage = (void *) (tp + n);
-
-    while ((void *) tmp < tmp_storage) {
-        *tmp++ = ip;
-        ip += size;
-    }
-    msort_with_tmp(param, param->temp + n * sizeof(void *), n);
-
-    char *kp;
-    size_t i;
-    for (i = 0, ip = (char *) array; i < n; i++, ip += size) {
-        if ((kp = tp[i]) != ip) {
-            size_t j = i;
-            char *jp = ip;
-            memcpy(tmp_storage, ip, size);
-            do {
-                size_t k = (kp - (char *) array) / size;
-                tp[j] = jp;
-                memcpy(jp, kp, size);
-                j = k;
-                jp = kp;
-                kp = tp[k];
-            } while (kp != ip);
-            tp[j] = jp;
-            memcpy(jp, tmp_storage, size);
-        }
-    }
-}
-
 /**
  * Recursively sorts an array of elements using the quicksort algorithm.
  *
@@ -467,53 +106,11 @@ static void __attribute__((used)) indirect_msort_with_tmp(const struct msort_par
  *
  * @throws None
  */
-void quickSort_r(void *array, void *arg, size_t elemNum, size_t elemSize, default_compare_r compare) {
+void quickSort_s(void *const array, size_t elemNum, size_t elemSize, default_compare_s compare, void *arg) {
     if (elemNum <= 1) {
         return;
     }
-    _Alignas
-    (uint64_t) char
-    tmp[QSORT_STACK_SIZE];
-    size_t total_size = elemNum * elemSize;
-    char *buf;
-
-    if (elemSize > INDIRECT_SORT_SIZE_THRES) {
-        total_size = 2 * elemNum * sizeof(void *) + elemSize;
-    }
-    if (total_size <= sizeof tmp) {
-        buf = tmp;
-    } else {
-        // int save = errno;
-        buf = malloc(total_size);
-        // _set_errno(save);
-        if (buf == NULL) {
-            heapsort_r(array, elemNum - 1, elemSize, compare, arg);
-            return;
-        }
-    }
-
-    if (elemSize > INDIRECT_SORT_SIZE_THRES) {
-        const struct msort_param msort_param = {
-            .size = elemSize,
-            .type = get_swap_type(array, elemSize),
-            .comp_func = compare,
-            .arg = arg,
-            .temp = buf
-        };
-        indirect_msort_with_tmp(&msort_param, array, elemNum, elemSize);
-    } else {
-        const struct msort_param msort_param = {
-            .size = elemSize,
-            .type = get_swap_type(array, elemSize),
-            .comp_func = compare,
-            .arg = arg,
-            .temp = buf
-        };
-        msort_with_tmp(&msort_param, array, elemNum);
-    }
-    if (buf != tmp) {
-        free(buf);
-    }
+    mergeSort_s(array, elemNum, elemSize, compare, arg);
 }
 
 /**
@@ -527,7 +124,7 @@ void quickSort_r(void *array, void *arg, size_t elemNum, size_t elemSize, defaul
  * @return None
  */
 void quickSort(void *array, size_t elemNum, size_t elemSize, default_compare compare) {
-    return quickSort_r(array, NULL, elemNum, elemSize, (default_compare_r) compare);
+    return quickSort_s(array, elemNum, elemSize, (default_compare_s) compare, NULL);
 }
 
 /// Quick sort block end
@@ -557,7 +154,7 @@ void bubbleSort(void *array, size_t elemNum, size_t elemSize, default_compare co
             // Compare the current element with the next element
             if (compare((char *) array + j * elemSize, (char *) array + (j + 1) * elemSize) > 0) {
                 // If the current element is greater than the next element, swap them
-                _memswap((char *) array + j * elemSize, (char *) array + (j + 1) * elemSize, elemSize);
+                __memswap((char *) array + j * elemSize, (char *) array + (j + 1) * elemSize, elemSize);
                 flag = 1;
             }
         }
@@ -582,7 +179,7 @@ void bubbleSort(void *array, size_t elemNum, size_t elemSize, default_compare co
  *
  * @return None
  */
-void bubbleSort_r(void *array, void *arg, size_t elemNum, size_t elemSize, default_compare_r compare) {
+void bubbleSort_s(void *array, size_t elemNum, size_t elemSize, default_compare_s compare, void *arg) {
     // Base case: If the array has one or zero elements, it is already sorted.
     if (elemNum <= 1 || array == NULL) {
         return;
@@ -598,7 +195,7 @@ void bubbleSort_r(void *array, void *arg, size_t elemNum, size_t elemSize, defau
             // Compare the current element with the next element.
             if (compare((char *) array + j * elemSize, (char *) array + (j + 1) * elemSize, arg) > 0) {
                 // If the current element is greater than the next element, swap them.
-                _memswap((char *) array + j * elemSize, (char *) array + (j + 1) * elemSize, elemSize);
+                __memswap((char *) array + j * elemSize, (char *) array + (j + 1) * elemSize, elemSize);
                 flag = 1; // Set the flag to indicate a swap was made.
             }
         }
@@ -623,7 +220,7 @@ void bubbleSort_r(void *array, void *arg, size_t elemNum, size_t elemSize, defau
  * @throws MALLOC_FAILURE_002 If memory allocation fails.
  */
 void insertionSort(void *array, size_t elemNum, size_t elemSize, default_compare compare) {
-    return insertionSort_r(array, NULL, elemNum, elemSize, (default_compare_r) compare);
+    return insertionSort_s(array, elemNum, elemSize, (default_compare_s) compare, NULL);
 }
 
 /**
@@ -642,7 +239,7 @@ void insertionSort(void *array, size_t elemNum, size_t elemSize, default_compare
  *
  * @throws MALLOC_FAILURE_002 If memory allocation fails.
  */
-void insertionSort_r(void *array, void *arg, size_t elemNum, size_t elemSize, default_compare_r compare) {
+void insertionSort_s(void *array, size_t elemNum, size_t elemSize, default_compare_s compare, void *arg) {
     // Check for invalid input
     if (elemNum <= 1 || array == NULL || compare == NULL) {
         // If the array has one or zero elements, it is already sorted
@@ -657,7 +254,7 @@ void insertionSort_r(void *array, void *arg, size_t elemNum, size_t elemSize, de
     // Iterate over the array starting from the second element
     for (size_t i = 1; i < elemNum; ++i) {
         // Swap the current element with the temporary key
-        _memswap(key, (char *) array + i * elemSize, elemSize);
+        __memswap(key, (char *) array + i * elemSize, elemSize);
 
         // Initialize the index for the inner loop
         size_t j = i - 1;
@@ -665,12 +262,12 @@ void insertionSort_r(void *array, void *arg, size_t elemNum, size_t elemSize, de
         // Shift elements to the right until the correct position for the key is found
         while (compare((char *) array + j * elemSize, key, arg) > 0) {
             // Swap the current element with the next element
-            _memswap((char *) array + j * elemSize, (char *) array + (j + 1) * elemSize, elemSize);
+            __memswap((char *) array + j * elemSize, (char *) array + (j + 1) * elemSize, elemSize);
             j--; // Decrement the index
         }
 
         // Swap the key with the element at the correct position
-        _memswap((char *) array + (j + 1) * elemSize, key, elemSize);
+        __memswap((char *) array + (j + 1) * elemSize, key, elemSize);
     }
 
     // Free the memory allocated for the temporary key
@@ -690,7 +287,7 @@ void insertionSort_r(void *array, void *arg, size_t elemNum, size_t elemSize, de
  * @throws None
  */
 void selectionSort(void *array, size_t elemNum, size_t elemSize, default_compare compare) {
-    return selectionSort_r(array, NULL, elemNum, elemSize, (default_compare_r) compare);
+    return selectionSort_s(array, elemNum, elemSize, (default_compare_s) compare, NULL);
 }
 
 /**
@@ -709,7 +306,7 @@ void selectionSort(void *array, size_t elemNum, size_t elemSize, default_compare
  *
  * @throws None
  */
-void selectionSort_r(void *array, void *arg, size_t elemNum, size_t elemSize, default_compare_r compare) {
+void selectionSort_s(void *array, size_t elemNum, size_t elemSize, default_compare_s compare, void *arg) {
     // Base case: If the array has one or zero elements, it is already sorted.
     if (elemNum <= 1 || array == NULL || compare == NULL) {
         return;
@@ -730,6 +327,286 @@ void selectionSort_r(void *array, void *arg, size_t elemNum, size_t elemSize, de
         }
 
         // Swap the minimum element with the first unsorted element.
-        _memswap((char *) array + i * elemSize, (char *) array + min * elemSize, elemSize);
+        __memswap((char *) array + i * elemSize, (char *) array + min * elemSize, elemSize);
     }
+}
+
+/**
+ * Merge two sorted halves of an array into a single sorted array.
+ *
+ * This function takes a pointer to the array, the midpoint of the array, the size of each element,
+ * the total number of elements, a comparison function, and an argument for the comparison function.
+ *
+ * It creates temporary arrays to store the left and right halves, copies the data into these arrays,
+ * merges the sorted halves into the original array, and then frees the temporary arrays.
+ *
+ * @param array The array to be merged.
+ * @param mid The midpoint of the array.
+ * @param elemSize The size of each element in the array.
+ * @param elemNum The total number of elements in the array.
+ * @param compare A function that compares two elements.
+ * @param arg An argument for the comparison function.
+ *
+ * @return None.
+ */
+static inline void merge(void *array, size_t mid, size_t elemSize, size_t elemNum, default_compare_s compare,
+                         void *arg) {
+    // Create temporary arrays to store the left and right halves
+    void *left = malloc(mid * elemSize);
+    void *right = malloc((elemNum - mid) * elemSize);
+
+    // Check for memory allocation errors
+    PWARNING_RETURN_MALLOC_NO_NULL(VAR_NAME(left));
+    PWARNING_RETURN_MALLOC_NO_NULL(VAR_NAME(right));
+
+
+    // Copy the left and right halves into the temporary arrays
+    memcpy(left, array, mid * elemSize);
+    memcpy(right, (char *) array + mid * elemSize, (elemNum - mid) * elemSize);
+
+    // Merge the sorted left and right halves into the original array
+    size_t i = 0, j = 0, k = 0;
+    while (i < mid && j < elemNum - mid) {
+        // Compare the current elements of the left and right halves
+        if (compare((char *) left + i * elemSize, (char *) right + j * elemSize, arg) <= 0) {
+            // Copy the smaller element into the original array
+            memcpy((char *) array + k * elemSize, (char *) left + i * elemSize, elemSize);
+            i++;
+        } else {
+            // Copy the larger element into the original array
+            memcpy((char *) array + k * elemSize, (char *) right + j * elemSize, elemSize);
+            j++;
+        }
+        k++;
+    }
+
+    // Copy any remaining elements from the left or right halves
+    while (i < mid) {
+        // Copy the remaining elements from the left half
+        memcpy((char *) array + k * elemSize, (char *) left + i * elemSize, elemSize);
+        i++;
+        k++;
+    }
+    while (j < elemNum - mid) {
+        // Copy the remaining elements from the right half
+        memcpy((char *) array + k * elemSize, (char *) right + j * elemSize, elemSize);
+        j++;
+        k++;
+    }
+
+    // Free the temporary arrays
+    free(left);
+    free(right);
+}
+
+/**
+ * Sorts an array using the merge sort algorithm.
+ *
+ * This function recursively divides the array into two halves until each half has
+ * one or zero elements, and then merges the halves back together in sorted order.
+ *
+ * @param array     The array to be sorted.
+ * @param elemNum   The number of elements in the array.
+ * @param elemSize  The size of each element in the array.
+ * @param compare   A comparison function that takes two elements and returns a
+ *                  negative value if the first element is less than the second,
+ *                  zero if the elements are equal, and a positive value if the
+ *                  first element is greater than the second.
+ * @param arg       An optional argument that can be passed to the comparison
+ *                  function.
+ *
+ * @return None.
+ */
+void mergeSort_s(void *array, size_t elemNum, size_t elemSize, default_compare_s compare, void *arg) {
+    // Check for invalid input or base case
+    // If the array has one or zero elements, it is already sorted
+    if (elemNum <= 1 || array == NULL || elemSize == 0 || compare == NULL) {
+        // No need to sort, return immediately
+        return;
+    }
+
+    // Test if memory allocation is possible
+    void *memTest = malloc(elemNum * elemSize);
+    if (memTest == NULL) {
+        // If memory allocation fails, print an error message and fall back to heap sort
+        printf("Error: Unable to allocate memory for merge sort.\nWill sort by heap sort.\n");
+        return heapSort_s(array, elemNum, elemSize, compare, arg);
+    }
+    // Free the test memory allocation
+    FREE(memTest);
+
+    // Calculate the middle index to divide the array into two halves
+    size_t mid = elemNum / 2;
+
+    // Recursively sort the left and right halves of the array
+    // Sort the left half
+    mergeSort_s(array, mid, elemSize, compare, arg);
+    // Sort the right half
+    mergeSort_s((char *) array + mid * elemSize, elemNum - mid, elemSize, compare, arg);
+
+    // Merge the sorted left and right halves back together
+    merge(array, mid, elemSize, elemNum, compare, arg);
+}
+
+/**
+ * @brief Sorts an array of elements using the merge sort algorithm.
+ *
+ * This function sorts an array of elements using the merge sort algorithm.
+ * It takes in the array to be sorted, the number of elements in the array,
+ * the size of each element, and a comparison function to determine the order
+ * of the elements.
+ *
+ * @param array The array to be sorted.
+ * @param elemNum The number of elements in the array.
+ * @param elemSize The size of each element in the array.
+ * @param compare The comparison function used to determine the order of elements.
+ *
+ * @return None
+ *
+ * @throws None
+ */
+void mergeSort(void *array, size_t elemNum, size_t elemSize, default_compare compare) {
+    // Cast the comparison function to the correct type
+    default_compare_s compare_s = (default_compare_s) compare;
+
+    // Call the mergeSort_s function with the provided arguments and a NULL argument
+    mergeSort_s(array, elemNum, elemSize, compare_s, NULL);
+}
+
+/**
+ * Heapifies a subtree rooted at index i in the given array.
+ *
+ * This function ensures that the heap property is maintained in the subtree,
+ * i.e., the parent node is either greater than (in a max heap) or less than
+ * (in a min heap) its child nodes.
+ *
+ * @param array The array to heapify.
+ * @param elemNum The number of elements in the array.
+ * @param i The index of the root of the subtree to heapify.
+ * @param elemSize The size of each element in the array.
+ * @param compare The comparison function used to determine the order of elements.
+ * @param arg An optional argument passed to the comparison function.
+ *
+ * @return None.
+ */
+static inline void heapify_s(void *array, size_t elemNum, size_t i, size_t elemSize, default_compare_s compare,
+                             void *arg) {
+    // Initialize the largest element as the root of the subtree
+    size_t largest = i;
+
+    // Calculate the indices of the left and right child nodes
+    size_t left = 2 * i + 1;
+    size_t right = 2 * i + 2;
+
+    // Check if the left child node exists and is greater than the current largest element
+    if (left < elemNum && compare((char *) array + left * elemSize, (char *) array + largest * elemSize, arg) > 0) {
+        // Update the largest element if the left child node is greater
+        largest = left;
+    }
+
+    // Check if the right child node exists and is greater than the current largest element
+    if (right < elemNum && compare((char *) array + right * elemSize, (char *) array + largest * elemSize, arg) > 0) {
+        // Update the largest element if the right child node is greater
+        largest = right;
+    }
+
+    // If the largest element is not the root, swap them and recursively heapify the affected subtree
+    if (largest != i) {
+        // Swap the elements at indices i and largest
+        __memswap((char *) array + i * elemSize, (char *) array + largest * elemSize, elemSize);
+
+        // Recursively heapify the subtree rooted at the new largest element
+        heapify_s(array, elemNum, largest, elemSize, compare, arg);
+    }
+}
+
+/**
+ * Constructs a heap from the given array.
+ *
+ * This function iterates over the array from the last non-leaf node to the root,
+ * heapifying each subtree to ensure the heap property is maintained.
+ *
+ * @param array     The array to be converted into a heap.
+ * @param elemNum   The number of elements in the array.
+ * @param elemSize  The size of each element in the array.
+ * @param compare   A comparison function that takes two elements and returns a
+ *                  value indicating their relative order.
+ * @param arg       An optional argument passed to the comparison function.
+ *
+ * @return None.
+ */
+static void buildHeap_s(void *array, size_t elemNum, size_t elemSize, default_compare_s compare, void *arg) {
+    // Handle edge case where array is empty or has only one element
+    if (elemNum <= 0) {
+        return;
+    }
+
+    // Calculate the index of the last non-leaf node
+    size_t k = elemNum / 2 - 1;
+
+    // Iterate over the array from the last non-leaf node to the root
+    while (1) {
+        // Heapify the subtree rooted at index k
+        heapify_s(array, elemNum, k, elemSize, compare, arg);
+
+        // Decrement k and check if we've reached the root
+        if (k-- == 0) {
+            break;
+        }
+    }
+}
+
+/**
+ * Sorts an array using the heap sort algorithm.
+ *
+ * This function constructs a heap from the array, then repeatedly removes the
+ * largest element from the heap and places it at the end of the array.
+ *
+ * @param array     The array to be sorted.
+ * @param elemNum   The number of elements in the array.
+ * @param elemSize  The size of each element in the array.
+ * @param compare   A comparison function that takes two elements and returns a
+ *                  negative value if the first element is less than the second,
+ *                  zero if the elements are equal, and a positive value if the
+ *                  first element is greater than the second.
+ * @param arg       An optional argument that can be passed to the comparison
+ *                  function.
+ *
+ * @return None.
+ */
+void heapSort_s(void *array, size_t elemNum, size_t elemSize, default_compare_s compare, void *arg) {
+    if (array == NULL || elemNum == 0 || elemSize == 0 || compare == NULL) {
+        return;
+    }
+    const size_t tmp = elemNum;
+
+    buildHeap_s(array, elemNum, elemSize, compare, arg);
+    // Repeatedly remove the largest element from the heap and place it at the end
+    // of the array
+    while (1) {
+        if (elemNum == 1) {
+            break;
+        }
+        __memswap((char *) array, (char *) array + elemSize * (elemNum - 1), elemSize);
+        elemNum--;
+        heapify_s(array, elemNum, 0, elemSize, compare, arg);
+    }
+}
+
+/**
+ * Wraps the heapSort_s function to provide a simpler interface.
+ *
+ * This function sorts an array of elements using the heap sort algorithm.
+ *
+ * @param array     The array to be sorted.
+ * @param elemNum   The number of elements in the array.
+ * @param elemSize  The size of each element in the array.
+ * @param compare   A comparison function that takes two elements and returns a
+ *                  value indicating their relative order.
+ *
+ * @return None
+ */
+void heapSort(void *array, size_t elemNum, size_t elemSize, default_compare compare) {
+    // Call the heapSort_s function with the provided arguments and a NULL arg
+    return heapSort_s(array, elemNum, elemSize, (default_compare_s) compare, NULL);
 }
