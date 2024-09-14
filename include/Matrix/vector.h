@@ -20,9 +20,9 @@
  * SOFTWARE.
  */
 
-//
-// Created by 79240 on 24-8-20.
-//
+/**
+ * @file vector.c
+ */
 
 #ifndef _HSMK_MATH_LIB_VECTOR_H
 #define _HSMK_MATH_LIB_VECTOR_H
@@ -31,17 +31,15 @@
 #define VECTOR_DEAFAULT_PRINT_LENTH_LIMIT 20
 #define VECTOR_DEFAULT_PRECISION "%.6lf\t" /// matrix default precision
 
-enum VectorType
-{
-    VECTOR_TYPE_INT,    /// int
-    VECTOR_TYPE_FLOAT,  /// float
+enum VectorType {
+    VECTOR_TYPE_INT, /// int
+    VECTOR_TYPE_FLOAT, /// float
     VECTOR_TYPE_DOUBLE, /// double
-    VECTOR_TYPE_CHAR,   /// char
-    VECTOR_TYPE_VOID    /// void, need user defined
+    VECTOR_TYPE_CHAR, /// char
+    VECTOR_TYPE_VOID /// void, need user defined
 };
 
-typedef struct _Vector
-{
+typedef struct _Vector {
     void *data;
     unsigned int length;
     enum VectorType type;

@@ -20,6 +20,9 @@
  * SOFTWARE.
  */
 
+/**
+ * @file integral.c
+ */
 
 #ifndef _HSMK_MATH_LIB_INTEGRAL_H
 #define _HSMK_MATH_LIB_INTEGRAL_H
@@ -37,22 +40,28 @@ typedef struct _Interval {
 
 // Error Code
 #define INTERVAL_SIZE_ERROR_001 "@ERROR: The left endpoint values of the interval must be less than the right endpoint values !\n@File: %s\n@Function: %s\n@Line: %d\n"
-#define INTERVAL_SIZE_ERROR_002 "@ERROR: The number of intervals must be greater than %d !\n@File: %s\n@Function: %s\n@Line: %d\n"
+#define INTERVAL_SIZE_ERROR_002 "@ERROR: The number of intervals must be greater than or equal to %d !\n@File: %s\n@Function: %s\n@Line: %d\n"
 
 Interval newInterval(const double a, const double b);
 
-double trapzoid(const Interval interval, const unsigned int intervalNum, const __integral_func func);
+int isCorrentInterval(const Interval interval);
 
+double trapzoid(const Interval interval, const unsigned int intervalNum, const __integral_func func);
 
 double adaptiveSimpson(const Interval interval, const __integral_func func);
 
 double simpson(const Interval interval, const unsigned int intervalNum, const __integral_func func);
 
-double gaussLegendreIntegral(const Interval interval, const unsigned int intervalNum, const __integral_func func);
+double gaussLegendre2PointIntegral(const Interval interval, const unsigned int intervalNum, const __integral_func func);
+
+double gaussLegendre3PointIntegral(const Interval interval, const unsigned int intervalNum, const __integral_func func);
 
 double ruggeKuttaIntegral(const Interval interval, const unsigned int intervalNum, const __integral_func func);
 
 double ruggeKutta4OrderIntegral(const Interval interval, const unsigned int intervalNum, const __integral_func func);
+
+double newtonRaphsonIntegral(const Interval interval, const unsigned int intervalNum, unsigned int order, const
+                             __integral_func func);
 
 double integral(const Interval interval, const unsigned int intervalNum, const __integral_func func);
 #endif //_HSMK_MATH_LIB_INTEGRAL_H

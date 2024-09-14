@@ -20,6 +20,10 @@
  * SOFTWARE.
  */
 
+/**
+ * @file matrix.c
+ */
+
 #ifndef _HSMK_MATH_LIB_MATRIX_H
 #define _HSMK_MATH_LIB_MATRIX_H
 

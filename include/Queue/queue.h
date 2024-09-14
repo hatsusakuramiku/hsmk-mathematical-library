@@ -20,13 +20,16 @@
  * SOFTWARE.
  */
 
+/**
+ * @file queue.c
+ */
+
 #ifndef _HSMK_MATH_LIB_QUEUE_H
 #define _HSMK_MATH_LIB_QUEUE_H
 
 typedef void *queueElem;
 
-enum QUEUE_TYPE_SIZE
-{
+enum QUEUE_TYPE_SIZE {
     QUEUE_TYPE_INT = sizeof(int),
     QUEUE_TYPE_FLOAT = sizeof(float),
     QUEUE_TYPE_DOUBLE = sizeof(double),
@@ -35,21 +38,18 @@ enum QUEUE_TYPE_SIZE
     QUEUE_TYPE_LONG_LONG = sizeof(long long)
 };
 
-typedef struct _QueueNode
-{
+typedef struct _QueueNode {
     queueElem data;
     size_t elemSize;
     struct _QueueNode *next;
 } QueueNode;
 
-typedef struct _queueElemWithSize
-{
+typedef struct _queueElemWithSize {
     queueElem data;
     size_t elemSize;
 } queueElemWithSize;
 
-typedef struct _Queue
-{
+typedef struct _Queue {
     QueueNode *front;
     QueueNode *rear;
     unsigned int size;

@@ -20,6 +20,10 @@
  * SOFTWARE.
  */
 
+/**
+ * @headerfile integral.h
+ */
+
 #include <stdlib.h>
 #include "constDef.h"
 #include "integral.h"
@@ -45,6 +49,13 @@ Interval newInterval(const double a, const double b) {
  }
  // If the interval is valid, create and return a new Interval object with the given bounds
  return (Interval){a, b};
+}
+
+int isCorrentInterval(const Interval interval) {
+ if (interval.a >= interval.b) {
+  return 0;
+ }
+ return 1;
 }
 
 /**
@@ -186,8 +197,133 @@ double adaptiveSimpson(const Interval interval, const __integral_func func) {
  return asr(interval, eps, ans, 15, func);
 }
 
-double gaussLegendreIntegral(const Interval interval, const unsigned int intervalNum, const __integral_func func) {
- return 0.0;
+/**
+ * Calculates the 2-point Gauss-Legendre integral of a function over a given interval.
+ *
+ * This function uses the 2-point Gauss-Legendre quadrature rule to approximate the integral.
+ *
+ * @param interval The interval over which to integrate.
+ * @param func The function to integrate.
+ *
+ * @return The 2-point Gauss-Legendre integral of the function.
+ */
+static inline double __gaussLegendre2PointIntegral(const Interval interval, const __integral_func func) {
+ // Define the 2-point Gauss-Legendre nodes
+ const double gaussLegendre2PointNodes[] = {0.7886751345948129, 0.2113248654051871};
+
+ // Calculate the width of the interval
+ const double bMinusA = (interval.b - interval.a) / 2;
+
+ // Calculate the integral using the 2-point Gauss-Legendre quadrature rule
+ return bMinusA * (func(interval.a * gaussLegendre2PointNodes[0] + interval.b * gaussLegendre2PointNodes[1]) +
+                   func(interval.a * gaussLegendre2PointNodes[1] + interval.b * gaussLegendre2PointNodes[0]));
+}
+
+/**
+ * Calculates the 2-point Gauss-Legendre integral of a function over a given interval,
+ * divided into a specified number of subintervals.
+ *
+ * This function uses the 2-point Gauss-Legendre quadrature rule to approximate the integral
+ * over each subinterval, and sums the results to obtain the final integral.
+ *
+ * @param interval The interval over which to integrate.
+ * @param intervalNum The number of subintervals to divide the interval into.
+ * @param func The function to integrate.
+ *
+ * @return The 2-point Gauss-Legendre integral of the function.
+ */
+double gaussLegendre2PointIntegral(const Interval interval, const unsigned int intervalNum,
+                                   const __integral_func func) {
+ // Check if the number of subintervals is valid
+ if (intervalNum < 1) {
+  // If not, throw an error with a descriptive message
+  PERROR(INTERVAL_SIZE_ERROR_002, 2, __FILE__, __FUNCTION__, __LINE__);
+ }
+
+ // Check if the interval is valid
+ if (interval.a >= interval.b) {
+  PERROR(INTERVAL_SIZE_ERROR_001, __FILE__, __FUNCTION__, __LINE__)
+ }
+
+ // Calculate the width of each subinterval
+ const double h = (interval.b - interval.a) / intervalNum;
+
+ // Initialize the sum of the integrals over each subinterval
+ double sum = 0.0;
+
+ // Calculate the integral over each subinterval and sum the results
+ for (int i = 0; i < intervalNum; i++) {
+  sum += __gaussLegendre2PointIntegral(newInterval(interval.a + i * h, interval.a + (i + 1) * h), func);
+ }
+
+ // Return the final integral
+ return sum;
+}
+
+/**
+ * Calculates the 3-point Gauss-Legendre integral of a function over a given interval.
+ *
+ * This function uses the Gauss-Legendre quadrature formula to approximate the integral of a function
+ * over a given interval. The formula uses three points to approximate the integral, which makes it
+ * more accurate than the 2-point formula but less accurate than the 4-point formula.
+ *
+ * @param interval The interval over which to integrate the function.
+ * @param func The function to integrate.
+ * @return The approximate value of the integral.
+ */
+static inline double __gaussLegendre3PointIntegral(const Interval interval, const __integral_func func) {
+ // Define the nodes and weights for the 3-point Gauss-Legendre quadrature formula
+ const double gaussLegendre3PointNodes[] = {0.5555555555555556, 0.8888888888888888, 0.7745966692414834};
+
+ // Calculate the midpoint and half-width of the interval
+ const double bMinusAHalf = (interval.b - interval.a) / 2;
+ const double aPlusAHalf = (interval.b + interval.a) / 2;
+
+ // Calculate the integral using the Gauss-Legendre quadrature formula
+ return bMinusAHalf * (gaussLegendre3PointNodes[0] * func(aPlusAHalf - gaussLegendre3PointNodes[2] * bMinusAHalf)
+                       + gaussLegendre3PointNodes[1] * func(aPlusAHalf)
+                       + gaussLegendre3PointNodes[0] * func(aPlusAHalf + gaussLegendre3PointNodes[2] * bMinusAHalf));
+}
+
+/**
+ * Calculates the 3-point Gauss-Legendre integral of a function over a given interval, divided into a specified number of subintervals.
+ *
+ * This function uses the Gauss-Legendre quadrature formula to approximate the integral of a function
+ * over a given interval, divided into a specified number of subintervals. The formula uses three points
+ * to approximate the integral over each subinterval, which makes it more accurate than the 2-point formula
+ * but less accurate than the 4-point formula.
+ *
+ * @param interval The interval over which to integrate the function.
+ * @param intervalNum The number of subintervals to divide the interval into.
+ * @param func The function to integrate.
+ * @return The approximate value of the integral.
+ */
+double gaussLegendre3PointIntegral(const Interval interval, const unsigned int intervalNum,
+                                   const __integral_func func) {
+ // Check if the number of subintervals is valid
+ if (intervalNum < 1) {
+  // If not, throw an error with a descriptive message
+  PERROR(INTERVAL_SIZE_ERROR_002, 2, __FILE__, __FUNCTION__, __LINE__);
+ }
+
+ // Check if the interval is valid
+ if (interval.a >= interval.b) {
+  PERROR(INTERVAL_SIZE_ERROR_001, __FILE__, __FUNCTION__, __LINE__)
+ }
+
+ // Calculate the width of each subinterval
+ const double h = (interval.b - interval.a) / intervalNum;
+
+ // Initialize the sum of the integrals over each subinterval
+ double sum = 0.0;
+
+ // Calculate the integral over each subinterval and sum the results
+ for (int i = 0; i < intervalNum; i++) {
+  sum += __gaussLegendre3PointIntegral(newInterval(interval.a + i * h, interval.a + (i + 1) * h), func);
+ }
+
+ // Return the final integral
+ return sum;
 }
 
 double ruggeKutta2OrderIntegral(const Interval interval, const unsigned int intervalNum, const __integral_func func) {
@@ -196,4 +332,128 @@ double ruggeKutta2OrderIntegral(const Interval interval, const unsigned int inte
 
 double ruggeKutta4OrderIntegral(const Interval interval, const unsigned int intervalNum, const __integral_func func) {
  return 0.0;
+}
+
+/**
+ * Returns an array of Newton-Cotes nodes for the given order.
+ *
+ * The Newton-Cotes nodes are used in the Newton-Raphson method for numerical integration.
+ *
+ * @param order The order of the Newton-Cotes nodes.
+ * @return An array of Newton-Cotes nodes, or NULL if the order is invalid.
+ */
+static inline double *__getNCNodes(unsigned int order) {
+ // Define the Newton-Cotes nodes for each order
+ switch (order) {
+  case 1:
+   // Trapezoidal rule
+   return (double []){1.0, 1.0, 2.0};
+  case 2:
+   // Simpson's rule
+   return (double []){1.0, 4.0, 1.0, 6.0};
+  case 3:
+   // Simpson's 3/8 rule
+   return (double []){1.0, 3.0, 3.0, 1.0, 8.0};
+  case 4:
+   // Boole's rule
+   return (double []){7.0, 32.0, 12.0, 32.0, 7.0, 90.0};
+  case 5:
+   // Weddle's rule
+   return (double []){19.0, 75.0, 50.0, 50.0, 75.0, 19.0, 288.0};
+  case 6:
+   // Sixth-order Newton-Cotes rule
+   return (double []){41.0, 216.0, 27.0, 272.0, 27.0, 216.0, 41.0, 840.0};
+  case 7:
+   // Seventh-order Newton-Cotes rule
+   return (double []){751.0, 3577.0, 1323.0, 2989.0, 2989.0, 1323.0, 3577.0, 751.0, 17280.0};
+  case 8:
+   // Eighth-order Newton-Cotes rule
+   return (double[]){989.0, 5888.0, -928.0, 10496.0, -4540.0, 10496.0, -928.0, 5888.0, 989.0, 28350.0};
+  default:
+   // Invalid order
+   return NULL;
+ }
+}
+
+// /**
+//  * Evaluates the Newton-Raphson integral for the given interval and order.
+//  *
+//  * The Newton-Raphson integral is a method for numerical integration.
+//  *
+//  * @param interval The interval to integrate over.
+//  * @param order The order of the Newton-Raphson integral.
+//  * @param nodes The Newton-Cotes nodes for the given order.
+//  * @param func The function to integrate.
+//  * @return The value of the Newton-Raphson integral.
+//  */
+// static inline double __newtonRaphsonIntegral(const Interval interval, const unsigned int order, const double *nodes,
+//                                              const __integral_func func) {
+//  // Calculate the width of the interval
+//  const double bMinusA = (interval.b - interval.a);
+//
+//  // Calculate the step size
+//  const double h = bMinusA / order;
+//
+//  // Calculate the coefficient for the integral
+//  const double bMinusADivCoef = bMinusA / nodes[order + 1];
+//
+//  // Initialize the sum
+//  double sum = 0.0;
+//
+//  // Evaluate the function at each point and add to the sum
+//  for (int i = 0; i <= order; i++) {
+//   sum += func(interval.a + i * h) * nodes[i];
+//  }
+//
+//  // Return the value of the integral
+//  return sum * bMinusADivCoef;
+// }
+
+/**
+ * Evaluates the Newton-Raphson integral for the given interval, order, and function.
+ *
+ * This function divides the interval into subintervals and evaluates the Newton-Raphson integral for each subinterval.
+ *
+ * @param interval The interval to integrate over.
+ * @param intervalNum The number of subintervals to divide the interval into.
+ * @param order The order of the Newton-Raphson integral.
+ * @param func The function to integrate.
+ * @return The value of the Newton-Raphson integral.
+ */
+double newtonRaphsonIntegral(const Interval interval, const unsigned int intervalNum, unsigned int order, const
+                             __integral_func func) {
+ // Check if the interval is valid
+ if (!isCorrentInterval(interval)) {
+  PERROR(INTERVAL_SIZE_ERROR_001, __FILE__, __FUNCTION__, __LINE__);
+ }
+
+ // Check if the number of intervals is valid
+ if (intervalNum < 1) {
+  PERROR(INTERVAL_SIZE_ERROR_002, 1, __FILE__, __FUNCTION__, __LINE__);
+ }
+
+ // Check if the order is valid
+ if (order < 1 || order > 8) {
+  PERROR(INVALID_INPUT_001, VAR_NAME(order), 1, 8, __FILE__, __FUNCTION__, __LINE__);
+ }
+
+ // Get the Newton-Cotes nodes for the given order
+ const double *nodes = __getNCNodes(order);
+
+ // Calculate the step size
+ const double h = (interval.b - interval.a) / intervalNum;
+ const double perIntervalH = h / order;
+
+ // Initialize the sum
+ double sum = 0.0;
+
+ // Evaluate the Newton-Raphson integral for each subinterval and add to the sum
+ for (int i = 0; i < intervalNum; i++) {
+  for (int j = 0; j <= order; j++) {
+   sum += func(interval.a + i * h + j * perIntervalH) * nodes[j];
+  }
+ }
+
+ // Return the value of the integral
+ return sum * ((interval.b - interval.a) / nodes[order + 1]);
 }

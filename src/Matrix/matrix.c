@@ -20,6 +20,10 @@
  * SOFTWARE.
  */
 
+/**
+ * @headerfile matrix.h
+ */
+
 #include <malloc.h>
 #include "constDef.h"
 #include "matrix.h"
@@ -1594,15 +1598,12 @@ void matrix_sort_by_cols_values(const Matrix *mat, const unsigned int col_index)
     // The comparison function is matrix_default_cmp_for_qsort_s, which compares two matrix elements based on the specified column index
     // The arg parameter is used to pass the column index to the comparison function
     // We use qsort_s on Windows and quickSort_s on other platforms.
-    // #ifdef _WIN32
-    // qsort_s(mat->data, mat->rows, sizeof(MATRIX_TYPE) * mat->cols, matrix_default_cmp_for_qsort_s,
-    //         (void *) col_index);
-    // #else
+#ifdef qsort_s
+    qsort_s(mat->data, mat->rows, sizeof(MATRIX_TYPE) * mat->cols, matrix_default_cmp_for_qsort_s, (void *) col_index);
+#else
     mergeSort_s(mat->data, mat->rows, sizeof(MATRIX_TYPE) * mat->cols,
                 matrix_default_cmp_for_quickSort_r, (void *) col_index);
-    // bubbleSort_s(mat->data, (void *) col_index, mat->rows, sizeof(MATRIX_TYPE) * mat->cols,
-    //              matrix_default_cmp_for_quickSort_r);
-    // #endif
+#endif
 }
 
 /**

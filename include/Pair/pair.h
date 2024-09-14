@@ -20,13 +20,16 @@
  * SOFTWARE.
  */
 
+/**
+ * @file pair.c
+ */
+
 #ifndef _HSMK_MATH_LIB_PAIR_H
 #define _HSMK_MATH_LIB_PAIR_H
 
 typedef void *pair_element_t;
 
-typedef struct _Pair
-{
+typedef struct _Pair {
     pair_element_t left;
     pair_element_t right;
 } Pair;

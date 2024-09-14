@@ -20,6 +20,10 @@
  * SOFTWARE.
  */
 
+/**
+ * @headerfile pair.h
+ */
+
 #include "constDef.h"
 #include "pair.h"
 #include <stdio.h>

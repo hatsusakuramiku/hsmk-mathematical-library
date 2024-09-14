@@ -20,6 +20,10 @@
  * SOFTWARE.
  */
 
+/**
+ * @file toolbox.c
+ */
+
 #ifndef _HSMK_MATH_LIB_TOOLBOX_H
 #define _HSMK_MATH_LIB_TOOLBOX_H
 

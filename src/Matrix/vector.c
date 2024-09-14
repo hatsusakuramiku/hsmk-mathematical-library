@@ -20,6 +20,10 @@
  * SOFTWARE.
  */
 
+/**
+ * @headerfile vector.h
+ */
+
 #include <malloc.h>
 #include "constDef.h"
 #include "vector.h"

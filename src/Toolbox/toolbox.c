@@ -20,6 +20,10 @@
  * SOFTWARE.
  */
 
+/**
+ * @headerfile toolbox.h
+ */
+
 #include <stdlib.h>
 #include "stack.h"
 #include "toolbox.h"

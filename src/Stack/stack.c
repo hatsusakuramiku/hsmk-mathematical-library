@@ -20,6 +20,10 @@
  * SOFTWARE.
  */
 
+/**
+ * @headerfile stack.h
+ */
+
 #include <stdio.h>
 #include "constDef.h"
 #include "stack.h"

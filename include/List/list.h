@@ -20,20 +20,22 @@
  * SOFTWARE.
  */
 
+/**
+ * @file list.c
+ */
+
 #ifndef _HSMK_MATH_LIB_LIST_H
 #define _HSMK_MATH_LIB_LIST_H
 
 typedef void *ListNodeData;
 
-typedef struct _ListNode
-{
+typedef struct _ListNode {
     ListNodeData data;
     struct _ListNode *next;
     struct _ListNode *prev;
 } ListNode;
 
-typedef struct _List
-{
+typedef struct _List {
     ListNode *head;
     ListNode *tail;
     int size;

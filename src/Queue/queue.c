@@ -19,6 +19,11 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
+/**
+ * @headerfile queue.h
+ */
+
 #include <stdlib.h>
 #include "constDef.h"
 #include "queue.h"
