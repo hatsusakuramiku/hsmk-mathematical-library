@@ -33,7 +33,7 @@
   矩阵的复制: [matrix_copy](C/doc/matrix_doc.md#matrix_copy), [matrix_copy_](C/doc/matrix_doc.md#matrix_copy_r)
 - [x] 
   矩阵乘积: [AxB](C/doc/matrix_doc.md#matrix_mul), [A*B](C/doc/matrix_doc.md#matrix_cdot_mul),
-  [$a*B$](C/doc/matrix_doc.md#matrix_mul_single)
+  [a*B](C/doc/matrix_doc.md#matrix_mul_single)
 - [x] [矩阵转置](C/doc/matrix_doc.md#matrix_transpose)
 - [x] 矩阵[拼接](C/doc/matrix_doc.md#matrix_splicing)与[分割](C/doc/matrix_doc.md#matrix_cat)
 - [x] 矩阵[加法](C/doc/matrix_doc.md#matrix_add)与[减法](C/doc/matrix_doc.md#matrix_sub)
