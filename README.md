@@ -32,8 +32,8 @@
 - [x] 
   矩阵的复制: [matrix_copy](C/doc/matrix_doc.md#matrix_copy), [matrix_copy_](C/doc/matrix_doc.md#matrix_copy_r)
 - [x] 
-  矩阵乘积: [$A \times B$](C/doc/matrix_doc.md#matrix_mul), [$A \cdot B$](C/doc/matrix_doc.md#matrix_cdot_mul),
-  [$a \cdot B, a \in C$](C/doc/matrix_doc.md#matrix_mul_single)
+  矩阵乘积: [AxB](C/doc/matrix_doc.md#matrix_mul), [A*B](C/doc/matrix_doc.md#matrix_cdot_mul),
+  [$a*B$](C/doc/matrix_doc.md#matrix_mul_single)
 - [x] [矩阵转置](C/doc/matrix_doc.md#matrix_transpose)
 - [x] 矩阵[拼接](C/doc/matrix_doc.md#matrix_splicing)与[分割](C/doc/matrix_doc.md#matrix_cat)
 - [x] 矩阵[加法](C/doc/matrix_doc.md#matrix_add)与[减法](C/doc/matrix_doc.md#matrix_sub)
@@ -49,9 +49,9 @@
 
 #### 辅助功能
 
--[x] [查找矩阵中符合条件的元素](C/doc/matrix_doc.md)
--[x] 矩阵中元素的[最大值](C/doc/matrix_doc.md), [最小值](C/doc/matrix_doc.md)
--[x] [求矩阵的行列式](C/doc/matrix_doc.md)
+- [x] [查找矩阵中符合条件的元素](C/doc/matrix_doc.md)
+- [x] 矩阵中元素的[最大值](C/doc/matrix_doc.md), [最小值](C/doc/matrix_doc.md)
+- [x] [求矩阵的行列式](C/doc/matrix_doc.md)
 
 ### 排序
 
