@@ -21,7 +21,7 @@
  */
 
 /**
- * @file toolbox.C
+ * @file toolbox.c
  */
 
 #ifndef _HSMK_MATH_LIB_TOOLBOX_H

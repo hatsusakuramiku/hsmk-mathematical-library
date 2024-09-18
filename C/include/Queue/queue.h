@@ -21,7 +21,7 @@
  */
 
 /**
- * @file queue.C
+ * @file queue.c
  */
 
 #ifndef _HSMK_MATH_LIB_QUEUE_H

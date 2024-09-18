@@ -21,7 +21,7 @@
  */
 
 /**
- * @file vector.C
+ * @file vector.c
  */
 
 #ifndef _HSMK_MATH_LIB_VECTOR_H

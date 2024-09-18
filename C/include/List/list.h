@@ -21,7 +21,7 @@
  */
 
 /**
- * @file list.C
+ * @file list.c
  */
 
 #ifndef _HSMK_MATH_LIB_LIST_H

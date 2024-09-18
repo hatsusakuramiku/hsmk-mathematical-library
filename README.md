@@ -32,8 +32,8 @@
 - [x] 
   矩阵的复制: [matrix_copy](C/doc/matrix_doc.md#matrix_copy), [matrix_copy_](C/doc/matrix_doc.md#matrix_copy_r)
 - [x] 
-  矩阵乘积: [$A \times B$](C/doc/matrix_doc.md#matrix_mul), [$A \cdot B$](C/doc/matrix_doc.md#matrix_cdot_mul),
-  [$a \cdot B, a \in C$](C/doc/matrix_doc.md#matrix_mul_single)
+  矩阵乘积: [AxB](C/doc/matrix_doc.md#matrix_mul), [A*B](C/doc/matrix_doc.md#matrix_cdot_mul),
+  [a*B](C/doc/matrix_doc.md#matrix_mul_single)
 - [x] [矩阵转置](C/doc/matrix_doc.md#matrix_transpose)
 - [x] 矩阵[拼接](C/doc/matrix_doc.md#matrix_splicing)与[分割](C/doc/matrix_doc.md#matrix_cat)
 - [x] 矩阵[加法](C/doc/matrix_doc.md#matrix_add)与[减法](C/doc/matrix_doc.md#matrix_sub)
@@ -44,14 +44,14 @@
 - [x] 
   高斯消元:[单步消元](C/doc/matrix_doc.md#matrix_gauss_elimination_), [直接消元成上三角矩阵](C/doc/matrix_doc.md#matrix_gauss_elimination)
 - [x] [矩阵求秩](C/doc/matrix_doc.md#matrix_rank)
-- [x] [线性方程组的求解](C/doc/matrix_doc.md)
-- [x] [矩阵(P)LU分解](C/doc/matrix_doc.md)
+- [x] [线性方程组的求解](C/doc/matrix_doc.md#matrixequation)
+- [x] [矩阵(P)LU分解](C/doc/matrix_doc.md#matrixpludecdiagcard)
 
 #### 辅助功能
 
--[x] [查找矩阵中符合条件的元素](C/doc/matrix_doc.md)
--[x] 矩阵中元素的[最大值](C/doc/matrix_doc.md), [最小值](C/doc/matrix_doc.md)
--[x] [求矩阵的行列式](C/doc/matrix_doc.md)
+- [x] [查找矩阵中符合条件的元素](C/doc/matrix_doc.md#matrix_find)
+- [x] 矩阵中元素的[最大值](C/doc/matrix_doc.md#matrix_min), [最小值](C/doc/matrix_doc.md#matrix_max)
+- [x] [求矩阵的行列式](C/doc/matrix_doc.md#matrix_det)
 
 ### 排序
 
@@ -68,9 +68,9 @@
 
 ### 其他数据结构
 
-- [x] 线性单链表
-- [x] 栈
-- [x] 线性队列
+- [x] 线性单链表: [头文件](C/include/List/list.h), [源文件](C/src/List/list.c)
+- [x] 栈: [头文件](C/include/Stack/stack.h), [源文件](C/src/Stack/stack.c)
+- [x] 线性队列: [头文件](C/include/Queue/queue.h), [源文件](C/src/Queue/queue.c)
 - [ ] 二叉树
 - [ ] 红黑树
 - [ ] 集合
@@ -80,11 +80,15 @@
 
 #### 一维积分
 
-- [x] (复化)梯形积分
-- [x] (复化)辛普森积分
-- [x] 自适应辛普森积分
+部分完成，文档 [integral_doc.md](C/doc/integral_doc.md),
+头文件 [integral.h](C/include/Integral/integral.h),
+源文件 [integral.c](C/src/Integral/integral.c).
+
+- [x] [(复化)梯形积分](/C/doc/integral_doc.md#trapezoid)
+- [x] [(复化)辛普森积分](/C/doc/integral_doc.md#simpson)
+- [x] [自适应辛普森积分](/C/doc/integral_doc.md#adaptive_simpson)
 - [ ] 自适应高精度积分
-- [x] 高斯勒让德积分
+- [x] [高斯勒让德积分](/C/doc/integral_doc.md#gausslegendre2pointintegral)
 
 #### 二维积分
 

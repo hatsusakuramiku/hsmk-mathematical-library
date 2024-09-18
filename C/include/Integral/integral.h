@@ -21,7 +21,7 @@
  */
 
 /**
- * @file integral.C
+ * @file integral.c
  */
 
 #ifndef _HSMK_MATH_LIB_INTEGRAL_H
@@ -48,9 +48,9 @@ int isCorrentInterval(const Interval interval);
 
 /// Numerical Integration for 1D
 
-double trapzoid(const Interval interval, const unsigned int intervalNum, const __integral_func func);
+double trapezoid(const Interval interval, const unsigned int intervalNum, const __integral_func func);
 
-double adaptiveSimpson(const Interval interval, const __integral_func func);
+double adaptiveSimpson(const Interval interval, const double error, const __integral_func func);
 
 double simpson(const Interval interval, const unsigned int intervalNum, const __integral_func func);
 

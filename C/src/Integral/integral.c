@@ -69,7 +69,7 @@ int isCorrentInterval(const Interval interval) {
  *
  * @throws INTERVAL_SIZE_ERROR_002 If the number of subintervals is less than 1.
  */
-double trapzoid(const Interval interval, const unsigned int intervalNum, const __integral_func func) {
+double trapezoid(const Interval interval, const unsigned int intervalNum, const __integral_func func) {
  // Check if the number of subintervals is valid
  if (intervalNum < 1) {
   // If not, throw an error with a descriptive message
@@ -188,13 +188,15 @@ static inline double asr(const Interval interval, double eps, double ans, int st
  *
  * @ref https://oi-wiki.org/math/numerical/integral/
  */
-double adaptiveSimpson(const Interval interval, const __integral_func func) {
+double adaptiveSimpson(const Interval interval, const double error, const __integral_func func){
+ if (error <= 0) {
+  PERROR("@ERROR: Error tolerance must be greater than 0 !\n@File: %s\n@Function: %s\n@Line: %d\n", __FILE__, __FUNCTION__, __LINE__);
+ }
  // Set the desired error tolerance and initial approximation
- double eps = EPS;
  double ans = simpson(interval, 100, func);
 
  // Recursively calculate the adaptive Simpson's rule approximation
- return asr(interval, eps, ans, 15, func);
+ return asr(interval, error, ans, 15, func);
 }
 
 /**

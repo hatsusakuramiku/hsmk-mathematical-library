@@ -21,7 +21,7 @@
  */
 
 /**
- * @file pair.C
+ * @file pair.c
  */
 
 #ifndef _HSMK_MATH_LIB_PAIR_H

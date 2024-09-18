@@ -21,7 +21,7 @@
  */
 
 /**
- * @file sort.C
+ * @file sort.c
  */
 
 #ifndef _HSMK_MATH_LIB_SORT_H

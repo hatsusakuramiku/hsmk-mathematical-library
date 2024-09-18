@@ -21,7 +21,7 @@
  */
 
 /**
- * @file stack.C
+ * @file stack.c
  */
 
 #ifndef _HSMK_MATH_LIB_STACK_H
