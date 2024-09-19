@@ -14,10 +14,10 @@
 简单地比较了已实现的排序函数在不同数组规模下完成一次排序所需的时间，并不严谨，仅作参考，其图如下:
 
 1. 在 $1~20\times 10^4$ 规模下，不同排序算法的完成一次排序所需时间，其中quickSort使用C的库函数 'qsort'：
-   ![sortCmpAll1e4](/C/dococ/sortCmpAll1e4.jpg)
-   ![sortCmpQuickPart1e4](/C/dococ/sortCmpQuickPart1e4.jpg)
+   ![sortCmpAll1e4](/C/doc/sortCmpAll1e4.jpg)
+   ![sortCmpQuickPart1e4](/C/doc/sortCmpQuickPart1e4.jpg)
 2. 在 $1~20\times 10^5$ 规模下，几种较快的排序算法完成一次排序所需时间，其中quickSort使用C的库函数 'qsort'：
-   ![sortCmpQuickPart1e5](/C/dococ/sortCmpQuickPart1e5.jpg)
+   ![sortCmpQuickPart1e5](/C/doc/sortCmpQuickPart1e5.jpg)
 
 ## 排序比较函数
 
@@ -376,8 +376,6 @@ void main(int argc, char *argv[]) {
     bubbleSort(mat->data, mat->cols * mat->rows, sizeof(MATRIX_TYPE), default_compare_example);// 使用默认的比较函数进行排序
     printf("after sort:\n");
     matrix_print(mat);
-}
-
 //预览结果如下
 before sort:
 |   0.012512   5.635681   1.932983   8.087158 | 
@@ -422,42 +420,24 @@ void bubbleSort_s(void *array, void *arg, size_t elemNum, size_t elemSize, defau
 **使用示例**：
 
 ```C
-#include "matrix.h"
-#include  "sort.h"
-void main(int argc, char *argv[]) {
-    // 设置标准输出缓冲区为无缓冲
-    setbuf(stdout, NULL); // puts到输出台上
-
-    // 生成一个4行4列的随机矩阵，值范围为0~10
-    Matrix *mat = rand_matrix(4, 4, 0, 10);
-
-    // 将矩阵转换为二维数组
-    MATRIX_TYPE **mat_to_2D_array = matrix_to_2D_array(mat);
-
-    // 打印矩阵排序前结果
+    Matrix * mat = rand_matrix(4, 4, 0, 10);
     printf("before sort:\n");
     matrix_print(mat);
-
-    // 以数组每一行第一个元素的值作为键对每一行进行排序
-    bubbleSort_s(mat_to_2D_array, 0, mat->rows, sizeof(MATRIX_TYPE *), default_compare_example_s);
-
-    // 打印矩阵排序后结果
+    bubbleSort_s(mat->data, mat->rows, mat->cols * MATRIX_TYPE_SIZE, matrix_default_cmp_for_sort, 0);
     printf("after sort:\n");
-    matrix_print(matrix_from_2D_array(mat_to_2D_array, 4, 4));
-}
-
+    matrix_print(mat);
 // 预览结果如下
 before sort:
-|   0.012512   5.635681   1.932983   8.087158 | 
-|   5.849915   4.798584   3.502808   8.959351 | 
-|   8.228149   7.465820   1.741028   8.589172 | 
-|   7.104797   5.135193   3.039856   0.149841 | 
+|	  4.991150	  4.190674	  3.425598	  9.257202	|	
+|	  4.038696	  9.208679	  1.127319	  0.169373	|	
+|	  2.393494	  1.435242	  0.873108	  6.753845	|	
+|	  9.884644	  3.108521	  5.777588	  5.177002	|	
 Matrix rows: 4, cols: 4
 after sort:
-|   0.012512   5.635681   1.932983   8.087158 | 
-|   5.849915   4.798584   3.502808   8.959351 | 
-|   7.104797   5.135193   3.039856   0.149841 | 
-|   8.228149   7.465820   1.741028   8.589172 | 
+|	  2.393494	  1.435242	  0.873108	  6.753845	|	
+|	  4.038696	  9.208679	  1.127319	  0.169373	|	
+|	  4.991150	  4.190674	  3.425598	  9.257202	|	
+|	  9.884644	  3.108521	  5.777588	  5.177002	|	
 Matrix rows: 4, cols: 4
 ```
 
@@ -544,42 +524,24 @@ void insertionSort_s(void *array, void *arg, size_t elemNum, size_t elemSize, de
 **使用示例**：
 
 ```C
-#include "matrix.h"
-#include  "sort.h"
-void main(int argc, char *argv[]) {
-    // 设置标准输出缓冲区为无缓冲
-    setbuf(stdout, NULL); // puts到输出台上
-
-    // 生成一个4行4列的随机矩阵，值范围为0~10
-    Matrix *mat = rand_matrix(4, 4, 0, 10);
-
-    // 将矩阵转换为二维数组
-    MATRIX_TYPE **mat_to_2D_array = matrix_to_2D_array(mat);
-
-    // 打印矩阵排序前结果
+    Matrix * mat = rand_matrix(4, 4, 0, 10);
     printf("before sort:\n");
     matrix_print(mat);
-
-    // 以数组每一行第一个元素的值作为键对每一行进行排序
-    insertionSort_s(mat_to_2D_array, 0, mat->rows, sizeof(MATRIX_TYPE *), default_compare_example_s);
-
-    // 打印矩阵排序后结果
+    insertionSort_s(mat->data, mat->rows, mat->cols * MATRIX_TYPE_SIZE, matrix_default_cmp_for_sort, 0);
     printf("after sort:\n");
-    matrix_print(matrix_from_2D_array(mat_to_2D_array, 4, 4));
-}
-
+    matrix_print(mat);
 // 预览结果如下
 before sort:
-|   0.012512   5.635681   1.932983   8.087158 | 
-|   5.849915   4.798584   3.502808   8.959351 | 
-|   8.228149   7.465820   1.741028   8.589172 | 
-|   7.104797   5.135193   3.039856   0.149841 | 
+|	  4.991150	  4.190674	  3.425598	  9.257202	|	
+|	  4.038696	  9.208679	  1.127319	  0.169373	|	
+|	  2.393494	  1.435242	  0.873108	  6.753845	|	
+|	  9.884644	  3.108521	  5.777588	  5.177002	|	
 Matrix rows: 4, cols: 4
 after sort:
-|   0.012512   5.635681   1.932983   8.087158 | 
-|   5.849915   4.798584   3.502808   8.959351 | 
-|   7.104797   5.135193   3.039856   0.149841 | 
-|   8.228149   7.465820   1.741028   8.589172 | 
+|	  2.393494	  1.435242	  0.873108	  6.753845	|	
+|	  4.038696	  9.208679	  1.127319	  0.169373	|	
+|	  4.991150	  4.190674	  3.425598	  9.257202	|	
+|	  9.884644	  3.108521	  5.777588	  5.177002	|	
 Matrix rows: 4, cols: 4
 ```
 
@@ -666,49 +628,31 @@ void selectionSort_s(void *array, void *arg, size_t elemNum, size_t elemSize, de
 **使用示例**：
 
 ```C
-#include "matrix.h"
-#include  "sort.h"
-void main(int argc, char *argv[]) {
-    // 设置标准输出缓冲区为无缓冲
-    setbuf(stdout, NULL); // puts到输出台上
-
-    // 生成一个4行4列的随机矩阵，值范围为0~10
-    Matrix *mat = rand_matrix(4, 4, 0, 10);
-
-    // 将矩阵转换为二维数组
-    MATRIX_TYPE **mat_to_2D_array = matrix_to_2D_array(mat);
-
-    // 打印矩阵排序前结果
+    Matrix * mat = rand_matrix(4, 4, 0, 10);
     printf("before sort:\n");
     matrix_print(mat);
-
-    // 以数组每一行第一个元素的值作为键对每一行进行排序
-    selectionSort_s(mat_to_2D_array, 0, mat->rows, sizeof(MATRIX_TYPE *), default_compare_example_s);
-
-    // 打印矩阵排序后结果
+    selectionSort_s(mat->data, mat->rows, mat->cols * MATRIX_TYPE_SIZE, matrix_default_cmp_for_sort, 0);
     printf("after sort:\n");
-    matrix_print(matrix_from_2D_array(mat_to_2D_array, 4, 4));
-}
-
+    matrix_print(mat);
 // 预览结果如下
 before sort:
-|   0.012512   5.635681   1.932983   8.087158 | 
-|   5.849915   4.798584   3.502808   8.959351 | 
-|   8.228149   7.465820   1.741028   8.589172 | 
-|   7.104797   5.135193   3.039856   0.149841 | 
+|	  4.991150	  4.190674	  3.425598	  9.257202	|	
+|	  4.038696	  9.208679	  1.127319	  0.169373	|	
+|	  2.393494	  1.435242	  0.873108	  6.753845	|	
+|	  9.884644	  3.108521	  5.777588	  5.177002	|	
 Matrix rows: 4, cols: 4
 after sort:
-|   0.012512   5.635681   1.932983   8.087158 | 
-|   5.849915   4.798584   3.502808   8.959351 | 
-|   7.104797   5.135193   3.039856   0.149841 | 
-|   8.228149   7.465820   1.741028   8.589172 | 
+|	  2.393494	  1.435242	  0.873108	  6.753845	|	
+|	  4.038696	  9.208679	  1.127319	  0.169373	|	
+|	  4.991150	  4.190674	  3.425598	  9.257202	|	
+|	  9.884644	  3.108521	  5.777588	  5.177002	|	
 Matrix rows: 4, cols: 4
 ```
 
 ### **mergeSort_s**
 
 说明: 归并排序，时间复杂度为 $O(n\log{n})
-$。因为归并排序会使用较大量的临时空间，因此当可分配临时内存不足时，为保证排序完成，将使用[堆排序](/C/dococ/sort_doc.md#heapsort_s)。
+$。因为归并排序会使用较大量的临时空间，因此当可分配临时内存不足时，为保证排序完成，将使用[堆排序](/C/doc/sort_doc.md#heapsort_s)。
 
 函数原型：
 
@@ -735,42 +679,26 @@ void mergeSort_s(void *array, size_t elemNum, size_t elemSize, default_compare_s
 **使用示例**：
 
 ```C
-#include "matrix.h"
-#include  "sort.h"
-void main(int argc, char *argv[]) {
-    // 设置标准输出缓冲区为无缓冲
-    setbuf(stdout, NULL); // puts到输出台上
-
-    // 生成一个4行4列的随机矩阵，值范围为0~10
-    Matrix *mat = rand_matrix(4, 4, 0, 10);
-
-    // 将矩阵转换为二维数组
-    MATRIX_TYPE **mat_to_2D_array = matrix_to_2D_array(mat);
-
-    // 打印矩阵排序前结果
+    Matrix * mat = rand_matrix(4, 4, 0, 10);
     printf("before sort:\n");
     matrix_print(mat);
-
-    // 以数组每一行第一个元素的值作为键对每一行进行排序
-    mergeSort_s(mat_to_2D_array, 0, mat->rows, sizeof(MATRIX_TYPE *), default_compare_example_s);
-
-    // 打印矩阵排序后结果
+    mergeSort_s(mat->data, mat->rows, mat->cols * MATRIX_TYPE_SIZE, matrix_default_cmp_for_sort, 0);
     printf("after sort:\n");
-    matrix_print(matrix_from_2D_array(mat_to_2D_array, 4, 4));
+    matrix_print(mat);
 }
 
 // 预览结果如下
 before sort:
-|   0.012512   5.635681   1.932983   8.087158 | 
-|   5.849915   4.798584   3.502808   8.959351 | 
-|   8.228149   7.465820   1.741028   8.589172 | 
-|   7.104797   5.135193   3.039856   0.149841 | 
+|	  4.655151	  8.778992	  6.198425	  4.483948	|	
+|	  3.244019	  5.367126	  1.029663	  1.222839	|	
+|	  4.271851	  3.728638	  6.084290	  2.223816	|	
+|	  3.028870	  1.414185	  3.441467	  2.054443	|	
 Matrix rows: 4, cols: 4
 after sort:
-|   0.012512   5.635681   1.932983   8.087158 | 
-|   5.849915   4.798584   3.502808   8.959351 | 
-|   7.104797   5.135193   3.039856   0.149841 | 
-|   8.228149   7.465820   1.741028   8.589172 | 
+|	  3.028870	  1.414185	  3.441467	  2.054443	|	
+|	  3.244019	  5.367126	  1.029663	  1.222839	|	
+|	  4.271851	  3.728638	  6.084290	  2.223816	|	
+|	  4.655151	  8.778992	  6.198425	  4.483948	|	
 Matrix rows: 4, cols: 4
 ```
 
@@ -857,42 +785,24 @@ void heapSort_s(void *array, size_t elemNum, size_t elemSize, default_compare co
 **使用示例**：
 
 ```C
-#include "matrix.h"
-#include  "sort.h"
-void main(int argc, char *argv[]) {
-    // 设置标准输出缓冲区为无缓冲
-    setbuf(stdout, NULL); // puts到输出台上
-
-    // 生成一个4行4列的随机矩阵，值范围为0~10
-    Matrix *mat = rand_matrix(4, 4, 0, 10);
-
-    // 将矩阵转换为二维数组
-    MATRIX_TYPE **mat_to_2D_array = matrix_to_2D_array(mat);
-
-    // 打印矩阵排序前结果
+    Matrix * mat = rand_matrix(4, 4, 0, 10);
     printf("before sort:\n");
     matrix_print(mat);
-
-    // 以数组每一行第一个元素的值作为键对每一行进行排序
-    heapSort_s(mat_to_2D_array, 0, mat->rows, sizeof(MATRIX_TYPE *), default_compare_example_s);
-
-    // 打印矩阵排序后结果
+    heapSort_s(mat->data, mat->rows, mat->cols * MATRIX_TYPE_SIZE, matrix_default_cmp_for_sort, 0);
     printf("after sort:\n");
-    matrix_print(matrix_from_2D_array(mat_to_2D_array, 4, 4));
-}
-
+    matrix_print(mat);
 // 预览结果如下
 before sort:
-|   0.012512   5.635681   1.932983   8.087158 | 
-|   5.849915   4.798584   3.502808   8.959351 | 
-|   8.228149   7.465820   1.741028   8.589172 | 
-|   7.104797   5.135193   3.039856   0.149841 | 
+|	  4.868469	  0.731812	  2.864990	  6.001587	|	
+|	  6.864319	  1.812439	  4.296570	  0.049438	|	
+|	  2.604370	  2.213135	  6.424866	  5.100403	|	
+|	  8.865967	  2.015381	  2.758789	  4.363708	|	
 Matrix rows: 4, cols: 4
 after sort:
-|   0.012512   5.635681   1.932983   8.087158 | 
-|   5.849915   4.798584   3.502808   8.959351 | 
-|   7.104797   5.135193   3.039856   0.149841 | 
-|   8.228149   7.465820   1.741028   8.589172 | 
+|	  2.604370	  2.213135	  6.424866	  5.100403	|	
+|	  4.868469	  0.731812	  2.864990	  6.001587	|	
+|	  6.864319	  1.812439	  4.296570	  0.049438	|	
+|	  8.865967	  2.015381	  2.758789	  4.363708	|	
 Matrix rows: 4, cols: 4
 ```
 

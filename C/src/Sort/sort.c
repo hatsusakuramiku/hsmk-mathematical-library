@@ -582,7 +582,6 @@ void heapSort_s(void *array, size_t elemNum, size_t elemSize, default_compare_s 
     if (array == NULL || elemNum == 0 || elemSize == 0 || compare == NULL) {
         return;
     }
-    const size_t tmp = elemNum;
 
     buildHeap_s(array, elemNum, elemSize, compare, arg);
     // Repeatedly remove the largest element from the heap and place it at the end
