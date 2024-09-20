@@ -148,26 +148,7 @@ void bubbleSort(void *array, size_t elemNum, size_t elemSize, default_compare co
     if (elemNum <= 1 || array == NULL) {
         return;
     }
-
-    // Loop through the array
-    for (size_t i = 0; i < elemNum; i++) {
-        int flag = 0;
-
-        // Loop through the unsorted part of the array
-        for (size_t j = 0; j < elemNum - 1 - i; j++) {
-            // Compare the current element with the next element
-            if (compare((char *) array + j * elemSize, (char *) array + (j + 1) * elemSize) > 0) {
-                // If the current element is greater than the next element, swap them
-                __memswap((char *) array + j * elemSize, (char *) array + (j + 1) * elemSize, elemSize);
-                flag = 1;
-            }
-        }
-
-        // If no swaps were made in the last iteration, the array is already sorted
-        if (!flag) {
-            return;
-        }
-    }
+    bubbleSort_s(array, elemNum, elemSize, (default_compare_s) compare, NULL);
 }
 
 /**
@@ -200,7 +181,7 @@ void bubbleSort_s(void *array, size_t elemNum, size_t elemSize, default_compare_
             if (compare((char *) array + j * elemSize, (char *) array + (j + 1) * elemSize, arg) > 0) {
                 // If the current element is greater than the next element, swap them.
                 __memswap((char *) array + j * elemSize, (char *) array + (j + 1) * elemSize, elemSize);
-                flag = 1; // Set the flag to indicate a swap was made.
+                flag = j; // Set the flag to indicate a swap was made.
             }
         }
 

@@ -8,3 +8,7 @@ cmake-build-windows/
 cmake-build-wsl/
 C/CMakeLists.txt
 C/temp/
+Java/HsmkMathLib/.idea/
+Java/HsmkMathLib/HsmkMathLib.iml
+Java/HsmkMathLib/out/
+JJava/HsmkMathLib/src/test/

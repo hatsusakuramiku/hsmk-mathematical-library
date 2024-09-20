@@ -77,11 +77,11 @@ Matrix *matrix_gen(unsigned int rows, unsigned int cols, MATRIX_TYPE *data)
 
 **Input**:
 
-| name   | type         | description | required                                           |
-|--------|--------------|-------------|----------------------------------------------------|
-| 'rows' | unsigned int | 矩阵行数        | 必须大于 0                                             |
-| 'cols' | unsigned int | 矩阵列数        | 必须大于 0                                             |
-| 'data' | MATRIX_TYPE* | 矩阵数据        | data 的长度必须<= rows * cols， 不足时会自动补零故可以为 NULL以创建全零矩阵 |
+| name   | type         | description | required                                             |
+|--------|--------------|-------------|------------------------------------------------------|
+| 'rows' | unsigned int | 矩阵行数        | 必须大于 0                                               |
+| 'cols' | unsigned int | 矩阵列数        | 必须大于 0                                               |
+| 'data' | MATRIX_TYPE* | 矩阵数据        | data 的长度必须<= rows * cols， 不足时会自动补零,故可以使用 NULL以创建全零矩阵 |
 
 **Output**:
 
@@ -2210,14 +2210,14 @@ PLUMatrix *matrixPLUDecDiagCard(Matrix *mat)
 
 **Input**:
 
-| name  | type    | description | required        |
-|-------|---------|-------------|-----------------|
+| name  | type    | description | required           |
+|-------|---------|-------------|--------------------|
 | 'mat' | Matrix* | 矩阵          | 不可省略；不可为NULL；必须为方阵 |
 
 **Output**:
 
-| type | description |
-|------|-------------|
+| type       | description                  |
+|------------|------------------------------|
 | PLUMatrix* | 由矩阵的P、L、U和源矩阵组成的PLUMatrix结构体 |
 
 使用示例:
@@ -2268,14 +2268,14 @@ PLUMatrix *matrixPLUDecMaxCard(Matrix *mat)
 
 **Input**:
 
-| name  | type    | description | required        |
-|-------|---------|-------------|-----------------|
+| name  | type    | description | required           |
+|-------|---------|-------------|--------------------|
 | 'mat' | Matrix* | 矩阵          | 不可省略；不可为NULL；必须为方阵 |
 
 **Output**:
 
-| type | description |
-|------|-------------|
+| type       | description                  |
+|------------|------------------------------|
 | PLUMatrix* | 由矩阵的P、L、U和源矩阵组成的PLUMatrix结构体 |
 
 使用示例:
@@ -2625,15 +2625,15 @@ Matrix *diagMatrix(MVector *vec);
 
 **Input**:
 
-| name  | type    | description                              | required           |
-|-------|---------|------------------------------------------|--------------------|
-| 'vec' | MVector | 输入向量                                   | 不可省略，不可为NULL       |
+| name  | type    | description | required     |
+|-------|---------|-------------|--------------|
+| 'vec' | MVector | 输入向量        | 不可省略，不可为NULL |
 
 **Output**:
 
-| type     | description |
-|----------|-------------| 
-| Matrix* | 创建的对角矩阵    |
+| type    | description |
+|---------|-------------| 
+| Matrix* | 创建的对角矩阵     |
 
 使用示例:
 
@@ -2669,16 +2669,16 @@ Matrix *diagMatrix_p(MVector *vec, const int aix)
 
 **Input**:
 
-| name  | type    | description                              | required           |
-|-------|---------|------------------------------------------|--------------------|
-| 'vec' | MVector | 输入向量                                   | 不可省略，不可为NULL       |
-| 'aix' | int     | 对角线索引，0 表示主对角线，小于0表示主对角线下方向，大于0表示主对角线上方向 | 不可省略，不可为NULL       |
+| name  | type    | description                              | required     |
+|-------|---------|------------------------------------------|--------------|
+| 'vec' | MVector | 输入向量                                     | 不可省略，不可为NULL |
+| 'aix' | int     | 对角线索引，0 表示主对角线，小于0表示主对角线下方向，大于0表示主对角线上方向 | 不可省略，不可为NULL |
 
 **Output**:
 
-| type     | description |
-|----------|-------------|
-| Matrix* | 创建的对角矩阵    |
+| type    | description |
+|---------|-------------|
+| Matrix* | 创建的对角矩阵     |
 
 使用示例:
 
@@ -2715,16 +2715,16 @@ Matrix *matrixEquation(Matrix *aMat, Matrix *bMat)
 
 **Input**:
 
-| name    | type        | description | required           |
-|---------|-------------|-------------|--------------------|
-| 'aMat'  | Matrix      | 系数矩阵                                   | 不可省略，不可为NULL       |
-| 'bMat'  | Matrix      | 结果矩阵                                   | 不可省略，不可为NULL       |
+| name   | type   | description | required     |
+|--------|--------|-------------|--------------|
+| 'aMat' | Matrix | 系数矩阵        | 不可省略，不可为NULL |
+| 'bMat' | Matrix | 结果矩阵        | 不可省略，不可为NULL |
 
 **Output**:
 
-| type     | description |
-|----------|-------------|
-| Matrix* | 解的矩阵    |
+| type    | description |
+|---------|-------------|
+| Matrix* | 解的矩阵        |
 
 使用示例:
 
