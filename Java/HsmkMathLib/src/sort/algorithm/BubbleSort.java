@@ -22,132 +22,75 @@
 
 package sort.algorithm;
 
-import sort.Sort;
 import sort.utils.CompareAndSwapFunction;
 
+import static java.lang.Math.pow;
+
 /**
- * This abstract class provides a bubble sort implementation. It allows for sorting arrays of any
- * type, using a custom comparison function.
+ * This class implements the Bubble Sort algorithm, a simple sorting algorithm that repeatedly steps
+ * through the list, compares adjacent elements and swaps them if they are in the wrong order. The
+ * pass through the list is repeated until the list is sorted.
  */
-public abstract class BubbleSort extends Sort {
+public final class BubbleSort implements SortAlgorithm {
 
   /**
-   * Sorts an array of elements using the bubble sort algorithm.
+   * Sorts the given array using the Bubble Sort algorithm.
    *
    * @param array the array to be sorted
-   * @param startIndex the starting index of the array to be sorted
-   * @param endIndex the ending index of the array to be sorted
-   * @param axis the axis to sort on (0 for ascending, 1 for descending)
-   * @param compareFunction the custom comparison function to use
-   * @throws NullPointerException if the array or comparison function is null
-   * @throws IllegalArgumentException if the start index is greater than or equal to the end index,
-   *     or if axis is not 0 or 1
-   * @throws ArrayIndexOutOfBoundsException if the start or end index is out of bounds
+   * @param startIndex the starting index of the array
+   * @param sortElementCount the number of elements to sort
+   * @param aix the axis value for sorting order (1 for ascending, -1 for descending)
+   * @param compareAndSwap the CompareAndSwapFunction implementation for comparing and swapping
+   *     elements
    */
-  public static <Type> void sort(
-      Type[] array,
-      int startIndex,
-      int endIndex,
-      int axis,
-      CompareAndSwapFunction<Type> compareFunction) {
-    // Check for null array
-    if (array == null) {
-      throw new NullPointerException("Array cannot be null");
+  @Override
+  public <type> void sort(
+      type[] array, // array to be sorted
+      int startIndex, // starting index of the array
+      int sortElementCount, // number of elements to sort
+      int aix, // axis value for sorting order
+      CompareAndSwapFunction<type> compareAndSwap // compare and swap function implementation
+      ) {
+    // Check if the input array is null
+    checkArray(array);
+
+    // If the number of elements to sort is 0 or less, there's nothing to sort
+    if (sortElementCount <= 0) {
+      return;
     }
 
-    // Check for null comparison function
-    if (compareFunction == null) {
-      throw new NullPointerException("Compare function cannot be null");
-    }
+    // Check if the given range is valid for the array
+    checkRange(array, startIndex, sortElementCount);
 
-    // Check for valid start and end indices
-    if (startIndex >= endIndex) {
-      throw new IllegalArgumentException("Start index must be less than end index");
-    }
+    // Check if the axis value is valid (1 for ascending, -1 for descending)
+    checkAix(aix);
 
-    // Check for valid axis
-    if (axis != 0 && axis != 1) {
-      throw new IllegalArgumentException("Axis must be 0 or 1");
-    }
+    // Calculate the temporary value based on the axis value
+    // This is used to determine the sorting order
+    int temp = (int) pow(-1, aix);
 
-    // Check for index out of bounds
-    if (startIndex < 0 || endIndex >= array.length) {
-      throw new ArrayIndexOutOfBoundsException("Index out of bounds");
-    }
+    // Calculate the end index of the array
+    int endIndex = startIndex + sortElementCount;
 
-    // Perform bubble sort
-    if (axis == 0) {
-      // Ascending sort
-      /*
-       Iterate through the array, comparing adjacent elements and swapping if necessary.
-       Repeat this process until the entire array is sorted.
-      */
-      for (int i = startIndex; i <= endIndex; i++) {
-        boolean flag = false;
-        for (int j = 0; j <= endIndex - 1 - i; j++) {
-          try {
-            // Compare adjacent elements and swap if necessary
-            if (compareFunction.upApply(array[j], array[j + 1]) > 0) {
-              compareFunction.swap(array, j, j + 1);
-              flag = true;
-            }
-          } catch (Exception e) {
-            // Handle exception during comparison or swap
-            throw new RuntimeException("Error during comparison or swap", e);
-          }
-        }
-        if (flag) {
-          break;
+    // Iterate through the array, comparing adjacent elements and swapping them if necessary
+    for (int i = startIndex; i < endIndex; i++) {
+      // Flag to track if any swaps were made in the current iteration
+      boolean flag = false;
+
+      // Compare each pair of adjacent elements and swap them if necessary
+      for (int j = startIndex; j < endIndex - i - 1; j++) {
+        // Compare the current element with the next element
+        if (compareAndSwap.apply(array[j], array[j + 1]) * temp > 0) {
+          // Swap the elements if they are in the wrong order
+          compareAndSwap.swap(array, j, j + 1);
+          flag = true;
         }
       }
-    } else {
-      // Descending sort
-      /*
-       Iterate through the array, comparing adjacent elements and swapping if necessary.
-       Repeat this process until the entire array is sorted.
-      */
-      for (int i = startIndex; i <= endIndex; i++) {
-        boolean flag = false;
-        for (int j = 0; j <= endIndex - 1 - i; j++) {
-          try {
-            // Compare adjacent elements and swap if necessary
-            if (compareFunction.downApply(array[j], array[j + 1]) > 0) {
-              compareFunction.swap(array, j, j + 1);
-              flag = true;
-            }
-          } catch (Exception e) {
-            // Handle exception during comparison or swap
-            throw new RuntimeException("Error during comparison or swap", e);
-          }
-        }
-        if (flag) {
-          break;
-        }
+
+      // If no swaps were made in the current iteration, the array is already sorted
+      if (!flag) {
+        break;
       }
     }
-  }
-
-  /**
-   * Sorts an array of elements using the bubble sort algorithm, starting from the beginning of the
-   * array.
-   *
-   * @param array the array to be sorted
-   * @param axis the axis to sort on (0 for ascending, 1 for descending)
-   * @param compareFunction the custom comparison function to use
-   */
-  public static <Type> void sort(
-      Type[] array, int axis, CompareAndSwapFunction<Type> compareFunction) {
-    sort(array, 0, array.length - 1, axis, compareFunction);
-  }
-
-  /**
-   * Sorts an array of elements using the bubble sort algorithm, starting from the beginning of the
-   * array and sorting in ascending order.
-   *
-   * @param array the array to be sorted
-   * @param compareFunction the custom comparison function to use
-   */
-  public static <Type> void sort(Type[] array, CompareAndSwapFunction<Type> compareFunction) {
-    sort(array, 0, array.length - 1, 0, compareFunction);
   }
 }

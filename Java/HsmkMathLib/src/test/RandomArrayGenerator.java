@@ -20,33 +20,24 @@
  * SOFTWARE.
  */
 
-package sort.utils;
+package test;
 
-/**
- * This interface defines a contract for comparing and swapping elements of a generic type.
- * Implementations of this interface should provide logic for comparing two elements and swapping
- * two elements in an array.
- *
- * @param <Type> the type of elements being compared and swapped
- */
-public interface CompareAndSwapFunction<Type> {
+import java.lang.reflect.Array;
+import java.util.Random;
 
-  /**
-   * Compares two elements in ascending order. Returns a positive integer if t1 is greater than t2,
-   * zero if t1 is equal to t2, and a negative integer if t1 is less than t2.
-   *
-   * @param t1 the first element to compare
-   * @param t2 the second element to compare
-   * @return the result of the comparison
-   */
-  int apply(Type t1, Type t2);
+public class RandomArrayGenerator {
+  private final Random random = new Random();
 
-  /**
-   * Swaps two elements in an array.
-   *
-   * @param array the array containing the elements to swap
-   * @param index1 the index of the first element to swap
-   * @param index2 the index of the second element to swap
-   */
-  void swap(Type[] array, int index1, int index2);
+  public Double[] generateDoubleRandomArray(int length, double min, double max) {
+    Double[] array = new Double[length];
+    for (int i = 0; i < length; i++) {
+      array[i] = min + (max - min) * random.nextDouble();
+    }
+    return array;
+  }
+
+  public Double[] generateDoubleRandomArray(int minLength, int maxLength, double min, double max) {
+    int length = minLength + random.nextInt(maxLength - minLength);
+    return generateDoubleRandomArray(length, min, max);
+  }
 }

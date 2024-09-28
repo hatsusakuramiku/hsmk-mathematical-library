@@ -24,16 +24,43 @@ package sort.algorithm;
 
 import sort.utils.CompareAndSwapFunction;
 
-public final class MergeSort implements SortAlgorithm {
+import static java.lang.Math.pow;
 
-  public MergeSort() {}
+public final class InsertionSort implements SortAlgorithm {
+  public InsertionSort() {}
 
+  /**
+   * Sorts the given array using the provided compare and swap function.
+   *
+   * @param array the array to be sorted
+   * @param startIndex the starting index of the array
+   * @param sortElementCount the number of elements to sort
+   * @param aix the axis value (used for ascending or descending order)
+   * @param compareAndSwap the CompareAndSwapFunction implementation for comparing and swapping
+   *     elements
+   */
   @Override
   public <type> void sort(
-      type[] array, // array to be sorted
-      int startIndex, // starting index of the array
-      int sortElementCount, // number of elements to sort
-      int aix, // axis value for sorting order
-      CompareAndSwapFunction<type> compareAndSwap // compare and swap function implementation
-      ) {}
+      type[] array,
+      int startIndex,
+      int sortElementCount,
+      int aix,
+      CompareAndSwapFunction<type> compareAndSwap) {
+    if (array.length <= 0) {
+      return;
+    }
+    checkArray(array);
+    checkRange(array, startIndex, sortElementCount);
+    checkAix(aix);
+    int endIndex = startIndex + sortElementCount, temp = (int) pow(-1, aix);
+    for (int i = startIndex + 1; i < endIndex; ++i) {
+      type current = array[i];
+      int j = i - 1;
+      while (j >= 0 && compareAndSwap.apply(array[j], current) * temp > 0) {
+        compareAndSwap.swap(array, j, j + 1);
+        j--;
+      }
+      array[j + 1] = current;
+    }
+  }
 }
