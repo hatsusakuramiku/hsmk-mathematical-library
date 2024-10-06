@@ -32,6 +32,11 @@ import static java.lang.Math.pow;
  * pass through the list is repeated until the list is sorted.
  */
 public final class BubbleSort implements SortAlgorithm {
+  /** Static instance of the Bubble Sort algorithm. */
+  public static final BubbleSort INSTANCE = new BubbleSort();
+
+  /** Default constructor for the BubbleSort class. */
+  public BubbleSort() {}
 
   /**
    * Sorts the given array using the Bubble Sort algorithm.
@@ -80,7 +85,7 @@ public final class BubbleSort implements SortAlgorithm {
       // Compare each pair of adjacent elements and swap them if necessary
       for (int j = startIndex; j < endIndex - i - 1; j++) {
         // Compare the current element with the next element
-        if (compareAndSwap.apply(array[j], array[j + 1]) * temp > 0) {
+        if (compareAndSwap.compare(array[j], array[j + 1]) * temp > 0) {
           // Swap the elements if they are in the wrong order
           compareAndSwap.swap(array, j, j + 1);
           flag = true;

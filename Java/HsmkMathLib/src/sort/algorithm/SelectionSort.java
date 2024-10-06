@@ -24,7 +24,18 @@ package sort.algorithm;
 
 import sort.utils.CompareAndSwapFunction;
 
+/**
+ * This class implements the Selection Sort algorithm, which is a simple sorting algorithm that
+ * works by repeatedly finding the minimum element from the unsorted part of the array and swapping
+ * it with the first unsorted element.
+ */
 public final class SelectionSort implements SortAlgorithm {
+  /** Static instance of the Selection Sort algorithm. */
+  public static final SelectionSort INSTANCE = new SelectionSort();
+
+  /** Default constructor for the SelectionSort class. */
+  public SelectionSort() {}
+
   /**
    * Sorts the given array using the provided compare and swap function.
    *
@@ -46,13 +57,15 @@ public final class SelectionSort implements SortAlgorithm {
       int sortElementCount,
       int aix,
       CompareAndSwapFunction<type> compareAndSwap) {
+    // Check if the input array is valid
+    checkArray(array);
+
     // If the array has one or zero elements, it is already sorted, so return immediately
     if (array.length <= 1) {
       return;
     }
 
     // Perform input validation on the array, start index, and sort element count
-    checkArray(array);
     checkRange(array, sortElementCount, array.length);
     checkAix(aix);
 
@@ -71,7 +84,7 @@ public final class SelectionSort implements SortAlgorithm {
       for (int j = i + 1; j < end; j++) {
         // Compare the current element with the minimum element, using the provided compare and swap
         // function
-        if (compareAndSwap.apply(array[j], array[min]) * temp < 0) {
+        if (compareAndSwap.compare(array[j], array[min]) * temp < 0) {
           // If the current element is smaller than the minimum element, update the minimum index
           min = j;
         }

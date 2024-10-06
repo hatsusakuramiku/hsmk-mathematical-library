@@ -522,7 +522,7 @@ static inline void heapify_s(void *array, size_t elemNum, size_t i, size_t elemS
  */
 static void buildHeap_s(void *array, size_t elemNum, size_t elemSize, default_compare_s compare, void *arg) {
     // Handle edge case where array is empty or has only one element
-    if (elemNum <= 0) {
+    if (elemNum <= 1) {
         return;
     }
 

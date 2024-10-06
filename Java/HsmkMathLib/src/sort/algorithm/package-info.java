@@ -20,23 +20,5 @@
  * SOFTWARE.
  */
 
-package test;
-
-import java.util.Random;
-
-public class RandomArrayGenerator {
-  private final Random random = new Random();
-
-  public Double[] generateDoubleRandomArray(int length, double min, double max) {
-    Double[] array = new Double[length];
-    for (int i = 0; i < length; i++) {
-      array[i] = min + (max - min) * random.nextDouble();
-    }
-    return array;
-  }
-
-  public Double[] generateDoubleRandomArray(int minLength, int maxLength, double min, double max) {
-    int length = minLength + random.nextInt(maxLength - minLength);
-    return generateDoubleRandomArray(length, min, max);
-  }
-}
+/** This package contains and implements sorting algorithms. */
+package sort.algorithm;

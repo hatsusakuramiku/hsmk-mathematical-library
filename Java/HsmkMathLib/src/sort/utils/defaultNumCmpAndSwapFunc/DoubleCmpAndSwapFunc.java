@@ -20,33 +20,44 @@
  * SOFTWARE.
  */
 
-package sort.utils;
+package sort.utils.defaultNumCmpAndSwapFunc;
+
+import sort.utils.CompareAndSwapFunction;
 
 /**
- * This interface defines a contract for comparing and swapping elements of a generic type.
- * Implementations of this interface should provide logic for comparing two elements and swapping
- * two elements in an array.
- *
- * @param <Type> the type of elements being compared and swapped
+ * This class implements the CompareAndSwapFunction interface for Double type. It provides a way to
+ * compare and swap two Double elements in an array.
  */
-public interface CompareAndSwapFunction<Type> {
+public final class DoubleCmpAndSwapFunc implements CompareAndSwapFunction<Double> {
 
   /**
-   * Compares two elements in ascending order. Returns a positive integer if t1 is greater than t2,
-   * zero if t1 is equal to t2, and a negative integer if t1 is less than t2.
+   * Compares two Double elements in ascending order. Returns a positive integer if t1 is greater
+   * than t2, zero if t1 is equal to t2, and a negative integer if t1 is less than t2.
    *
    * @param t1 the first element to compare
    * @param t2 the second element to compare
    * @return the result of the comparison
    */
-  int compare(Type t1, Type t2);
+  @Override
+  public int compare(Double t1, Double t2) {
+    // Use the built-in compareTo method of Double to compare the two elements
+    return t1.compareTo(t2);
+  }
 
   /**
-   * Swaps two elements in an array.
+   * Swaps two Double elements in an array.
    *
    * @param array the array containing the elements to swap
    * @param index1 the index of the first element to swap
    * @param index2 the index of the second element to swap
    */
-  void swap(Type[] array, int index1, int index2);
+  @Override
+  public void swap(Double[] array, int index1, int index2) {
+    // Store the value of the element at index1 in a temporary variable
+    Double temp = array[index1];
+    // Replace the element at index1 with the element at index2
+    array[index1] = array[index2];
+    // Replace the element at index2 with the value stored in the temporary variable
+    array[index2] = temp;
+  }
 }

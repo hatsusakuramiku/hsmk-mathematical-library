@@ -20,9 +20,5 @@
  * SOFTWARE.
  */
 
-package matrix;
-public class Matrix <Type extends Number> {
-    protected int rows;
-    protected int cols;
-    protected Type[][] data;
-}
+/** This package contains the default CompareAndSwapFunction implementation for sorting numbers. */
+package sort.utils.defaultNumCmpAndSwapFunc;

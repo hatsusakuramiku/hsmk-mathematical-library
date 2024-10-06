@@ -59,7 +59,6 @@
 头文件 [sort.h](C/include/Sort/sort.h),
 源文件 [sort.c](C/src/Sort/sort.c).
 
-- [ ] 快速排序
 - [x] [冒泡排序](C/doc/sort_doc.md#bubblesort)
 - [x] [插入排序](C/doc/sort_doc.md#insertionsort)
 - [x] [选择排序](C/doc/sort_doc.md#selectionsort)
@@ -71,7 +70,7 @@
 - [x] 线性单链表: [头文件](C/include/List/list.h), [源文件](C/src/List/list.c)
 - [x] 栈: [头文件](C/include/Stack/stack.h), [源文件](C/src/Stack/stack.c)
 - [x] 线性队列: [头文件](C/include/Queue/queue.h), [源文件](C/src/Queue/queue.c)
-- [ ] 二叉树
+- [ ] 完全二叉树
 - [ ] 红黑树
 - [ ] 集合
 - [ ] 哈希表

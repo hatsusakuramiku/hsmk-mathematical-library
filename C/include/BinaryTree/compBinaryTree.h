@@ -1,3 +1,4 @@
+
 /*
  * Copyright  2024 hatsusakuramiku
  *
@@ -20,23 +21,33 @@
  * SOFTWARE.
  */
 
-package test;
+#ifndef _HSMK_MATH_LIB_COMPBINARYTREE_H
+#define _HSMK_MATH_LIB_COMPBINARYTREE_H
 
-import java.util.Random;
+typedef void *TreeNodeData;
 
-public class RandomArrayGenerator {
-  private final Random random = new Random();
+typedef struct _TreeNode {
+    TreeNodeData data;
+    size_t dataTypeSize;
+    int parentIndex;
+    int leftChildIndex;
+    int rightChildIndex;
+} TreeNode;
 
-  public Double[] generateDoubleRandomArray(int length, double min, double max) {
-    Double[] array = new Double[length];
-    for (int i = 0; i < length; i++) {
-      array[i] = min + (max - min) * random.nextDouble();
-    }
-    return array;
-  }
+typedef struct _CompleteBinaryTree {
+    unsigned int nodeNum;
+    unsigned int nodeCount;
+    TreeNode *nodeArray;
+} CompleteBinaryTree;
 
-  public Double[] generateDoubleRandomArray(int minLength, int maxLength, double min, double max) {
-    int length = minLength + random.nextInt(maxLength - minLength);
-    return generateDoubleRandomArray(length, min, max);
-  }
-}
+typedef int (*TreeNodeDataCmp)(TreeNodeData, TreeNodeData);
+
+CompleteBinaryTree *compBinaryTreeInit(unsigned int nodeNum);
+
+void compBinaryTreeDestroy(CompleteBinaryTree **tree);
+
+void compBinaryTreeClear(CompleteBinaryTree *tree);
+
+void compBinaryTreeAdd(CompleteBinaryTree *tree, TreeNodeData data, size_t dataTypeSize);
+
+#endif //_HSMK_MATH_LIB_COMPBINARYTREE_H

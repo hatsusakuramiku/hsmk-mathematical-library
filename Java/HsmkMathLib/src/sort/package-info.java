@@ -19,4 +19,6 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
+/** This package contains classes and interfaces related to sorting algorithms. */
 package sort;

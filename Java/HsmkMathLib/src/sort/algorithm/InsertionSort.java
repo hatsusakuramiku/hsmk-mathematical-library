@@ -26,7 +26,16 @@ import sort.utils.CompareAndSwapFunction;
 
 import static java.lang.Math.pow;
 
+/**
+ * This class implements the Insertion Sort algorithm, which is a simple sorting algorithm that
+ * works by dividing the input into a sorted and an unsorted region. Each subsequent element from
+ * the unsorted region is inserted into the sorted region in its correct position.
+ */
 public final class InsertionSort implements SortAlgorithm {
+  /** Static instance of the Insertion Sort algorithm. */
+  public static final InsertionSort INSTANCE = new InsertionSort();
+
+  /** Default constructor for the InsertionSort class. */
   public InsertionSort() {}
 
   /**
@@ -46,20 +55,38 @@ public final class InsertionSort implements SortAlgorithm {
       int sortElementCount,
       int aix,
       CompareAndSwapFunction<type> compareAndSwap) {
+    // Check if the input array is null
+    checkArray(array);
+
+    // If the array is empty, return immediately
     if (array.length <= 0) {
       return;
     }
-    checkArray(array);
+
+    // Validate the range of the array and the axis value
     checkRange(array, startIndex, sortElementCount);
     checkAix(aix);
-    int endIndex = startIndex + sortElementCount, temp = (int) pow(-1, aix);
+
+    // Calculate the end index of the array and a temporary value for sorting order
+    int endIndex = startIndex + sortElementCount;
+    int temp = (int) pow(-1, aix);
+
+    // Iterate over the array, starting from the second element
     for (int i = startIndex + 1; i < endIndex; ++i) {
+      // Store the current element
       type current = array[i];
+
+      // Initialize the index for the previous element
       int j = i - 1;
-      while (j >= 0 && compareAndSwap.apply(array[j], current) * temp > 0) {
+
+      // Shift elements to the right until the correct position for the current element is found
+      while (j >= 0 && compareAndSwap.compare(array[j], current) * temp > 0) {
+        // Swap the elements at indices j and j + 1
         compareAndSwap.swap(array, j, j + 1);
         j--;
       }
+
+      // Insert the current element at its correct position
       array[j + 1] = current;
     }
   }
