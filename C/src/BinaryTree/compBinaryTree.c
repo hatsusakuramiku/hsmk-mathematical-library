@@ -24,8 +24,6 @@
 #include "compBinaryTree.h"
 
 #include <stdlib.h>
-#include <string.h>
-#include <math.h>
 
 #include "constDef.h"
 
