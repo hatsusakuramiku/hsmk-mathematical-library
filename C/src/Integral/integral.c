@@ -377,39 +377,7 @@ static inline double *__getNCNodes(unsigned int order) {
  }
 }
 
-// /**
-//  * Evaluates the Newton-Raphson integral for the given interval and order.
-//  *
-//  * The Newton-Raphson integral is a method for numerical integration.
-//  *
-//  * @param interval The interval to integrate over.
-//  * @param order The order of the Newton-Raphson integral.
-//  * @param nodes The Newton-Cotes nodes for the given order.
-//  * @param func The function to integrate.
-//  * @return The value of the Newton-Raphson integral.
-//  */
-// static inline double __newtonRaphsonIntegral(const Interval interval, const unsigned int order, const double *nodes,
-//                                              const __integral_func func) {
-//  // Calculate the width of the interval
-//  const double bMinusA = (interval.b - interval.a);
-//
-//  // Calculate the step size
-//  const double h = bMinusA / order;
-//
-//  // Calculate the coefficient for the integral
-//  const double bMinusADivCoef = bMinusA / nodes[order + 1];
-//
-//  // Initialize the sum
-//  double sum = 0.0;
-//
-//  // Evaluate the function at each point and add to the sum
-//  for (int i = 0; i <= order; i++) {
-//   sum += func(interval.a + i * h) * nodes[i];
-//  }
-//
-//  // Return the value of the integral
-//  return sum * bMinusADivCoef;
-// }
+
 
 /**
  * Evaluates the Newton-Raphson integral for the given interval, order, and function.

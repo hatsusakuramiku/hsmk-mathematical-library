@@ -83,6 +83,20 @@ void compBinaryTreeClear(CompleteBinaryTree *tree) {
     tree->nodeNum = 0;
 }
 
+static int getParentIndex(unsigned int index) {
+    return index / 2 - (index % 2 == 0);
+}
+
+static int getLeftChildIndex(unsigned int index, unsigned int nodeNum) {
+    const int tmp = 2 * index + 1;
+    return tmp < nodeNum ? tmp : -1;
+}
+
+static int getRightChildIndex(unsigned int index, unsigned int nodeNum) {
+    const int tmp = 2 * index + 2;
+    return tmp < nodeNum ? tmp : -1;
+}
+
 /**
  * @brief Adds a node to a complete binary tree.
  *
@@ -101,30 +115,12 @@ void compBinaryTreeAdd(CompleteBinaryTree *tree, TreeNodeData data, size_t dataT
     }
 
     const int i = tree->nodeCount;
-    int parentIndex = i / 2;
-    if (i % 2 == 0) {
-        parentIndex--;
-    }
 
     // Create a new node and add it to the tree
     tree->nodeArray[i] = (TreeNode){
         .data = data,
         .dataTypeSize = dataTypeSize,
-        .leftChildIndex = -1,
-        .rightChildIndex = -1,
-        .parentIndex = parentIndex
     };
-
-    if (parentIndex < 0) {
-        tree->nodeCount++;
-        return;
-    }
-
-    if (i % 2 == 0) {
-        tree->nodeArray[parentIndex].leftChildIndex = i;
-    } else {
-        tree->nodeArray[parentIndex].rightChildIndex = i;
-    }
 
     tree->nodeCount++;
 }

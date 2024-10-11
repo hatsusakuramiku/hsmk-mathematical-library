@@ -4,8 +4,10 @@
 
 # 说明
 
-1. 此文档列出的所有函数，接受的数组均为动态数组，不可直接传入静态数组。若要使用静态数组，请使用 [ARRAY2PTR](/C/doc/toolbox_doc.md#ARRAY2PTR)
+1.
+此文档列出的所有函数，接受的数组均为动态数组，不可直接传入静态数组。若要使用静态数组，请使用 [ARRAY2PTR](/C/doc/toolbox_doc.md#ARRAY2PTR)
 将静态数组转换为动态数组。
+
 2. 此文档列出的所有函数均未经针对性优化，故不建议用于处理总规模超过 $10^6$ 的矩阵。
 
 ## 矩阵基础类型定义
@@ -61,7 +63,6 @@ typedef Matrix MVector;
 | 'rows' | unsigned int | 矩阵行数        | 必须大于 0                           |
 | 'cols' | unsigned int | 矩阵列数        | 必须大于 0                           |
 | 'data' | MATRIX_TYPE* | 矩阵数据        | MATRIX_TYPE 默认类型为 double, 暂不可自定义 |
-
 
 ## 普通矩阵创建与矩阵销毁
 
@@ -1039,7 +1040,6 @@ matrix_print(mat);
 Matrix rows: 3, cols: 3
 ```
 
-
 ## 矩阵变换
 
 ### **matrix_transpose**
@@ -1504,15 +1504,16 @@ Matrix rows: 3, cols: 3
 函数原型:
 
 ```C
-void matrix_sort_by_cols_values(const Matrix *mat, const unsigned int col_index)
+void matrix_sort_by_cols_values(const Matrix *mat, const unsigned int keyColIndex, const unsigned int aix)
 ```
 
 **Input**:
 
-| name        | type         | description | required     |
-|-------------|--------------|-------------|--------------|
-| 'mat'       | Matrix*      | 矩阵          | 不可省略；不可为NULL |
-| 'col_index' | unsigned int | 指定列的索引      | 必须小于矩阵行数或列数  |
+| name          | type         | description     | required     |
+|---------------|--------------|-----------------|--------------|
+| 'mat'         | Matrix*      | 矩阵              | 不可省略；不可为NULL |
+| 'keyColIndex' | unsigned int | 指定列的索引          | 必须小于矩阵行数或列数  |
+| 'aix'         | unsigned int | 排序的顺序，0为升序，1为降序 | 必须为 0 或 1    |
 
 使用示例:
 
@@ -1534,6 +1535,49 @@ Matrix rows: 3, cols: 3
 |	  7.297058	  8.892517	  3.615723	|	
 |	  8.659973	  4.485168	  1.752930	|	
 Matrix rows: 3, cols: 3    
+```
+
+### **matrix_sort_by_cols_values_s**
+
+说明: 以矩阵的指定列的数据作为键值进行排序，使用自定义比较函数进行排序，结果为升序。
+
+函数原型:
+
+```C
+void matrix_sort_by_cols_values_s(Matrix *mat, unsigned int keyColIndex, unsigned int aix, unsigned int beginRowIndex,
+                                  unsigned int endRowIndex)
+```
+
+**Input**:
+
+| name            | type         | description     | required       |
+|-----------------|--------------|-----------------|----------------|
+| 'mat'           | Matrix*      | 矩阵              | 不可省略；不可为NULL   |
+| 'keyColIndex'   | unsigned int | 指定列的索引          | 必须小于矩阵行数或列数    |
+| 'aix'           | unsigned int | 排序的顺序，0为升序，1为降序 | 必须为 0 或 1      |
+| 'beginRowIndex' | unsigned int | 指定排序的开始行索引      | 不可省略，必须小于矩阵的行数 |
+| 'endRowIndex'   | unsigned int | 指定排序的结束行索引      | 不可省略，必须小于矩阵的行数 |
+
+使用示例:
+
+```C
+    Matrix *a = rand_matrix(3, 3, 0, 10); //生成一个 3 行 3 列的随机矩阵
+    printf("原始矩阵为：\n");
+    matrix_print(a); //输出原始矩阵
+    matrix_sort_by_cols_values_s(a, 0, 0, 1, 2); //以第0列的数据作为键值进行升序排序，从第1行到第2行
+    printf("排序后的矩阵为：\n");
+    matrix_print(a); //输出排序后的矩阵
+// 输出结果如下：    
+原始矩阵为：
+|	  4.229736	  8.634033	  8.748169	|	
+|	  6.935425	  6.253357	  3.255615	|	
+|	  2.590027	  2.933960	  3.750610	|	
+Matrix rows: 3, cols: 3
+排序后的矩阵为：
+|	  4.229736	  8.634033	  8.748169	|	
+|	  2.590027	  2.933960	  3.750610	|	
+|	  6.935425	  6.253357	  3.255615	|	
+Matrix rows: 3, cols: 3
 ```
 
 ### **matrix_swap_elem**
@@ -1858,9 +1902,9 @@ elem_pos_array *matrix_find_unique(const Matrix *mat)
 
 **Input**:
 
-| name       | type                   | description | required     |
-|------------|------------------------|-------------|--------------|
-| 'mat'      | Matrix*                | 矩阵          | 不可省略；不可为NULL |
+| name  | type    | description | required     |
+|-------|---------|-------------|--------------|
+| 'mat' | Matrix* | 矩阵          | 不可省略；不可为NULL |
 
 **Output**:
 
@@ -2852,7 +2896,8 @@ Matrix rows: 3, cols: 3
 
 ### **matrix_default_cmp_for_sort**
 
-说明: 使用本项目实现的排序[函数](/C/doc/sort_doc.md)进行矩阵排序，用于比较矩阵中的元素，顺序为升序。因为与C库函数 qsort_s 的实现不同，所以比较函数亦不同。
+说明: 使用本项目实现的排序[函数](/C/doc/sort_doc.md)进行矩阵排序，用于比较矩阵中的元素，顺序为升序。因为与C库函数 qsort_s
+的实现不同，所以比较函数亦不同。
 
 函数原型:
 
@@ -2899,7 +2944,8 @@ Matrix rows: 3, cols: 3
 
 ### **matrix_default_cmp_for_sort_down**
 
-说明: 使用本项目实现的排序[函数](/C/doc/sort_doc.md)进行矩阵排序，用于比较矩阵中的元素，顺序为降序。因为与C库函数 qsort_s 的实现不同，所以比较函数亦不同。
+说明: 使用本项目实现的排序[函数](/C/doc/sort_doc.md)进行矩阵排序，用于比较矩阵中的元素，顺序为降序。因为与C库函数 qsort_s
+的实现不同，所以比较函数亦不同。
 
 函数原型:
 

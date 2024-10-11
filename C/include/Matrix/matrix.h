@@ -215,7 +215,8 @@ void matrix_print(const Matrix *mat); // print matrix
 void matrix_print_P(const Matrix *mat, const unsigned int rowsLimit, const unsigned int colsLimit); // print matrix
 static void print_matrix_without_omitting_elements(const Matrix *mat, int rows, int cols);
 
-static void print_matrix_with_omitted_elements(const Matrix *mat, int rows, int cols, const int rowsLimit, const int colsLimit);
+static void print_matrix_with_omitted_elements(const Matrix *mat, int rows, int cols, const int rowsLimit,
+                                               const int colsLimit);
 
 static void print_ellipsis_row(const Matrix *mat, int cols);
 
@@ -261,7 +262,7 @@ int matrix_default_cmp_for_sort(const void *a, const void *b, void *index);
 
 int matrix_default_cmp_for_sort_down(const void *a, const void *b, void *index);
 
-void matrix_sort_by_cols_values(const Matrix *mat, const unsigned int col_index, const unsigned int aix); // matrix
+void matrix_sort_by_cols_values(const Matrix *mat, const unsigned int keyColIndex, const unsigned int aix); // matrix
 // sort by
 // rows values
 void matrix_sort_by_zeros_num(const Matrix *mat, const unsigned int aix);
@@ -332,6 +333,9 @@ Matrix *matrixEquation(Matrix *aMat, Matrix *bMat);
 Matrix *diagMatrix_p(MVector *vec, const int aix);
 
 Matrix *diagMatrix(MVector *vec);
+
+void matrix_sort_by_cols_values_s(Matrix *mat, unsigned int keyColIndex, unsigned int aix, unsigned int beginRowIndex,
+                                  unsigned int endRowIndex);
 
 
 /**

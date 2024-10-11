@@ -29,9 +29,6 @@ typedef void *TreeNodeData;
 typedef struct _TreeNode {
     TreeNodeData data;
     size_t dataTypeSize;
-    int parentIndex;
-    int leftChildIndex;
-    int rightChildIndex;
 } TreeNode;
 
 typedef struct _CompleteBinaryTree {
@@ -40,7 +37,9 @@ typedef struct _CompleteBinaryTree {
     TreeNode *nodeArray;
 } CompleteBinaryTree;
 
-typedef int (*TreeNodeDataCmp)(TreeNodeData, TreeNodeData);
+typedef int (*TreeNodeDataCmp)(const void *, const void *);
+
+typedef int (*TreeNodeDataCmp_s)(const void *, const void *, void *);
 
 CompleteBinaryTree *compBinaryTreeInit(unsigned int nodeNum);
 
@@ -49,5 +48,13 @@ void compBinaryTreeDestroy(CompleteBinaryTree **tree);
 void compBinaryTreeClear(CompleteBinaryTree *tree);
 
 void compBinaryTreeAdd(CompleteBinaryTree *tree, TreeNodeData data, size_t dataTypeSize);
+
+void compBinaryTreeRemove(CompleteBinaryTree *tree, TreeNodeData data, TreeNodeDataCmp cmp);
+
+static int getParentIndex(unsigned int index);
+
+static int getLeftChildIndex(unsigned int index, unsigned int nodeNum);
+
+static int getRightChildIndex(unsigned int index, unsigned int nodeNum);
 
 #endif //_HSMK_MATH_LIB_COMPBINARYTREE_H
