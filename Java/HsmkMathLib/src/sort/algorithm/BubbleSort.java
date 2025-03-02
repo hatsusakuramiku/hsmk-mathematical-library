@@ -22,80 +22,483 @@
 
 package sort.algorithm;
 
-import sort.utils.CompareAndSwapFunction;
-
-import static java.lang.Math.pow;
+import java.lang.reflect.Method;
 
 /**
- * This class implements the Bubble Sort algorithm, a simple sorting algorithm that repeatedly steps
- * through the list, compares adjacent elements and swaps them if they are in the wrong order. The
+ * This class implements the Bubble Sort algorithm, a simple sorting algorithm
+ * that repeatedly steps
+ * through the list, compares adjacent elements and swaps them if they are in
+ * the wrong order. The
  * pass through the list is repeated until the list is sorted.
  */
 public final class BubbleSort implements SortAlgorithm {
   /** Static instance of the Bubble Sort algorithm. */
   public static final BubbleSort INSTANCE = new BubbleSort();
 
-  /** Default constructor for the BubbleSort class. */
-  public BubbleSort() {}
-
   /**
-   * Sorts the given array using the Bubble Sort algorithm.
+   * Sorts the given int array using the Bubble Sort algorithm.
    *
-   * @param array the array to be sorted
+   * <p>
+   * This implementation takes an array, a start index, an end index, and an axis
+   * value as
+   * parameters. It first checks if the array is null or if the range given is
+   * invalid. If the
+   * array is valid, it implements the Bubble Sort algorithm. The algorithm works
+   * by repeatedly
+   * stepping through the list, compares adjacent elements and swaps them if they
+   * are in the wrong
+   * order. The pass through the list is repeated until the list is sorted.
+   *
+   * @param array      the array to be sorted
    * @param startIndex the starting index of the array
-   * @param sortElementCount the number of elements to sort
-   * @param aix the axis value for sorting order (1 for ascending, -1 for descending)
-   * @param compareAndSwap the CompareAndSwapFunction implementation for comparing and swapping
-   *     elements
+   * @param endIndex   the ending index of the array
+   * @param aix        the axis value for sorting order
    */
   @Override
-  public <type> void sort(
-      type[] array, // array to be sorted
-      int startIndex, // starting index of the array
-      int sortElementCount, // number of elements to sort
-      int aix, // axis value for sorting order
-      CompareAndSwapFunction<type> compareAndSwap // compare and swap function implementation
-      ) {
-    // Check if the input array is null
-    checkArray(array);
-
-    // If the number of elements to sort is 0 or less, there's nothing to sort
-    if (sortElementCount <= 0) {
+  public void sort(int[] array, int startIndex, int endIndex, int aix) {
+    if (array == null) {
+      throw new IllegalArgumentException("Array cannot be null");
+    }
+    if (array.length == 0) {
+      throw new IllegalArgumentException("Array cannot be empty");
+    }
+    if (array.length == 1) {
       return;
     }
-
-    // Check if the given range is valid for the array
-    checkRange(array, startIndex, sortElementCount);
-
-    // Check if the axis value is valid (1 for ascending, -1 for descending)
-    checkAix(aix);
-
-    // Calculate the temporary value based on the axis value
-    // This is used to determine the sorting order
-    int temp = (int) pow(-1, aix);
-
-    // Calculate the end index of the array
-    int endIndex = startIndex + sortElementCount;
-
-    // Iterate through the array, comparing adjacent elements and swapping them if necessary
-    for (int i = startIndex; i < endIndex; i++) {
-      // Flag to track if any swaps were made in the current iteration
-      boolean flag = false;
-
-      // Compare each pair of adjacent elements and swap them if necessary
-      for (int j = startIndex; j < endIndex - i - 1; j++) {
-        // Compare the current element with the next element
-        if (compareAndSwap.compare(array[j], array[j + 1]) * temp > 0) {
-          // Swap the elements if they are in the wrong order
-          compareAndSwap.swap(array, j, j + 1);
-          flag = true;
+    if (!checkRange(array, startIndex, endIndex)) {
+      throw new IllegalArgumentException("Invalid range");
+    }
+    if (!checkAix(aix)) {
+      throw new IllegalArgumentException("Invalid axis value");
+    }
+    boolean swapped;
+    int lastIndex;
+    do {
+      swapped = false;
+      lastIndex = startIndex;
+      for (int j = lastIndex; j < endIndex - 1; j++) {
+        if (aix == ASCENDING ? array[j] > array[j + 1] : array[j] < array[j + 1]) {
+          swap(array, j, j + 1);
+          swapped = true;
+          lastIndex = j;
         }
       }
+    } while (swapped);
+  }
 
-      // If no swaps were made in the current iteration, the array is already sorted
-      if (!flag) {
-        break;
-      }
+  /**
+   * Sorts the given int array using the Bubble Sort algorithm.
+   *
+   * <p>
+   * This implementation takes an array, a start index, an end index, and an axis
+   * value as
+   * parameters. It first checks if the array is null or if the range given is
+   * invalid. If the
+   * array is valid, it implements the Bubble Sort algorithm. The algorithm works
+   * by repeatedly
+   * stepping through the list, compares adjacent elements and swaps them if they
+   * are in the wrong
+   * order. The pass through the list is repeated until the list is sorted.
+   *
+   * @param array      the array to be sorted
+   * @param startIndex the starting index of the array
+   * @param endIndex   the ending index of the array
+   * @param aix        the axis value for sorting order
+   */
+  @Override
+  public void sort(double[] array, int startIndex, int endIndex, int aix) {
+    if (array == null) {
+      throw new IllegalArgumentException("Array cannot be null");
     }
+    if (array.length == 0) {
+      throw new IllegalArgumentException("Array cannot be empty");
+    }
+    if (array.length == 1) {
+      return;
+    }
+    if (!checkRange(array, startIndex, endIndex)) {
+      throw new IllegalArgumentException("Invalid range");
+    }
+    if (!checkAix(aix)) {
+      throw new IllegalArgumentException("Invalid axis value");
+    }
+    boolean swapped;
+    int lastIndex;
+    do {
+      swapped = false;
+      lastIndex = startIndex;
+      for (int j = lastIndex; j < endIndex - 1; j++) {
+        if (aix == ASCENDING ? array[j] > array[j + 1] : array[j] < array[j + 1]) {
+          swap(array, j, j + 1);
+          swapped = true;
+          lastIndex = j;
+        }
+      }
+    } while (swapped);
+  }
+
+  /**
+   * Sorts the given int array using the Bubble Sort algorithm.
+   *
+   * <p>
+   * This implementation takes an array, a start index, an end index, and an axis
+   * value as
+   * parameters. It first checks if the array is null or if the range given is
+   * invalid. If the
+   * array is valid, it implements the Bubble Sort algorithm. The algorithm works
+   * by repeatedly
+   * stepping through the list, compares adjacent elements and swaps them if they
+   * are in the wrong
+   * order. The pass through the list is repeated until the list is sorted.
+   *
+   * @param array      the array to be sorted
+   * @param startIndex the starting index of the array
+   * @param endIndex   the ending index of the array
+   * @param aix        the axis value for sorting order
+   */
+  @Override
+  public void sort(float[] array, int startIndex, int endIndex, int aix) {
+    if (array == null) {
+      throw new IllegalArgumentException("Array cannot be null");
+    }
+    if (array.length == 0) {
+      throw new IllegalArgumentException("Array cannot be empty");
+    }
+    if (array.length == 1) {
+      return;
+    }
+    if (!checkRange(array, startIndex, endIndex)) {
+      throw new IllegalArgumentException("Invalid range");
+    }
+    if (!checkAix(aix)) {
+      throw new IllegalArgumentException("Invalid axis value");
+    }
+    boolean swapped;
+    int lastIndex;
+    do {
+      swapped = false;
+      lastIndex = startIndex;
+      for (int j = lastIndex; j < endIndex - 1; j++) {
+        if (aix == ASCENDING ? array[j] > array[j + 1] : array[j] < array[j + 1]) {
+          swap(array, j, j + 1);
+          swapped = true;
+          lastIndex = j;
+        }
+      }
+    } while (swapped);
+  }
+
+  /**
+   * Sorts the given int array using the Bubble Sort algorithm.
+   *
+   * <p>
+   * This implementation takes an array, a start index, an end index, and an axis
+   * value as
+   * parameters. It first checks if the array is null or if the range given is
+   * invalid. If the
+   * array is valid, it implements the Bubble Sort algorithm. The algorithm works
+   * by repeatedly
+   * stepping through the list, compares adjacent elements and swaps them if they
+   * are in the wrong
+   * order. The pass through the list is repeated until the list is sorted.
+   *
+   * @param array      the array to be sorted
+   * @param startIndex the starting index of the array
+   * @param endIndex   the ending index of the array
+   * @param aix        the axis value for sorting order
+   */
+  @Override
+  public void sort(long[] array, int startIndex, int endIndex, int aix) {
+    if (array == null) {
+      throw new IllegalArgumentException("Array cannot be null");
+    }
+    if (array.length == 0) {
+      throw new IllegalArgumentException("Array cannot be empty");
+    }
+    if (array.length == 1) {
+      return;
+    }
+    if (!checkRange(array, startIndex, endIndex)) {
+      throw new IllegalArgumentException("Invalid range");
+    }
+    if (!checkAix(aix)) {
+      throw new IllegalArgumentException("Invalid axis value");
+    }
+    boolean swapped;
+    int lastIndex;
+    do {
+      swapped = false;
+      lastIndex = startIndex;
+      for (int j = lastIndex; j < endIndex - 1; j++) {
+        if (aix == ASCENDING ? array[j] > array[j + 1] : array[j] < array[j + 1]) {
+          swap(array, j, j + 1);
+          swapped = true;
+          lastIndex = j;
+        }
+      }
+    } while (swapped);
+  }
+
+  /**
+   * Sorts the given int array using the Bubble Sort algorithm.
+   *
+   * <p>
+   * This implementation takes an array, a start index, an end index, and an axis
+   * value as
+   * parameters. It first checks if the array is null or if the range given is
+   * invalid. If the
+   * array is valid, it implements the Bubble Sort algorithm. The algorithm works
+   * by repeatedly
+   * stepping through the list, compares adjacent elements and swaps them if they
+   * are in the wrong
+   * order. The pass through the list is repeated until the list is sorted.
+   *
+   * @param array      the array to be sorted
+   * @param startIndex the starting index of the array
+   * @param endIndex   the ending index of the array
+   * @param aix        the axis value for sorting order
+   */
+  @Override
+  public void sort(short[] array, int startIndex, int endIndex, int aix) {
+    if (array == null) {
+      throw new IllegalArgumentException("Array cannot be null");
+    }
+    if (array.length == 0) {
+      throw new IllegalArgumentException("Array cannot be empty");
+    }
+    if (array.length == 1) {
+      return;
+    }
+    if (!checkRange(array, startIndex, endIndex)) {
+      throw new IllegalArgumentException("Invalid range");
+    }
+    if (!checkAix(aix)) {
+      throw new IllegalArgumentException("Invalid axis value");
+    }
+    boolean swapped;
+    int lastIndex;
+    do {
+      swapped = false;
+      lastIndex = startIndex;
+      for (int j = lastIndex; j < endIndex - 1; j++) {
+        if (aix == ASCENDING ? array[j] > array[j + 1] : array[j] < array[j + 1]) {
+          swap(array, j, j + 1);
+          swapped = true;
+          lastIndex = j;
+        }
+      }
+    } while (swapped);
+  }
+
+  /**
+   * Sorts the given int array using the Bubble Sort algorithm.
+   *
+   * <p>
+   * This implementation takes an array, a start index, an end index, and an axis
+   * value as
+   * parameters. It first checks if the array is null or if the range given is
+   * invalid. If the
+   * array is valid, it implements the Bubble Sort algorithm. The algorithm works
+   * by repeatedly
+   * stepping through the list, compares adjacent elements and swaps them if they
+   * are in the wrong
+   * order. The pass through the list is repeated until the list is sorted.
+   *
+   * @param array      the array to be sorted
+   * @param startIndex the starting index of the array
+   * @param endIndex   the ending index of the array
+   * @param aix        the axis value for sorting order
+   */
+  @Override
+  public void sort(byte[] array, int startIndex, int endIndex, int aix) {
+    if (array == null) {
+      throw new IllegalArgumentException("Array cannot be null");
+    }
+    if (array.length == 0) {
+      throw new IllegalArgumentException("Array cannot be empty");
+    }
+    if (array.length == 1) {
+      return;
+    }
+    if (!checkRange(array, startIndex, endIndex)) {
+      throw new IllegalArgumentException("Invalid range");
+    }
+    if (!checkAix(aix)) {
+      throw new IllegalArgumentException("Invalid axis value");
+    }
+    boolean swapped;
+    int lastIndex;
+    do {
+      swapped = false;
+      lastIndex = startIndex;
+      for (int j = lastIndex; j < endIndex - 1; j++) {
+        if (aix == ASCENDING ? array[j] > array[j + 1] : array[j] < array[j + 1]) {
+          swap(array, j, j + 1);
+          swapped = true;
+          lastIndex = j;
+        }
+      }
+    } while (swapped);
+  }
+
+  /**
+   * Sorts the given int array using the Bubble Sort algorithm.
+   *
+   * <p>
+   * This implementation takes an array, a start index, an end index, and an axis
+   * value as
+   * parameters. It first checks if the array is null or if the range given is
+   * invalid. If the
+   * array is valid, it implements the Bubble Sort algorithm. The algorithm works
+   * by repeatedly
+   * stepping through the list, compares adjacent elements and swaps them if they
+   * are in the wrong
+   * order. The pass through the list is repeated until the list is sorted.
+   *
+   * @param array      the array to be sorted
+   * @param startIndex the starting index of the array
+   * @param endIndex   the ending index of the array
+   * @param aix        the axis value for sorting order
+   */
+  @Override
+  public void sort(char[] array, int startIndex, int endIndex, int aix) {
+    if (array == null) {
+      throw new IllegalArgumentException("Array cannot be null");
+    }
+    if (array.length == 0) {
+      throw new IllegalArgumentException("Array cannot be empty");
+    }
+    if (array.length == 1) {
+      return;
+    }
+    if (!checkRange(array, startIndex, endIndex)) {
+      throw new IllegalArgumentException("Invalid range");
+    }
+    if (!checkAix(aix)) {
+      throw new IllegalArgumentException("Invalid axis value");
+    }
+    boolean swapped;
+    int lastIndex;
+    do {
+      swapped = false;
+      lastIndex = startIndex;
+      for (int j = lastIndex; j < endIndex - 1; j++) {
+        if (aix == ASCENDING ? array[j] > array[j + 1] : array[j] < array[j + 1]) {
+          swap(array, j, j + 1);
+          swapped = true;
+          lastIndex = j;
+        }
+      }
+    } while (swapped);
+  }
+
+  /**
+   * Sorts the given array of objects using the Bubble Sort algorithm.
+   *
+   * <p>
+   * This implementation takes an array, a start index, an end index, and an axis
+   * value as
+   * parameters. It first checks if the array is null or if the range given is
+   * invalid. If the
+   * array is valid, it implements the Bubble Sort algorithm. The algorithm works
+   * by repeatedly
+   * stepping through the list, compares adjacent elements and swaps them if they
+   * are in the wrong
+   * order. The pass through the list is repeated until the list is sorted.
+   *
+   * @param array      the array to be sorted
+   * @param startIndex the starting index of the array
+   * @param endIndex   the ending index of the array
+   * @param aix        the axis value for sorting order
+   */
+  @Override
+  public void sort(Object[] array, int startIndex, int endIndex, int aix) {
+    if (array == null) {
+      throw new IllegalArgumentException("Array cannot be null");
+    }
+    if (array.length == 0) {
+      throw new IllegalArgumentException("Array cannot be empty");
+    }
+    if (array.length == 1) {
+      return;
+    }
+    if (!checkRange(array, startIndex, endIndex)) {
+      throw new IllegalArgumentException("Invalid range");
+    }
+    if (!checkAix(aix)) {
+      throw new IllegalArgumentException("Invalid axis value");
+    }
+    boolean swapped;
+    int lastIndex;
+    try {
+      Method compareMethod = getCompareToMethod(array[0]);
+      do {
+        swapped = false;
+        lastIndex = startIndex;
+        for (int j = lastIndex; j < endIndex - 1; j++) {
+          if (aix == ASCENDING ? (int) compareMethod.invoke(array[j], array[j + 1]) > 0
+              : (int) compareMethod
+                  .invoke(array[j], array[j + 1]) < 0) {
+            swap(array, j, j + 1);
+            swapped = true;
+            lastIndex = j;
+          }
+        }
+      } while (swapped);
+    } catch (Exception e) {
+      System.out.println("Exception: " + e.getMessage());
+    }
+  }
+
+  /**
+   * Sorts the given array of objects using the Bubble Sort algorithm.
+   *
+   * <p>
+   * This implementation takes an array, a start index, an end index, and an axis
+   * value as
+   * parameters. It first checks if the array is null or if the range given is
+   * invalid. If the
+   * array is valid, it implements the Bubble Sort algorithm. The algorithm works
+   * by repeatedly
+   * stepping through the list, compares adjacent elements and swaps them if they
+   * are in the wrong
+   * order. The pass through the list is repeated until the list is sorted.
+   *
+   * @param array      the array to be sorted
+   * @param startIndex the starting index of the array
+   * @param endIndex   the ending index of the array
+   * @param aix        the axis value for sorting order
+   */
+  @Override
+  public <T extends Comparable<T>> void sort(T[] array, int startIndex, int endIndex, int aix) {
+    if (array == null) {
+      throw new IllegalArgumentException("Array cannot be null");
+    }
+    if (array.length == 0) {
+      throw new IllegalArgumentException("Array cannot be empty");
+    }
+    if (array.length == 1) {
+      return;
+    }
+    if (!checkRange(array, startIndex, endIndex)) {
+      throw new IllegalArgumentException("Invalid range");
+    }
+    if (!checkAix(aix)) {
+      throw new IllegalArgumentException("Invalid axis value");
+    }
+    boolean swapped;
+    int lastIndex;
+    do {
+      swapped = false;
+      lastIndex = startIndex;
+      for (int j = lastIndex; j < endIndex - 1; j++) {
+        if (aix == ASCENDING ? array[j].compareTo(array[j + 1]) > 0
+            : array[j].compareTo(array[j + 1]) < 0) {
+          swap(array, j, j + 1);
+          swapped = true;
+          lastIndex = j;
+        }
+      }
+    } while (swapped);
   }
 }

@@ -9,7 +9,7 @@
 
 ```C
 // 定义栈中元素的类型为无符号指针，以确保其可扩展性
-typedef void *stackElem; 
+typedef void *stackElem;
 
 // 定义栈节点类型
 typedef struct _StackNode {
@@ -60,13 +60,13 @@ enum STACK_TYPE_SIZE {
 Stack *stackInit();
 ```
 
-**Output**
+**Output**::
 
-| type    | description                  |
-|---------|------------------------------|
-| Stack * | 指向初始化后的栈的指针，如果内存分配失败，返回 NULL |
+| type     | description                                         |
+| -------- | --------------------------------------------------- |
+| Stack \* | 指向初始化后的栈的指针，如果内存分配失败，返回 NULL |
 
-**使用示例**
+**使用示例**:
 
 ```C
 Stack *stack = stackInit();
@@ -82,11 +82,11 @@ Stack *stack = stackInit();
 void stackClear(Stack *stack);
 ```
 
-**Input**
+**Input**:
 
-| name  | type    | description | required |
-|-------|---------|-------------|----------|
-| stack | Stack * | 指向栈的指针      | 不可为NULL  |
+| name  | type     | description  | required    |
+| ----- | -------- | ------------ | ----------- |
+| stack | Stack \* | 指向栈的指针 | 不可为 NULL |
 
 使用示例:
 
@@ -104,11 +104,11 @@ stackClear(stack);
 void stackDestroy(Stack **stack);
 ```
 
-**Input**
+**Input**:
 
-| name  | type     | description | required |
-|-------|----------|-------------|----------|
-| stack | Stack ** | 指向栈的指针的指针   | 不可为NULL  |
+| name  | type       | description        | required    |
+| ----- | ---------- | ------------------ | ----------- |
+| stack | Stack \*\* | 指向栈的指针的指针 | 不可为 NULL |
 
 使用示例:
 
@@ -126,13 +126,13 @@ stackDestroy(&stack);
 void stackPush(Stack *stack, stackElem elem, size_t elemSize);
 ```
 
-**Input**
+**Input**:
 
-| name     | type      | description | required |
-|----------|-----------|-------------|----------|
-| stack    | Stack *   | 指向栈的指针      | 不可为NULL  |
-| elem     | stackElem | 要添加的元素      | 不可为NULL  |
-| elemSize | size_t    | 要添加的元素的大小   | 不可为0     |
+| name     | type      | description        | required    |
+| -------- | --------- | ------------------ | ----------- |
+| stack    | Stack \*  | 指向栈的指针       | 不可为 NULL |
+| elem     | stackElem | 要添加的元素       | 不可为 NULL |
+| elemSize | size_t    | 要添加的元素的大小 | 不可为 0    |
 
 使用示例:
 
@@ -151,16 +151,16 @@ stackPush(stack, &a, STACK_TYPE_SIZE_INT);
 stackElem stackPop(Stack *stack);
 ```
 
-**Input**
+**Input**:
 
-| name  | type    | description | required |
-|-------|---------|-------------|----------|
-| stack | Stack * | 指向栈的指针      | 不可为NULL  |
+| name  | type     | description  | required    |
+| ----- | -------- | ------------ | ----------- |
+| stack | Stack \* | 指向栈的指针 | 不可为 NULL |
 
-**Output**
+**Output**:
 
-| type      | description                |
-|-----------|----------------------------|
+| type      | description                                     |
+| --------- | ----------------------------------------------- |
 | stackElem | 弹出的元素，不含元素大小，如果栈为空，返回 NULL |
 
 使用示例:
@@ -181,16 +181,16 @@ int a = *(int*)stackPop(stack);
 stackElem stackBottom(Stack *stack);
 ```
 
-**Input**
+**Input**:
 
-| name  | type    | description | required |
-|-------|---------|-------------|----------|
-| stack | Stack * | 指向栈的指针      | 不可为NULL  |
+| name  | type     | description  | required    |
+| ----- | -------- | ------------ | ----------- |
+| stack | Stack \* | 指向栈的指针 | 不可为 NULL |
 
-**Output**
+**Output**:
 
-| type      | description               |
-|-----------|---------------------------|
+| type      | description                                   |
+| --------- | --------------------------------------------- |
 | stackElem | 栈底元素，不含元素大小，如果栈为空，返回 NULL |
 
 使用示例:
@@ -211,16 +211,16 @@ int a = *(int*)stackBottom(stack);
 stackElem stackTop(Stack *stack);
 ```
 
-**Input**
+**Input**:
 
-| name  | type    | description | required |
-|-------|---------|-------------|----------|
-| stack | Stack * | 指向栈的指针      | 不可为NULL  |
+| name  | type     | description  | required    |
+| ----- | -------- | ------------ | ----------- |
+| stack | Stack \* | 指向栈的指针 | 不可为 NULL |
 
-**Output**
+**Output**:
 
-| type      | description               |
-|-----------|---------------------------|
+| type      | description                                   |
+| --------- | --------------------------------------------- |
 | stackElem | 栈顶元素，不含元素大小，如果栈为空，返回 NULL |
 
 使用示例:
@@ -241,16 +241,16 @@ int a = *(int*)stackTop(stack);
 stackElemWithSize stackPopWithSize(Stack *stack);
 ```
 
-**Input**
+**Input**:
 
-| name  | type    | description | required |
-|-------|---------|-------------|----------|
-| stack | Stack * | 指向栈的指针      | 不可为NULL  |
+| name  | type     | description  | required    |
+| ----- | -------- | ------------ | ----------- |
+| stack | Stack \* | 指向栈的指针 | 不可为 NULL |
 
-**Output**
+**Output**:
 
-| type              | description               |
-|-------------------|---------------------------|
+| type              | description                                   |
+| ----------------- | --------------------------------------------- |
 | stackElemWithSize | 弹出的元素，含元素大小，如果栈为空，返回 NULL |
 
 使用示例:
@@ -271,16 +271,16 @@ int a = *(int*)stackPopWithSize(stack).data;
 stackElemWithSize stackBottomWithSize(Stack *stack);
 ```
 
-**Input**
+**Input**:
 
-| name  | type    | description | required |
-|-------|---------|-------------|----------|
-| stack | Stack * | 指向栈的指针      | 不可为NULL  |
+| name  | type     | description  | required    |
+| ----- | -------- | ------------ | ----------- |
+| stack | Stack \* | 指向栈的指针 | 不可为 NULL |
 
-**Output**
+**Output**:
 
-| type              | description              |
-|-------------------|--------------------------|
+| type              | description                                 |
+| ----------------- | ------------------------------------------- |
 | stackElemWithSize | 栈底元素，含元素大小，如果栈为空，返回 NULL |
 
 使用示例:
@@ -301,16 +301,16 @@ int a = *(int*)stackBottomWithSize(stack).data;
 stackElemWithSize stackTopWithSize(Stack *stack);
 ```
 
-**Input**
+**Input**:
 
-| name  | type    | description | required |
-|-------|---------|-------------|----------|
-| stack | Stack * | 指向栈的指针      | 不可为NULL  |
+| name  | type     | description  | required    |
+| ----- | -------- | ------------ | ----------- |
+| stack | Stack \* | 指向栈的指针 | 不可为 NULL |
 
-**Output**
+**Output**:
 
-| type              | description              |
-|-------------------|--------------------------|
+| type              | description                                 |
+| ----------------- | ------------------------------------------- |
 | stackElemWithSize | 栈顶元素，含元素大小，如果栈为空，返回 NULL |
 
 使用示例:
@@ -331,16 +331,16 @@ int a = *(int*)stackTopWithSize(stack).data;
 int stackSize(Stack *stack);
 ```
 
-**Input**
+**Input**:
 
-| name  | type    | description | required |
-|-------|---------|-------------|----------|
-| stack | Stack * | 指向栈的指针      | 不可为NULL  |
+| name  | type     | description  | required    |
+| ----- | -------- | ------------ | ----------- |
+| stack | Stack \* | 指向栈的指针 | 不可为 NULL |
 
-**Output**
+**Output**:
 
-| type | description     |
-|------|-----------------|
+| type | description                  |
+| ---- | ---------------------------- |
 | int  | 栈的大小，如果栈为空，返回 0 |
 
 使用示例:
@@ -359,11 +359,11 @@ int size = stackSize(stack);
 void stackSwap(Stack *stack);
 ```
 
-**Input**
+**Input**:
 
-| name  | type    | description | required |
-|-------|---------|-------------|----------|
-| stack | Stack * | 指向栈的指针      | 不可为NULL  |
+| name  | type     | description  | required    |
+| ----- | -------- | ------------ | ----------- |
+| stack | Stack \* | 指向栈的指针 | 不可为 NULL |
 
 使用示例:
 
@@ -415,16 +415,16 @@ After swap:
 int isStackEmpty(Stack *stack);
 ```
 
-**Input**
+**Input**:
 
-| name  | type    | description | required |
-|-------|---------|-------------|----------|
-| stack | Stack * | 指向栈的指针      | 不可为NULL  |
+| name  | type     | description  | required    |
+| ----- | -------- | ------------ | ----------- |
+| stack | Stack \* | 指向栈的指针 | 不可为 NULL |
 
-**Output**
+**Output**:
 
-| type | description                   |
-|------|-------------------------------|
+| type | description                                    |
+| ---- | ---------------------------------------------- |
 | int  | 1 表示栈为空，0 表示栈不为空，-1 表示栈为 NULL |
 
 使用示例:
@@ -443,18 +443,18 @@ int isEmpty = isStackEmpty(stack);
 int isStackMember(Stack *stack, stackElemWithSize elem, int (*cmp)(const void *, const void *));
 ```
 
-**Input**
+**Input**:
 
-| name  | type                                | description                                     | required |
-|-------|-------------------------------------|-------------------------------------------------|----------|
-| stack | Stack *                             | 指向栈的指针                                          | 不可为NULL  |
-| elem  | stackElemWithSize                   | 要判断的元素，包含元素大小                                   | 不可为NULL  |
-| cmp   | int (*)(const void *, const void *) | 比较函数，需要用户自行实现，用于比较元素，如果返回值为 1 表示相等，返回值为 0 表示不相等 | 不可为NULL  |
+| name  | type                                   | description                                                                              | required    |
+| ----- | -------------------------------------- | ---------------------------------------------------------------------------------------- | ----------- |
+| stack | Stack \*                               | 指向栈的指针                                                                             | 不可为 NULL |
+| elem  | stackElemWithSize                      | 要判断的元素，包含元素大小                                                               | 不可为 NULL |
+| cmp   | int (\*)(const void \*, const void \*) | 比较函数，需要用户自行实现，用于比较元素，如果返回值为 1 表示相等，返回值为 0 表示不相等 | 不可为 NULL |
 
-**Output**
+**Output**:
 
-| type | description                           |
-|------|---------------------------------------|
+| type | description                                                    |
+| ---- | -------------------------------------------------------------- |
 | int  | 1 表示栈中存在该元素，0 表示栈中不存在该元素，-1 表示栈为 NULL |
 
 使用示例:
@@ -473,17 +473,17 @@ int isMember = isStackMember(stack, &a, cmp);
 void *stackToArray(Stack *stack);
 ```
 
-**Input**
+**Input**:
 
-| name  | type    | description | required               |
-|-------|---------|-------------|------------------------|
-| stack | Stack * | 指向栈的指针      | 不可为NULL；要求栈中每一个元素的大小相同 |
+| name  | type     | description  | required                                  |
+| ----- | -------- | ------------ | ----------------------------------------- |
+| stack | Stack \* | 指向栈的指针 | 不可为 NULL；要求栈中每一个元素的大小相同 |
 
-**Output**
+**Output**:
 
-| type   | description                                      |
-|--------|--------------------------------------------------|
-| void * | 指向转换后的数组的指针，如果栈为空，返回 NULL;数组的顺序与出栈的顺序相同，与入栈的顺序相反 |
+| type    | description                                                                                |
+| ------- | ------------------------------------------------------------------------------------------ |
+| void \* | 指向转换后的数组的指针，如果栈为空，返回 NULL;数组的顺序与出栈的顺序相同，与入栈的顺序相反 |
 
 使用示例（上文亦有示例[stackSwap](/C/dococ/stack_doc.md#stackSwap)）:
 
@@ -501,17 +501,17 @@ int *arr = stackToArray(stack);
 Stack *stackCopy(Stack *stack);
 ```
 
-**Input**
+**Input**:
 
-| name  | type    | description | required |
-|-------|---------|-------------|----------|
-| stack | Stack * | 指向栈的指针      | 不可为NULL  |
+| name  | type     | description  | required    |
+| ----- | -------- | ------------ | ----------- |
+| stack | Stack \* | 指向栈的指针 | 不可为 NULL |
 
-**Output**
+**Output**:
 
-| type    | description              |
-|---------|--------------------------|
-| Stack * | 指向拷贝后的栈的指针，如果栈为空，返回 NULL |
+| type     | description                                 |
+| -------- | ------------------------------------------- |
+| Stack \* | 指向拷贝后的栈的指针，如果栈为空，返回 NULL |
 
 使用示例：
 

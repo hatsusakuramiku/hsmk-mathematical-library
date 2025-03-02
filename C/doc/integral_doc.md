@@ -24,7 +24,7 @@ typedef struct _Interval {
 
 ### 被积函数
 
-#### **__integral_func**
+#### **\_\_integral_func**
 
 说明: 一维被积函数类型定义。
 
@@ -32,7 +32,7 @@ typedef struct _Interval {
 typedef double (*__integral_func)(const double)
 ```
 
-#### **__iintegral_func**
+#### **\_\_iintegral_func**
 
 说明: 二维被积函数类型定义。
 
@@ -54,17 +54,17 @@ double trapezoid(const Interval interval, const unsigned int intervalNum, const 
 
 **Input**:
 
-| name        | type            | description | required |
-|-------------|-----------------|-------------|----------|
-| interval    | Interval        | 被积函数积分区间    |          |
-| intervalNum | unsigned int    | 积分区间划分数量    | 不能小于1    |
-| func        | __integral_func | 被积函数        |          |
+| name        | type              | description      | required   |
+| ----------- | ----------------- | ---------------- | ---------- |
+| interval    | Interval          | 被积函数积分区间 |            |
+| intervalNum | unsigned int      | 积分区间划分数量 | 不能小于 1 |
+| func        | \_\_integral_func | 被积函数         |            |
 
 **Output**:
 
 | type   | description |
-|--------|-------------|
-| double | 积分结果        |
+| ------ | ----------- |
+| double | 积分结果    |
 
 **使用示例**:
 
@@ -93,17 +93,17 @@ double simpson(const Interval interval, const unsigned int intervalNum, const __
 
 **Input**:
 
-| name        | type            | description | required |
-|-------------|-----------------|-------------|----------|
-| interval    | Interval        | 被积函数积分区间    |          |
-| intervalNum | unsigned int    | 积分区间划分数量    | 不能小于3    |
-| func        | __integral_func | 被积函数        |          |
+| name        | type              | description      | required   |
+| ----------- | ----------------- | ---------------- | ---------- |
+| interval    | Interval          | 被积函数积分区间 |            |
+| intervalNum | unsigned int      | 积分区间划分数量 | 不能小于 3 |
+| func        | \_\_integral_func | 被积函数         |            |
 
 **Output**:
 
 | type   | description |
-|--------|-------------|
-| double | 积分结果        |
+| ------ | ----------- |
+| double | 积分结果    |
 
 **使用示例**:
 
@@ -132,17 +132,17 @@ double adaptiveSimpson(const Interval interval, const double error, const __inte
 
 **Input**:
 
-| name     | type            | description | required |
-|----------|-----------------|-------------|----------|
-| interval | Interval        | 被积函数积分区间    |          |
-| error    | double          | 积分误差上限      | 必须大于0    |
-| func     | __integral_func | 被积函数        |          |
+| name     | type              | description      | required   |
+| -------- | ----------------- | ---------------- | ---------- |
+| interval | Interval          | 被积函数积分区间 |            |
+| error    | double            | 积分误差上限     | 必须大于 0 |
+| func     | \_\_integral_func | 被积函数         |            |
 
 **Output**:
 
 | type   | description |
-|--------|-------------|
-| double | 积分结果        |
+| ------ | ----------- |
+| double | 积分结果    |
 
 **使用示例**:
 
@@ -171,17 +171,17 @@ double gaussLegendre2PointIntegral(const Interval interval, const unsigned int i
 
 **Input**:
 
-| name        | type            | description | required |
-|-------------|-----------------|-------------|----------|
-| interval    | Interval        | 被积函数积分区间    |          |
-| intervalNum | unsigned int    | 积分区间划分数量    | 不能小于1    |
-| func        | __integral_func | 被积函数        |          |
+| name        | type              | description      | required   |
+| ----------- | ----------------- | ---------------- | ---------- |
+| interval    | Interval          | 被积函数积分区间 |            |
+| intervalNum | unsigned int      | 积分区间划分数量 | 不能小于 1 |
+| func        | \_\_integral_func | 被积函数         |            |
 
 **Output**:
 
 | type   | description |
-|--------|-------------|
-| double | 积分结果        |
+| ------ | ----------- |
+| double | 积分结果    |
 
 **使用示例**:
 
@@ -210,17 +210,17 @@ double gaussLegendre3PointIntegral(const Interval interval, const unsigned int i
 
 **Input**:
 
-| name        | type            | description | required |
-|-------------|-----------------|-------------|----------|
-| interval    | Interval        | 被积函数积分区间    |          |
-| intervalNum | unsigned int    | 积分区间划分数量    | 不能小于2    |
-| func        | __integral_func | 被积函数        |          |
+| name        | type              | description      | required   |
+| ----------- | ----------------- | ---------------- | ---------- |
+| interval    | Interval          | 被积函数积分区间 |            |
+| intervalNum | unsigned int      | 积分区间划分数量 | 不能小于 2 |
+| func        | \_\_integral_func | 被积函数         |            |
 
 **Output**:
 
 | type   | description |
-|--------|-------------|
-| double | 积分结果        |
+| ------ | ----------- |
+| double | 积分结果    |
 
 **使用示例**:
 
@@ -250,18 +250,18 @@ double newtonRaphsonIntegral(const Interval interval, const unsigned int interva
 
 **Input**:
 
-| name        | type            | description | required      |
-|-------------|-----------------|-------------|---------------|
-| interval    | Interval        | 被积函数积分区间    |               |
-| intervalNum | unsigned int    | 积分区间划分数量    | 不能小于1         |
-| order       | unsigned int    | 牛顿-拉夫逊法阶数   | 最小 1 阶，最大 8 阶 |
-| func        | __integral_func | 被积函数        |               |
+| name        | type              | description       | required             |
+| ----------- | ----------------- | ----------------- | -------------------- |
+| interval    | Interval          | 被积函数积分区间  |                      |
+| intervalNum | unsigned int      | 积分区间划分数量  | 不能小于 1           |
+| order       | unsigned int      | 牛顿-拉夫逊法阶数 | 最小 1 阶，最大 8 阶 |
+| func        | \_\_integral_func | 被积函数          |                      |
 
 **Output**:
 
 | type   | description |
-|--------|-------------|
-| double | 积分结果        |
+| ------ | ----------- |
+| double | 积分结果    |
 
 **使用示例**:
 

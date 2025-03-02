@@ -22,9 +22,6 @@
 
 package sort.algorithm;
 
-import sort.utils.CompareAndSwapFunction;
-
-import static java.lang.Math.pow;
 
 /**
  * This class implements the Insertion Sort algorithm, which is a simple sorting algorithm that
@@ -38,56 +35,57 @@ public final class InsertionSort implements SortAlgorithm {
   /** Default constructor for the InsertionSort class. */
   public InsertionSort() {}
 
-  /**
-   * Sorts the given array using the provided compare and swap function.
-   *
-   * @param array the array to be sorted
-   * @param startIndex the starting index of the array
-   * @param sortElementCount the number of elements to sort
-   * @param aix the axis value (used for ascending or descending order)
-   * @param compareAndSwap the CompareAndSwapFunction implementation for comparing and swapping
-   *     elements
-   */
   @Override
-  public <type> void sort(
-      type[] array,
-      int startIndex,
-      int sortElementCount,
-      int aix,
-      CompareAndSwapFunction<type> compareAndSwap) {
-    // Check if the input array is null
-    checkArray(array);
+  public void sort(Object[] array, int startIndex, int endIndex, int aix) {
+    // TODO Auto-generated method stub
+    throw new UnsupportedOperationException("Unimplemented method 'sort'");
+  }
 
-    // If the array is empty, return immediately
-    if (array.length <= 0) {
-      return;
-    }
+  @Override
+  public void sort(float[] array, int startIndex, int endIndex, int aix) {
+    // TODO Auto-generated method stub
+    throw new UnsupportedOperationException("Unimplemented method 'sort'");
+  }
 
-    // Validate the range of the array and the axis value
-    checkRange(array, startIndex, sortElementCount);
-    checkAix(aix);
+  @Override
+  public void sort(double[] array, int startIndex, int endIndex, int aix) {
+    // TODO Auto-generated method stub
+    throw new UnsupportedOperationException("Unimplemented method 'sort'");
+  }
 
-    // Calculate the end index of the array and a temporary value for sorting order
-    int endIndex = startIndex + sortElementCount;
-    int temp = (int) pow(-1, aix);
+  @Override
+  public void sort(long[] array, int startIndex, int endIndex, int aix) {
+    // TODO Auto-generated method stub
+    throw new UnsupportedOperationException("Unimplemented method 'sort'");
+  }
 
-    // Iterate over the array, starting from the second element
-    for (int i = startIndex + 1; i < endIndex; ++i) {
-      // Store the current element
-      type current = array[i];
+  @Override
+  public void sort(short[] array, int startIndex, int endIndex, int aix) {
+    // TODO Auto-generated method stub
+    throw new UnsupportedOperationException("Unimplemented method 'sort'");
+  }
 
-      // Initialize the index for the previous element
-      int j = i - 1;
+  @Override
+  public void sort(byte[] array, int startIndex, int endIndex, int aix) {
+    // TODO Auto-generated method stub
+    throw new UnsupportedOperationException("Unimplemented method 'sort'");
+  }
 
-      // Shift elements to the right until the correct position for the current element is found
-      while (j >= 0 && compareAndSwap.compare(array[j], current) * temp > 0) {
-        // Swap the elements at indices j and j + 1
-        compareAndSwap.swap(array, j, j + 1);
-        j--;
-      }
+  @Override
+  public void sort(char[] array, int startIndex, int endIndex, int aix) {
+    // TODO Auto-generated method stub
+    throw new UnsupportedOperationException("Unimplemented method 'sort'");
+  }
 
-      // Insert the current element at its correct position
-      array[j + 1] = current;
-    }
+  @Override
+  public void sort(int[] array, int startIndex, int endIndex, int aix) {
+    // TODO Auto-generated method stub
+    throw new UnsupportedOperationException("Unimplemented method 'sort'");
+  }
+
+  @Override
+  public <T extends Comparable<T>> void sort(T[] array, int startIndex, int endIndex, int aix) {
+    // TODO Auto-generated method stub
+    throw new UnsupportedOperationException("Unimplemented method 'sort'");
   }
 }
