@@ -38,20 +38,20 @@ public class Main {
     Integer[] array = new Integer[10000];
     int[] array1 = new int[10000];
     for (int i = 0; i < array.length; i++) {
-      array[i] = new Random().nextInt(10000);
+      array[i] = new Random().nextInt(100000);
     }
     for (int i = 0; i < array1.length; i++) {
       array1[i] = new Random().nextInt(10000);
     }
     // System.out.println("before sort: ");
-    // System.out.println(arrayToString(array));
     Long startTime = System.currentTimeMillis();
-    InsertionSort.INSTANCE.sort(array1, DESCENDING);
+    MergeSort.INSTANCE.sort(array, ASCENDING);
     Long endTime = System.currentTimeMillis();
     System.out.println("time: " + (endTime - startTime) + "ms");
     // System.out.println("after sort: ");
     // System.out.println(intArrayToString(array1));
-    System.out.println(testSort(array1, DESCENDING));
+    // System.out.println(arrayToString(array));
+    System.out.println(testSort(array, ASCENDING));
   }
 
   public static String intArrayToString(int[] array) {
