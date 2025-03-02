@@ -324,7 +324,7 @@ public interface SortAlgorithm {
   }
 
   /**
-   * Sorts a double array using the specified axis value.
+   * Sorts an double array using the specified axis value.
    *
    * @param array the double array to be sorted
    * @param aix   the axis value for sorting order
@@ -356,7 +356,7 @@ public interface SortAlgorithm {
   }
 
   /**
-   * Sorts a float array using the specified axis value.
+   * Sorts an float array using the specified axis value.
    *
    * @param array the float array to be sorted
    * @param aix   the axis value for sorting order
@@ -388,7 +388,7 @@ public interface SortAlgorithm {
   }
 
   /**
-   * Sorts a long array using the specified axis value.
+   * Sorts an long array using the specified axis value.
    *
    * @param array the long array to be sorted
    * @param aix   the axis value for sorting order
@@ -420,7 +420,7 @@ public interface SortAlgorithm {
   }
 
   /**
-   * Sorts a short array using the specified axis value.
+   * Sorts an short array using the specified axis value.
    *
    * @param array the short array to be sorted
    * @param aix   the axis value for sorting order
@@ -452,7 +452,7 @@ public interface SortAlgorithm {
   }
 
   /**
-   * Sorts a byte array using the specified axis value.
+   * Sorts an byte array using the specified axis value.
    *
    * @param array the byte array to be sorted
    * @param aix   the axis value for sorting order
@@ -484,7 +484,7 @@ public interface SortAlgorithm {
   }
 
   /**
-   * Sorts a char array using the specified axis value.
+   * Sorts an char array using the specified axis value.
    *
    * @param array the char array to be sorted
    * @param aix   the axis value for sorting order

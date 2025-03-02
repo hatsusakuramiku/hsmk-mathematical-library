@@ -22,7 +22,8 @@
 
 package test;
 
-import sort.algorithm.BubbleSort;
+// import sort.algorithm.BubbleSort;
+import sort.algorithm.*;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -30,20 +31,27 @@ import java.util.Random;
 import java.util.StringJoiner;
 
 public class Main {
+  public static final int ASCENDING = 0;
+  public static final int DESCENDING = 1;
+
   public static void main(String[] args) {
     Integer[] array = new Integer[10000];
+    int[] array1 = new int[10000];
     for (int i = 0; i < array.length; i++) {
-      array[i] = new Random().nextInt(100000);
+      array[i] = new Random().nextInt(10000);
+    }
+    for (int i = 0; i < array1.length; i++) {
+      array1[i] = new Random().nextInt(10000);
     }
     // System.out.println("before sort: ");
-    // System.out.println(intArrayToString(array));
+    // System.out.println(arrayToString(array));
     Long startTime = System.currentTimeMillis();
-    BubbleSort.INSTANCE.sort(array, 0, BubbleSort.DESCENDING);
+    InsertionSort.INSTANCE.sort(array1, DESCENDING);
     Long endTime = System.currentTimeMillis();
     System.out.println("time: " + (endTime - startTime) + "ms");
     // System.out.println("after sort: ");
-    // System.out.println(intArrayToString(array));
-    System.out.println(testSort(array, BubbleSort.DESCENDING));
+    // System.out.println(intArrayToString(array1));
+    System.out.println(testSort(array1, DESCENDING));
   }
 
   public static String intArrayToString(int[] array) {
@@ -56,6 +64,20 @@ public class Main {
     StringJoiner sj = new StringJoiner(", ", "[", "]");
     for (int i : array) {
       sj.add(String.valueOf(i));
+    }
+    return sj.toString();
+  }
+
+  public static <T extends Number> String arrayToString(T[] array) {
+    if (array == null) {
+      return null;
+    }
+    if (array.length == 0) {
+      return "[]";
+    }
+    StringJoiner sj = new StringJoiner(", ", "[", "]");
+    for (T i : array) {
+      sj.add(String.valueOf(i.toString()));
     }
     return sj.toString();
   }

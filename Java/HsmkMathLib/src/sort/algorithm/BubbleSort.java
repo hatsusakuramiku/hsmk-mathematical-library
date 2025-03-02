@@ -65,7 +65,7 @@ public final class BubbleSort implements SortAlgorithm {
     if (array.length == 1) {
       return;
     }
-    if (!checkRange(array, startIndex, endIndex)) {
+    if (!checkRange(array.length, startIndex, endIndex)) {
       throw new IllegalArgumentException("Invalid range");
     }
     if (!checkAix(aix)) {
@@ -116,7 +116,7 @@ public final class BubbleSort implements SortAlgorithm {
     if (array.length == 1) {
       return;
     }
-    if (!checkRange(array, startIndex, endIndex)) {
+    if (!checkRange(array.length, startIndex, endIndex)) {
       throw new IllegalArgumentException("Invalid range");
     }
     if (!checkAix(aix)) {
@@ -167,7 +167,7 @@ public final class BubbleSort implements SortAlgorithm {
     if (array.length == 1) {
       return;
     }
-    if (!checkRange(array, startIndex, endIndex)) {
+    if (!checkRange(array.length, startIndex, endIndex)) {
       throw new IllegalArgumentException("Invalid range");
     }
     if (!checkAix(aix)) {
@@ -218,7 +218,7 @@ public final class BubbleSort implements SortAlgorithm {
     if (array.length == 1) {
       return;
     }
-    if (!checkRange(array, startIndex, endIndex)) {
+    if (!checkRange(array.length, startIndex, endIndex)) {
       throw new IllegalArgumentException("Invalid range");
     }
     if (!checkAix(aix)) {
@@ -269,7 +269,7 @@ public final class BubbleSort implements SortAlgorithm {
     if (array.length == 1) {
       return;
     }
-    if (!checkRange(array, startIndex, endIndex)) {
+    if (!checkRange(array.length, startIndex, endIndex)) {
       throw new IllegalArgumentException("Invalid range");
     }
     if (!checkAix(aix)) {
@@ -320,7 +320,7 @@ public final class BubbleSort implements SortAlgorithm {
     if (array.length == 1) {
       return;
     }
-    if (!checkRange(array, startIndex, endIndex)) {
+    if (!checkRange(array.length, startIndex, endIndex)) {
       throw new IllegalArgumentException("Invalid range");
     }
     if (!checkAix(aix)) {
@@ -371,7 +371,7 @@ public final class BubbleSort implements SortAlgorithm {
     if (array.length == 1) {
       return;
     }
-    if (!checkRange(array, startIndex, endIndex)) {
+    if (!checkRange(array.length, startIndex, endIndex)) {
       throw new IllegalArgumentException("Invalid range");
     }
     if (!checkAix(aix)) {
@@ -422,7 +422,7 @@ public final class BubbleSort implements SortAlgorithm {
     if (array.length == 1) {
       return;
     }
-    if (!checkRange(array, startIndex, endIndex)) {
+    if (!checkRange(array.length, startIndex, endIndex)) {
       throw new IllegalArgumentException("Invalid range");
     }
     if (!checkAix(aix)) {
@@ -480,7 +480,7 @@ public final class BubbleSort implements SortAlgorithm {
     if (array.length == 1) {
       return;
     }
-    if (!checkRange(array, startIndex, endIndex)) {
+    if (!checkRange(array.length, startIndex, endIndex)) {
       throw new IllegalArgumentException("Invalid range");
     }
     if (!checkAix(aix)) {
