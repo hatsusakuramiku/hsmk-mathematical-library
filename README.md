@@ -111,7 +111,7 @@
 > **文件编码**: UTF-8
 > **字符集**: UTF-8
 
-[javadoc](http://htmlpreview.github.io/Java/doc/index.html)
+[javadoc](http://htmlpreview.github.io/?https://github.com/hatsusakuramiku/hsmk-mathematical-library/blob/main/Java/doc/index.html)
 
 ### 排序
 
