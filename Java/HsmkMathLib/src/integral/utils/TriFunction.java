@@ -1,4 +1,4 @@
-package sort.utils;
+package integral.utils;
 
 /**
  * Represents a function that accepts three arguments and produces a result.

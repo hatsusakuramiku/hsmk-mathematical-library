@@ -113,16 +113,16 @@
 
 ### 排序
 
-- [x] [冒泡排序](Java/src/Sort/BubbleSort.java)
-- [x] [插入排序](Java/src/Sort/InsertionSort.java)
-- [x] [选择排序](Java/src/Sort/SelectionSort.java)
-- [x] [归并排序](Java/src/Sort/MergeSort.java)
-- [x] [堆排序](Java/src/Sort/HeapSort.java)
+- [x] [冒泡排序](/Java/HsmkMathLib/src/sort/BubbleSort.java)
+- [x] [插入排序](/Java/HsmkMathLib/src/sort/InsertionSort.java)
+- [x] [选择排序](/Java/HsmkMathLib/src/sort/SelectionSort.java)
+- [x] [归并排序](/Java/HsmkMathLib/src/sort/MergeSort.java)
+- [x] [堆排序](/Java/HsmkMathLib/src/sort/HeapSort.java)
 
 ### 数值积分
 
 #### 一维积分
 
-- [x] [梯形积分](Java/src/Integral/Trapezoid.java)
+- [x] [梯形积分](/Java/HsmkMathLib/src/Integral/Trapezoid.java)
 - [ ] 辛普森积分
 - [ ] 高斯勒让德积分
