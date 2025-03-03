@@ -111,6 +111,8 @@
 > **文件编码**: UTF-8
 > **字符集**: UTF-8
 
+[javadoc](/Java/doc/index.html)
+
 ### 排序
 
 - [x] [冒泡排序](/Java/HsmkMathLib/src/sort/BubbleSort.java)
