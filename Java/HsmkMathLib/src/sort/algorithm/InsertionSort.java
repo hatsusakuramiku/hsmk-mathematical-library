@@ -24,6 +24,8 @@ package sort.algorithm;
 
 import java.lang.reflect.Method;
 
+import sort.utils.SortAlgorithm;
+
 /**
  * This class implements the Insertion Sort algorithm, which is a simple sorting
  * algorithm that

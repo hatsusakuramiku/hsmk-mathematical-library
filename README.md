@@ -2,17 +2,11 @@
 
 这个项目目的是使用不同语言实现一些科学计算功能等，如（偏）微分方程数值解、曲线拟合等。
 
-> [!NOTE]
-> 为方便开发，本项目仅支持实数域内的相关运算。
-
-> [!NOTE]
-> 下文所提到的语言标准/版本均为我使用的标准/版本，不代表运行/使用项目所要求的最低/高版本。
-> 因项目仍在不断完善中，在发布第一个可用版本前，本项目临时推荐与我相同的语言标准/版本。
+> [!NOTE] 1.为方便开发，本项目仅支持实数域内的相关运算。 2.下文所提到的语言标准/版本均为我使用的标准/版本，不代表运行/使用项目所要求的最低/高版本。
 
 ## C （C 语言）
 
 > **语言标准**: C11
-> **编译器**: gcc.exe (x86_64-posix-sjlj-rev0, Built by MinGW-W64 project) 8.1.0
 > **文件编码**: UTF-8
 > **字符集**: UTF-8
 
@@ -28,12 +22,10 @@
 #### 主要功能
 
 - [x] [普通矩阵](C/doc/matrix_doc.md#matrix_gen), [随机矩阵](C/doc/matrix_doc.md#rand_matrix), [单位矩阵](C/doc/matrix_doc.md#eye_matrix), [对角矩阵](C/doc/matrix_doc.md#diagMatrix)
-  的创建
-- [x] 
-  矩阵的复制: [matrix_copy](C/doc/matrix_doc.md#matrix_copy), [matrix_copy_](C/doc/matrix_doc.md#matrix_copy_r)
-- [x] 
-  矩阵乘积: [AxB](C/doc/matrix_doc.md#matrix_mul), [A*B](C/doc/matrix_doc.md#matrix_cdot_mul),
-  [a*B](C/doc/matrix_doc.md#matrix_mul_single)
+      的创建
+- [x] 矩阵的复制: [matrix_copy](C/doc/matrix_doc.md#matrix_copy), [matrix*copy*](C/doc/matrix_doc.md#matrix_copy_r)
+- [x] 矩阵乘积: [AxB](C/doc/matrix_doc.md#matrix_mul), [A\*B](C/doc/matrix_doc.md#matrix_cdot_mul),
+      [a\*B](C/doc/matrix_doc.md#matrix_mul_single)
 - [x] [矩阵转置](C/doc/matrix_doc.md#matrix_transpose)
 - [x] 矩阵[拼接](C/doc/matrix_doc.md#matrix_splicing)与[分割](C/doc/matrix_doc.md#matrix_cat)
 - [x] 矩阵[加法](C/doc/matrix_doc.md#matrix_add)与[减法](C/doc/matrix_doc.md#matrix_sub)
@@ -41,11 +33,10 @@
 - [x] [求逆矩阵](C/doc/matrix_doc.md#matrix_invert)
 - [x] [矩阵求特征值](C/doc/matrix_doc.md#matrix_eigen_matrix)
 - [x] [矩阵求行列式](C/doc/matrix_doc.md#matrix_det)
-- [x] 
-  高斯消元:[单步消元](C/doc/matrix_doc.md#matrix_gauss_elimination_), [直接消元成上三角矩阵](C/doc/matrix_doc.md#matrix_gauss_elimination)
+- [x] 高斯消元:[单步消元](C/doc/matrix_doc.md#matrix_gauss_elimination_), [直接消元成上三角矩阵](C/doc/matrix_doc.md#matrix_gauss_elimination)
 - [x] [矩阵求秩](C/doc/matrix_doc.md#matrix_rank)
 - [x] [线性方程组的求解](C/doc/matrix_doc.md#matrixequation)
-- [x] [矩阵(P)LU分解](C/doc/matrix_doc.md#matrixpludecdiagcard)
+- [x] [矩阵(P)LU 分解](C/doc/matrix_doc.md#matrixpludecdiagcard)
 
 #### 辅助功能
 
@@ -114,3 +105,24 @@
 
 </details>
 
+## Java
+
+> **JDK**:Oracle OpenJDK JDK 21
+> **文件编码**: UTF-8
+> **字符集**: UTF-8
+
+### 排序
+
+- [x] [冒泡排序](Java/src/Sort/BubbleSort.java)
+- [x] [插入排序](Java/src/Sort/InsertionSort.java)
+- [x] [选择排序](Java/src/Sort/SelectionSort.java)
+- [x] [归并排序](Java/src/Sort/MergeSort.java)
+- [x] [堆排序](Java/src/Sort/HeapSort.java)
+
+### 数值积分
+
+#### 一维积分
+
+- [x] [梯形积分](Java/src/Integral/Trapezoid.java)
+- [ ] 辛普森积分
+- [ ] 高斯勒让德积分

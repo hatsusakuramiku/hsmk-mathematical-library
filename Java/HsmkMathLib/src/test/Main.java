@@ -29,29 +29,38 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Random;
 import java.util.StringJoiner;
+import java.util.function.Function;
+import integral.algorithm.*;
 
 public class Main {
   public static final int ASCENDING = 0;
   public static final int DESCENDING = 1;
 
   public static void main(String[] args) {
-    Integer[] array = new Integer[10000];
-    int[] array1 = new int[10000];
-    for (int i = 0; i < array.length; i++) {
-      array[i] = new Random().nextInt(100000);
-    }
-    for (int i = 0; i < array1.length; i++) {
-      array1[i] = new Random().nextInt(10000);
-    }
-    // System.out.println("before sort: ");
-    Long startTime = System.currentTimeMillis();
-    MergeSort.INSTANCE.sort(array, ASCENDING);
-    Long endTime = System.currentTimeMillis();
-    System.out.println("time: " + (endTime - startTime) + "ms");
-    // System.out.println("after sort: ");
-    // System.out.println(intArrayToString(array1));
-    // System.out.println(arrayToString(array));
-    System.out.println(testSort(array, ASCENDING));
+
+    Function<Double, Double> function = (x) -> x * x + 2 * x + 1;
+    double leftEndpoint = 1.0;
+    double rightEndpoint = 2.0;
+    double result = Trapezoid.INSTANCE.integral(function, leftEndpoint, rightEndpoint);
+    System.out.println(result);
+
+    // Integer[] array = new Integer[10000];
+    // int[] array1 = new int[10000];
+    // for (int i = 0; i < array.length; i++) {
+    // array[i] = new Random().nextInt(100000);
+    // }
+    // for (int i = 0; i < array1.length; i++) {
+    // array1[i] = new Random().nextInt(10000);
+    // }
+    // // System.out.println("before sort: ");
+    // Long startTime = System.currentTimeMillis();
+    // MergeSort.INSTANCE.sort(array, ASCENDING);
+    // Long endTime = System.currentTimeMillis();
+    // System.out.println("time: " + (endTime - startTime) + "ms");
+    // // System.out.println("after sort: ");
+    // // System.out.println(intArrayToString(array1));
+    // // System.out.println(arrayToString(array));
+    // System.out.println(testSort(array, ASCENDING));
   }
 
   public static String intArrayToString(int[] array) {

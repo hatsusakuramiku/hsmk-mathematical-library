@@ -20,7 +20,7 @@
  * SOFTWARE.
  */
 
-package sort.algorithm;
+package sort.utils;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;

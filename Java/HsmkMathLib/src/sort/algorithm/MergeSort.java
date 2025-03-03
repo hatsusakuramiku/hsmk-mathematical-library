@@ -26,6 +26,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 
+import sort.utils.SortAlgorithm;
+
 /**
  * This class implements the Merge Sort algorithm, a divide-and-conquer
  * algorithm that splits the

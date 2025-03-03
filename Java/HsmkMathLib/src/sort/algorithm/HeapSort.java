@@ -25,6 +25,8 @@ package sort.algorithm;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
+import sort.utils.SortAlgorithm;
+
 /**
  * Implementation of the Heap Sort algorithm.
  *

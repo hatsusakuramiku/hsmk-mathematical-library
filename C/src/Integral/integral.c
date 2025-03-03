@@ -188,6 +188,7 @@ static inline double asr(const Interval interval, double eps, double ans, int st
  *
  * @ref https://oi-wiki.org/math/numerical/integral/
  */
+
 double adaptiveSimpson(const Interval interval, const double error, const __integral_func func){
  if (error <= 0) {
   PERROR("@ERROR: Error tolerance must be greater than 0 !\n@File: %s\n@Function: %s\n@Line: %d\n", __FILE__, __FUNCTION__, __LINE__);
