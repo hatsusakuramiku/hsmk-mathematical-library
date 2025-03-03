@@ -111,7 +111,7 @@
 > **文件编码**: UTF-8
 > **字符集**: UTF-8
 
-[javadoc](/Java/doc/index.html)
+[javadoc](http://htmlpreview.github.io/Java/doc/index.html)
 
 ### 排序
 
