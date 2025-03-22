@@ -64,6 +64,7 @@ public final class MergeSort implements SortAlgorithm {
    * @param aix        the axis value for sorting order
    */
   @Override
+  @Deprecated
   public void sort(Object[] array, int startIndex, int endIndex, int aix) {
     if (array == null) {
       throw new IllegalArgumentException("Array cannot be null");

@@ -21,12 +21,13 @@
  */
 package integral.utils;
 
-import java.util.function.BiFunction;
 import java.util.function.Function;
 
 /**
- * This interface provides the base class for the Integral interface. It contains
- * methods for checking if a range is valid and for calculating the step size for
+ * This interface provides the base class for the Integral interface. It
+ * contains
+ * methods for checking if a range is valid and for calculating the step size
+ * for
  * a given range.
  * 
  * @author hatsusakuramiku
@@ -71,11 +72,11 @@ public interface IntegralBase {
      * 
      * 
      * 
-     * @param func      The function to integrate, represented as a
-     *                   Function&lt;Double, Double&gt;.
-     * @param leftEndpoint The left endpoint of the integration interval.
+     * @param func          The function to integrate, represented as a
+     *                      Function&lt;Double, Double&gt;.
+     * @param leftEndpoint  The left endpoint of the integration interval.
      * @param rightEndpoint The right endpoint of the integration interval.
-     * @param eps         The desired error tolerance for the integration.
+     * @param eps           The desired error tolerance for the integration.
      * @return The approximate value of the definite integral.
      * @throws NullPointerException If the function is null.
      * @throws ArithmeticException  If an arithmetic error occurs during
@@ -88,9 +89,9 @@ public interface IntegralBase {
      * Approximates the definite integral of a single-variable function over a
      * specified interval using an adaptive integration method.
      * 
-     * @param func       The function to integrate, represented as a
-     *                   Function&lt;Double, Double&gt;.
-     * @param leftEndpoint The left endpoint of the integration interval.
+     * @param func          The function to integrate, represented as a
+     *                      Function&lt;Double, Double&gt;.
+     * @param leftEndpoint  The left endpoint of the integration interval.
      * @param rightEndpoint The right endpoint of the integration interval.
      * @return The approximate value of the definite integral.
      * @throws NullPointerException If the function is null.
@@ -105,11 +106,11 @@ public interface IntegralBase {
      * Approximates the definite integral of a single-variable function over a
      * specified interval using the trapezoidal rule with a fixed step size.
      * 
-     * @param func       The function to integrate, represented as a
-     *                   Function&lt;Double, Double&gt;.
-     * @param leftEndpoint The left endpoint of the integration interval.
+     * @param func          The function to integrate, represented as a
+     *                      Function&lt;Double, Double&gt;.
+     * @param leftEndpoint  The left endpoint of the integration interval.
      * @param rightEndpoint The right endpoint of the integration interval.
-     * @param step        The step size to use for the trapezoidal rule.
+     * @param step          The step size to use for the trapezoidal rule.
      * @return The approximate value of the definite integral.
      * @throws NullPointerException If the function is null.
      * @throws ArithmeticException  If an arithmetic error occurs during
@@ -123,10 +124,10 @@ public interface IntegralBase {
      * Approximates the definite integral of a single-variable function over a
      * specified interval using the trapezoidal rule with a fixed step size.
      * 
-     * @param func       The function to integrate, represented as a
-     *                   Function&lt;Double, Double&gt;.
-     * @param leftEndpoint The left endpoint of the integration interval.
-     * @param rightEndpoint The right endpoint of the integration interval.
+     * @param func              The function to integrate, represented as a
+     *                          Function&lt;Double, Double&gt;.
+     * @param leftEndpoint      The left endpoint of the integration interval.
+     * @param rightEndpoint     The right endpoint of the integration interval.
      * @param littleRangeNumber The number of little ranges.
      * @return The approximate value of the definite integral.
      * @throws NullPointerException If the function is null.
@@ -137,22 +138,4 @@ public interface IntegralBase {
             double rightEndpoint,
             int littleRangeNumber);
 
-    /**
-     * Approximates the definite integral of a double-variable function over a
-     * specified interval using an adaptive integration method.
-     * 
-     * @param func       The function to integrate, represented as a
-     *                   TriFunction&lt;Double, Double, Double, Double&gt;.
-     * @param xleftEndpoint The left endpoint of the x integration interval.
-     * @param xrightEndpoint The right endpoint of the x integration interval.
-     * @param yleftEndpoint The left endpoint of the y integration interval.
-     * @param yrightEndpoint The right endpoint of the y integration interval.
-     * @param eps         The desired error tolerance for the integration.
-     * @return The approximate value of the definite integral.
-     * @throws NullPointerException If the function is null.
-     * @throws ArithmeticException  If an arithmetic error occurs during
-     *                              integration.
-     */
-    <T extends BiFunction<Double, Double, Double>> double iitegral(T func, double xleftEndpoint, double xrightEndpoint,
-            double yleftEndpoint, double yrightEndpoint, double eps);
 }

@@ -66,6 +66,7 @@ public final class HeapSort implements SortAlgorithm {
    *                                  elements
    */
   @Override
+  @Deprecated
   public void sort(Object[] array, int startIndex, int endIndex, int aix) {
     if (array == null) {
       throw new IllegalArgumentException("Array cannot be null");

@@ -255,6 +255,7 @@ public interface SortAlgorithm {
      * @param aix   the axis value for sorting order
      * @throws IllegalArgumentException if the axis value is invalid
      */
+    @Deprecated
     default void sort(Object[] array, int aix) throws IllegalArgumentException, NullPointerException {
         sort(array, 0, array.length, aix);
     }
@@ -266,6 +267,7 @@ public interface SortAlgorithm {
      * @param aix   the axis value for sorting order
      * @throws IllegalArgumentException if the axis value is invalid
      */
+    @Deprecated
     default void sort(Object[] array, int startIndex, int aix) throws IllegalArgumentException, NullPointerException {
         sort(array, startIndex, array.length, aix);
     }
@@ -276,6 +278,7 @@ public interface SortAlgorithm {
      * @param array the object array to be sorted
      * @throws IllegalArgumentException if the axis value is invalid
      */
+    @Deprecated
     default void sort(Object[] array) throws IllegalArgumentException, NullPointerException {
         sort(array, 0, array.length, ASCENDING);
     }

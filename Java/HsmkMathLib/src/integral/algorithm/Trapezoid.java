@@ -1,6 +1,5 @@
 package integral.algorithm;
 
-import java.util.function.BiFunction;
 import java.util.function.Function;
 
 import integral.utils.IntegralBase;
@@ -33,32 +32,6 @@ public final class Trapezoid implements IntegralBase {
     }
 
     /**
-     * This method is not yet implemented.
-     * <p>
-     * It is intended to support the integration of a double-variable function over
-     * a
-     * two-dimensional interval. However, the implementation of this method is
-     * currently incomplete and it throws an UnsupportedOperationException.
-     * <p>
-     * 
-     * @param func           The function to integrate, represented as a
-     *                       BiFunction&lt;Double, Double, Double&gt;.
-     * @param xleftEndpoint  The left endpoint of the x integration interval.
-     * @param xrightEndpoint The right endpoint of the x integration interval.
-     * @param yleftEndpoint  The left endpoint of the y integration interval.
-     * @param yrightEndpoint The right endpoint of the y integration interval.
-     * @param eps            The desired error tolerance for the integration.
-     * @throws UnsupportedOperationException If the function is not yet implemented.
-     */
-    @Override
-    @Deprecated
-    public <T extends BiFunction<Double, Double, Double>> double iitegral(T func, double xleftEndpoint,
-            double xrightEndpoint,
-            double yleftEndpoint, double yrightEndpoint, double eps) {
-        throw new UnsupportedOperationException("Unimplemented method 'iitegral'");
-    }
-
-    /**
      * Approximates the definite integral of a single-variable function over a
      * specified interval
      * using an adaptive integration method.
@@ -73,8 +46,8 @@ public final class Trapezoid implements IntegralBase {
      *
      * @throws NullPointerException     If the function is null.
      * @throws IllegalArgumentException If the endpoints are not in the range of the
-     *                                  function, or
-     *                                  if any of the endpoints or epsilon are NaN.
+     *                                  function, or if any of the endpoints or
+     *                                  eps are NaN, or if eps is negative.
      * @throws ArithmeticException      If an arithmetic error occurs during
      *                                  integration.
      */
@@ -90,6 +63,9 @@ public final class Trapezoid implements IntegralBase {
         }
         if (Double.isNaN(leftEndpoint) || Double.isNaN(rightEndpoint) || Double.isNaN(eps)) {
             throw new IllegalArgumentException("Endpoints and epsilon cannot be NaN");
+        }
+        if (eps < 0) {
+            throw new IllegalArgumentException("eps must be non-negative");
         }
         try {
             return adaptiveIntegrate(func, leftEndpoint, rightEndpoint, eps);
