@@ -19,29 +19,35 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+package simplexIntegral;
 
-package test;
+public interface SimplexIntegral {
 
-// import sort.algorithm.BubbleSort;
-import sort.algorithm.*;
+    public class IntegralPointWithWeight {
+        PointClass pointClass;
+        double weight;
+        double[] extParams;
 
-import java.util.Random;
-import java.util.function.Function;
-import integral.algorithm.*;
-import tools.ArrayTools;
-import java.util.Arrays;
-import matrix.Matrix;
-import simplexIntegral.polygons.*;;
+        public IntegralPointWithWeight(PointClass pointClass, double weight, double[] extParams) {
+            this.pointClass = pointClass;
+            this.weight = weight;
+            this.extParams = new double[extParams.length];
+            System.arraycopy(extParams, 0, this.extParams, 0, extParams.length);
+        }
 
-public class Main {
-  public static final int ASCENDING = 0;
-  public static final int DESCENDING = 1;
+        public IntegralPointWithWeight(PointClass pointClass, double weight) {
+            this.pointClass = pointClass;
+            this.weight = weight;
+        }
+    }
 
-  public static void main(String[] args) {
-    double[][] ves = { { 1, 5 }, { 2, 0 }, { 4, 3 } };
-    Triangle triangle = new Triangle(ves);
+    public class IntegralPointsWithWeight {
+        double[][] points;
+        double weight;
 
-    System.out.println(triangle.getArea());
-  }
-
+        public IntegralPointsWithWeight(double[][] points, double weight) {
+            this.points = points;
+            this.weight = weight;
+        }
+    }
 }

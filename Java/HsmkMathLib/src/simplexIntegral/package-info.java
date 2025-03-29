@@ -20,28 +20,8 @@
  * SOFTWARE.
  */
 
-package test;
-
-// import sort.algorithm.BubbleSort;
-import sort.algorithm.*;
-
-import java.util.Random;
-import java.util.function.Function;
-import integral.algorithm.*;
-import tools.ArrayTools;
-import java.util.Arrays;
-import matrix.Matrix;
-import simplexIntegral.polygons.*;;
-
-public class Main {
-  public static final int ASCENDING = 0;
-  public static final int DESCENDING = 1;
-
-  public static void main(String[] args) {
-    double[][] ves = { { 1, 5 }, { 2, 0 }, { 4, 3 } };
-    Triangle triangle = new Triangle(ves);
-
-    System.out.println(triangle.getArea());
-  }
-
-}
+/**
+ * This package contains numerical integrations on triangular and tetrahedral
+ * elements, which are most commonly used in simplex meshes
+ */
+package simplexIntegral;

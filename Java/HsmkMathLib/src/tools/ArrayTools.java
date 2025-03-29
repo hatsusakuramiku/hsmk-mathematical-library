@@ -19,7 +19,6 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-
 package tools;
 
 import java.util.StringJoiner;
@@ -1643,6 +1642,530 @@ final public class ArrayTools {
         byte[] result = new byte[array.length];
         for (int i = 0; i < array.length; i++) {
             result[i] = array[i].byteValue();
+        }
+        return result;
+    }
+
+    /**
+     * Concatenates two arrays into one.
+     *
+     * <p>
+     * This method takes two arrays as input and returns a new array
+     * containing all the elements of the two arrays. It throws an
+     * IllegalArgumentException if either of the input arrays is null.
+     *
+     * @param a the first array to be concatenated
+     * @param b the second array to be concatenated
+     * @return a new array containing all the elements of the two arrays
+     * @throws IllegalArgumentException if either of the arrays is null
+     */
+    public static double[] constructArray(double[] a, double[] b) {
+        if (a == null || b == null) {
+            throw new IllegalArgumentException("Array cannot be null");
+        } else if (a.length == 0) {
+            return b;
+        } else if (b.length == 0) {
+            return a;
+        }
+        double[] result = new double[a.length + b.length];
+        for (int i = 0; i < a.length; i++) {
+            result[i] = a[i];
+        }
+        for (int i = 0; i < b.length; i++) {
+            result[i + a.length] = b[i];
+        }
+        return result;
+    }
+
+    /**
+     * Concatenates two arrays into one.
+     *
+     * <p>
+     * This method takes two arrays as input and returns a new array
+     * containing all the elements of the two arrays. It throws an
+     * IllegalArgumentException if either of the input arrays is null.
+     *
+     * @param a the first array to be concatenated
+     * @param b the second array to be concatenated
+     * @return a new array containing all the elements of the two arrays
+     * @throws IllegalArgumentException if either of the arrays is null
+     */
+    public static int[] constructArray(int[] a, int[] b) {
+        if (a == null || b == null) {
+            throw new IllegalArgumentException("Array cannot be null");
+        } else if (a.length == 0) {
+            return b;
+        } else if (b.length == 0) {
+            return a;
+        }
+        int[] result = new int[a.length + b.length];
+        for (int i = 0; i < a.length; i++) {
+            result[i] = a[i];
+        }
+        for (int i = 0; i < b.length; i++) {
+            result[i + a.length] = b[i];
+        }
+        return result;
+    }
+
+    /**
+     * Concatenates two arrays into one.
+     *
+     * <p>
+     * This method takes two arrays as input and returns a new array
+     * containing all the elements of the two arrays. It throws an
+     * IllegalArgumentException if either of the input arrays is null.
+     *
+     * @param a the first array to be concatenated
+     * @param b the second array to be concatenated
+     * @return a new array containing all the elements of the two arrays
+     * @throws IllegalArgumentException if either of the arrays is null
+     */
+    public static boolean[] constructArray(boolean[] a, boolean[] b) {
+        if (a == null || b == null) {
+            throw new IllegalArgumentException("Array cannot be null");
+        } else if (a.length == 0) {
+            return b;
+        } else if (b.length == 0) {
+            return a;
+        }
+        boolean[] result = new boolean[a.length + b.length];
+        for (int i = 0; i < a.length; i++) {
+            result[i] = a[i];
+        }
+        for (int i = 0; i < b.length; i++) {
+            result[i + a.length] = b[i];
+        }
+        return result;
+    }
+
+    /**
+     * Concatenates two arrays into one.
+     *
+     * <p>
+     * This method takes two arrays as input and returns a new array
+     * containing all the elements of the two arrays. It throws an
+     * IllegalArgumentException if either of the input arrays is null.
+     *
+     * @param a the first array to be concatenated
+     * @param b the second array to be concatenated
+     * @return a new array containing all the elements of the two arrays
+     * @throws IllegalArgumentException if either of the arrays is null
+     */
+    public static char[] constructArray(char[] a, char[] b) {
+        if (a == null || b == null) {
+            throw new IllegalArgumentException("Array cannot be null");
+        } else if (a.length == 0) {
+            return b;
+        } else if (b.length == 0) {
+            return a;
+        }
+        char[] result = new char[a.length + b.length];
+        for (int i = 0; i < a.length; i++) {
+            result[i] = a[i];
+        }
+        for (int i = 0; i < b.length; i++) {
+            result[i + a.length] = b[i];
+        }
+        return result;
+    }
+
+    /**
+     * Concatenates two arrays into one.
+     *
+     * <p>
+     * This method takes two arrays as input and returns a new array
+     * containing all the elements of the two arrays. It throws an
+     * IllegalArgumentException if either of the input arrays is null.
+     *
+     * @param a the first array to be concatenated
+     * @param b the second array to be concatenated
+     * @return a new array containing all the elements of the two arrays
+     * @throws IllegalArgumentException if either of the arrays is null
+     */
+    public static long[] constructArray(long[] a, long[] b) {
+        if (a == null || b == null) {
+            throw new IllegalArgumentException("Array cannot be null");
+        } else if (a.length == 0) {
+            return b;
+        } else if (b.length == 0) {
+            return a;
+        }
+        long[] result = new long[a.length + b.length];
+        for (int i = 0; i < a.length; i++) {
+            result[i] = a[i];
+        }
+        for (int i = 0; i < b.length; i++) {
+            result[i + a.length] = b[i];
+        }
+        return result;
+    }
+
+    /**
+     * Concatenates two arrays into one.
+     *
+     * <p>
+     * This method takes two arrays as input and returns a new array
+     * containing all the elements of the two arrays. It throws an
+     * IllegalArgumentException if either of the input arrays is null.
+     *
+     * @param a the first array to be concatenated
+     * @param b the second array to be concatenated
+     * @return a new array containing all the elements of the two arrays
+     * @throws IllegalArgumentException if either of the arrays is null
+     */
+    public static float[] constructArray(float[] a, float[] b) {
+        if (a == null || b == null) {
+            throw new IllegalArgumentException("Array cannot be null");
+        } else if (a.length == 0) {
+            return b;
+        } else if (b.length == 0) {
+            return a;
+        }
+        float[] result = new float[a.length + b.length];
+        for (int i = 0; i < a.length; i++) {
+            result[i] = a[i];
+        }
+        for (int i = 0; i < b.length; i++) {
+            result[i + a.length] = b[i];
+        }
+        return result;
+    }
+
+    /**
+     * Concatenates two arrays into one.
+     *
+     * <p>
+     * This method takes two arrays as input and returns a new array
+     * containing all the elements of the two arrays. It throws an
+     * IllegalArgumentException if either of the input arrays is null.
+     *
+     * @param a the first array to be concatenated
+     * @param b the second array to be concatenated
+     * @return a new array containing all the elements of the two arrays
+     * @throws IllegalArgumentException if either of the arrays is null
+     */
+    public static short[] constructArray(short[] a, short[] b) {
+        if (a == null || b == null) {
+            throw new IllegalArgumentException("Array cannot be null");
+        } else if (a.length == 0) {
+            return b;
+        } else if (b.length == 0) {
+            return a;
+        }
+        short[] result = new short[a.length + b.length];
+        for (int i = 0; i < a.length; i++) {
+            result[i] = a[i];
+        }
+        for (int i = 0; i < b.length; i++) {
+            result[i + a.length] = b[i];
+        }
+        return result;
+    }
+
+    /**
+     * Concatenates two arrays into one.
+     *
+     * <p>
+     * This method takes two arrays as input and returns a new array
+     * containing all the elements of the two arrays. It throws an
+     * IllegalArgumentException if either of the input arrays is null.
+     *
+     * @param a the first array to be concatenated
+     * @param b the second array to be concatenated
+     * @return a new array containing all the elements of the two arrays
+     * @throws IllegalArgumentException if either of the arrays is null
+     */
+    public static byte[] constructArray(byte[] a, byte[] b) {
+        if (a == null || b == null) {
+            throw new IllegalArgumentException("Array cannot be null");
+        } else if (a.length == 0) {
+            return b;
+        } else if (b.length == 0) {
+            return a;
+        }
+        byte[] result = new byte[a.length + b.length];
+        for (int i = 0; i < a.length; i++) {
+            result[i] = a[i];
+        }
+        for (int i = 0; i < b.length; i++) {
+            result[i + a.length] = b[i];
+        }
+        return result;
+    }
+
+    /**
+     * Concatenates two arrays into one.
+     *
+     * <p>
+     * This method takes two arrays as input and returns a new array
+     * containing all the elements of the two arrays. It throws an
+     * IllegalArgumentException if either of the input arrays is null.
+     *
+     * @param a the first array to be concatenated
+     * @param b the second array to be concatenated
+     * @return a new array containing all the elements of the two arrays
+     * @throws IllegalArgumentException if either of the arrays is null
+     */
+    public static Object[] constructArray(Object[] a, Object[] b) {
+        if (a == null || b == null) {
+            throw new IllegalArgumentException("Array cannot be null");
+        } else if (a.length == 0) {
+            return b;
+        } else if (b.length == 0) {
+            return a;
+        }
+        Object[] result = new Object[a.length + b.length];
+        System.arraycopy(a, 0, result, 0, a.length);
+        System.arraycopy(b, 0, result, a.length, b.length);
+        return result;
+    }
+
+    /**
+     * Concatenates two 2D arrays into one.
+     *
+     * <p>
+     * This method takes two 2D arrays as input and returns a new 2D array
+     * containing all the elements of the two arrays. It throws an
+     * IllegalArgumentException if either of the input arrays is null.
+     *
+     * @param a the first 2D array to be concatenated
+     * @param b the second 2D array to be concatenated
+     * @return a new 2D array containing all the elements of the two arrays
+     * @throws IllegalArgumentException if either of the arrays is null
+     */
+
+    public static Object[][] constructArray(Object[][] a, Object[][] b) {
+        if (a == null || b == null) {
+            throw new IllegalArgumentException("Array cannot be null");
+        } else if (a.length == 0) {
+            return b;
+        } else if (b.length == 0) {
+            return a;
+        }
+        Object[][] result = new Object[a.length + b.length][];
+        for (int i = 0; i < a.length; i++) {
+            result[i] = a[i];
+        }
+        for (int i = 0; i < b.length; i++) {
+            result[i + a.length] = b[i];
+        }
+        return result;
+    }
+
+    /**
+     * Concatenates two 2D arrays into one.
+     *
+     * <p>
+     * This method takes two 2D arrays as input and returns a new 2D array
+     * containing all the elements of the two arrays. It throws an
+     * IllegalArgumentException if either of the input arrays is null.
+     *
+     * @param a the first 2D array to be concatenated
+     * @param b the second 2D array to be concatenated
+     * @return a new 2D array containing all the elements of the two arrays
+     * @throws IllegalArgumentException if either of the arrays is null
+     */
+    public static double[][] constructArray(double[][] a, double[][] b) {
+        if (a == null || b == null) {
+            throw new IllegalArgumentException("Array cannot be null");
+        } else if (a.length == 0) {
+            return b;
+        } else if (b.length == 0) {
+            return a;
+        }
+        double[][] result = new double[a.length + b.length][];
+        for (int i = 0; i < a.length; i++) {
+            result[i] = a[i];
+        }
+        for (int i = 0; i < b.length; i++) {
+            result[i + a.length] = b[i];
+        }
+        return result;
+    }
+
+    /**
+     * Concatenates two 2D arrays into one.
+     *
+     * <p>
+     * This method takes two 2D arrays as input and returns a new 2D array
+     * containing all the elements of the two arrays. It throws an
+     * IllegalArgumentException if either of the input arrays is null.
+     *
+     * @param a the first 2D array to be concatenated
+     * @param b the second 2D array to be concatenated
+     * @return a new 2D array containing all the elements of the two arrays
+     * @throws IllegalArgumentException if either of the arrays is null
+     */
+    public static int[][] constructArray(int[][] a, int[][] b) {
+        if (a == null || b == null) {
+            throw new IllegalArgumentException("Array cannot be null");
+        } else if (a.length == 0) {
+            return b;
+        } else if (b.length == 0) {
+            return a;
+        }
+        int[][] result = new int[a.length + b.length][];
+        for (int i = 0; i < a.length; i++) {
+            result[i] = a[i];
+        }
+        for (int i = 0; i < b.length; i++) {
+            result[i + a.length] = b[i];
+        }
+        return result;
+    }
+
+    /**
+     * Concatenates two 2D arrays into one.
+     *
+     * <p>
+     * This method takes two 2D arrays as input and returns a new 2D array
+     * containing all the elements of the two arrays. It throws an
+     * IllegalArgumentException if either of the input arrays is null.
+     *
+     * @param a the first 2D array to be concatenated
+     * @param b the second 2D array to be concatenated
+     * @return a new 2D array containing all the elements of the two arrays
+     * @throws IllegalArgumentException if either of the arrays is null
+     */
+    public static long[][] constructArray(long[][] a, long[][] b) {
+        if (a == null || b == null) {
+            throw new IllegalArgumentException("Array cannot be null");
+        } else if (a.length == 0) {
+            return b;
+        } else if (b.length == 0) {
+            return a;
+        }
+        long[][] result = new long[a.length + b.length][];
+        for (int i = 0; i < a.length; i++) {
+            result[i] = a[i];
+        }
+        for (int i = 0; i < b.length; i++) {
+            result[i + a.length] = b[i];
+        }
+        return result;
+    }
+
+    /**
+     * Concatenates two 2D arrays into one.
+     *
+     * <p>
+     * This method takes two 2D arrays as input and returns a new 2D array
+     * containing all the elements of the two arrays. It throws an
+     * IllegalArgumentException if either of the input arrays is null.
+     *
+     * @param a the first 2D array to be concatenated
+     * @param b the second 2D array to be concatenated
+     * @return a new 2D array containing all the elements of the two arrays
+     * @throws IllegalArgumentException if either of the arrays is null
+     */
+    public static float[][] constructArray(float[][] a, float[][] b) {
+        if (a == null || b == null) {
+            throw new IllegalArgumentException("Array cannot be null");
+        } else if (a.length == 0) {
+            return b;
+        } else if (b.length == 0) {
+            return a;
+        }
+        float[][] result = new float[a.length + b.length][];
+        for (int i = 0; i < a.length; i++) {
+            result[i] = a[i];
+        }
+        for (int i = 0; i < b.length; i++) {
+            result[i + a.length] = b[i];
+        }
+        return result;
+    }
+
+    /**
+     * Concatenates two 2D arrays into one.
+     *
+     * <p>
+     * This method takes two 2D arrays as input and returns a new 2D array
+     * containing all the elements of the two arrays. It throws an
+     * IllegalArgumentException if either of the input arrays is null.
+     *
+     * @param a the first 2D array to be concatenated
+     * @param b the second 2D array to be concatenated
+     * @return a new 2D array containing all the elements of the two arrays
+     * @throws IllegalArgumentException if either of the arrays is null
+     */
+    public static boolean[][] constructArray(boolean[][] a, boolean[][] b) {
+        if (a == null || b == null) {
+            throw new IllegalArgumentException("Array cannot be null");
+        } else if (a.length == 0) {
+            return b;
+        } else if (b.length == 0) {
+            return a;
+        }
+        boolean[][] result = new boolean[a.length + b.length][];
+        for (int i = 0; i < a.length; i++) {
+            result[i] = a[i];
+        }
+        for (int i = 0; i < b.length; i++) {
+            result[i + a.length] = b[i];
+        }
+        return result;
+    }
+
+    /**
+     * Concatenates two 2D arrays into one.
+     *
+     * <p>
+     * This method takes two 2D arrays as input and returns a new 2D array
+     * containing all the elements of the two arrays. It throws an
+     * IllegalArgumentException if either of the input arrays is null.
+     *
+     * @param a the first 2D array to be concatenated
+     * @param b the second 2D array to be concatenated
+     * @return a new 2D array containing all the elements of the two arrays
+     * @throws IllegalArgumentException if either of the arrays is null
+     */
+    public static char[][] constructArray(char[][] a, char[][] b) {
+        if (a == null || b == null) {
+            throw new IllegalArgumentException("Array cannot be null");
+        } else if (a.length == 0) {
+            return b;
+        } else if (b.length == 0) {
+            return a;
+        }
+        char[][] result = new char[a.length + b.length][];
+        for (int i = 0; i < a.length; i++) {
+            result[i] = a[i];
+        }
+        for (int i = 0; i < b.length; i++) {
+            result[i + a.length] = b[i];
+        }
+        return result;
+    }
+
+    /**
+     * Concatenates two 2D arrays into one.
+     *
+     * <p>
+     * This method takes two 2D arrays as input and returns a new 2D array
+     * containing all the elements of the two arrays. It throws an
+     * IllegalArgumentException if either of the input arrays is null.
+     *
+     * @param a the first 2D array to be concatenated
+     * @param b the second 2D array to be concatenated
+     * @return a new 2D array containing all the elements of the two arrays
+     * @throws IllegalArgumentException if either of the arrays is null
+     */
+    public static byte[][] constructArray(byte[][] a, byte[][] b) {
+        if (a == null || b == null) {
+            throw new IllegalArgumentException("Array cannot be null");
+        } else if (a.length == 0) {
+            return b;
+        } else if (b.length == 0) {
+            return a;
+        }
+        byte[][] result = new byte[a.length + b.length][];
+        for (int i = 0; i < a.length; i++) {
+            result[i] = a[i];
+        }
+        for (int i = 0; i < b.length; i++) {
+            result[i + a.length] = b[i];
         }
         return result;
     }
