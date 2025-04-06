@@ -19,41 +19,29 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package simplexIntegral.polygons;
+package simplexIntegral.polygon;
 
-abstract public class TwoDimPolygon {
-    protected double[][] vertices;
+abstract public class TwoDimPolygon extends Polygon {
 
     protected double area;
 
-    public TwoDimPolygon() {
-
+    /**
+     * Constructs a two-dimensional polygon from the given vertices.
+     * 
+     * @param vertices the vertices of the polygon
+     */
+    public TwoDimPolygon(double[][] vertices) {
+        super(vertices);
+        this.area = calculateArea();
     }
 
     /**
-     * Construct a TwoDimPolygon from a set of vertices.
+     * Constructs a two-dimensional polygon with no vertices.
      * 
-     * @param vertices    the vertices of the polygon
-     * @param verticesNum the number of vertices
-     * @throws IllegalArgumentException if the vertices number is invalid or the
-     *                                  vertices are invalid
+     * This constructor is intended to be used for testing or when the vertices of
+     * the polygon are not known at construction time.
      */
-    public TwoDimPolygon(double[][] vertices, int verticesNum) {
-        if (verticesNum < 3) {
-            throw new IllegalArgumentException(
-                    "Invalid vertices number. The number of vertices should be at least 3.");
-        }
-        if (!isRightVertices(vertices)) {
-            throw new IllegalArgumentException("Invalid vertices");
-        }
-        // Create a copy of the vertices array
-        this.vertices = new double[verticesNum][2];
-        for (int i = 0; i < verticesNum; i++) {
-            this.vertices[i][0] = vertices[i][0];
-            this.vertices[i][1] = vertices[i][1];
-        }
-        // Calculate the area of the polygon
-        this.area = calculateArea();
+    public TwoDimPolygon() {
     }
 
     /**
@@ -63,15 +51,6 @@ abstract public class TwoDimPolygon {
      */
     public double getArea() {
         return area;
-    }
-
-    /**
-     * Returns the vertices of the polygon.
-     * 
-     * @return the vertices of the polygon
-     */
-    public double[][] getVertices() {
-        return vertices;
     }
 
     /**
@@ -91,6 +70,20 @@ abstract public class TwoDimPolygon {
         }
         this.vertices = vertices;
         this.area = calculateArea();
+        this.measure = this.area;
+    }
+
+    /**
+     * Calculates the measure of the polygon.
+     * 
+     * <p>
+     * This method simply calls the calculateArea method, which is an abstract method
+     * that must be implemented by subclasses.
+     * 
+     * @return the measure of the polygon
+     */
+    protected double caculateMeasure() {
+        return calculateArea();
     }
 
     abstract protected double calculateArea();
@@ -99,20 +92,27 @@ abstract public class TwoDimPolygon {
      * Checks if the given vertices are valid for a two-dimensional polygon.
      * 
      * <p>
-     * A set of vertices is valid if it contains at least three distinct points
-     * and does not contain any intersecting edges.
+     * A valid polygon must satisfy the following conditions:
+     * 1. The number of vertices must be greater than or equal to 3
+     * 2. The vertices must not be duplicate
+     * 3. The edges must not intersect
      * 
      * @param vertices the vertices to check
      * @return true if the vertices are valid, false otherwise
      */
     public boolean isRightVertices(double[][] vertices) {
-
         if (vertices == null || vertices.length < 3) {
             return false;
         }
-        if (hasDuplicateVertices(vertices) || hasIntersectingEdges(vertices)) {
+
+        if (hasDuplicateVertices(vertices)) {
             return false;
         }
+
+        if (hasIntersectingEdges(vertices)) {
+            return false;
+        }
+
         return true;
     }
 

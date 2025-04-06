@@ -19,12 +19,15 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package simplexIntegral.polygons;
+package simplexIntegral.polygon;
 
 public class Triangle extends TwoDimPolygon {
 
     public Triangle(double[][] vertices) {
-        super(vertices, 3);
+        super(vertices);
+        if (vertices.length != 3) {
+            throw new IllegalArgumentException("A triangle must have 3 vertices.");
+        }
     }
 
     public Triangle() {
@@ -58,13 +61,30 @@ public class Triangle extends TwoDimPolygon {
         return Math.sqrt(s * (s - a) * (s - b) * (s - c));
     }
 
-    // 判断顶点是否能构成一个三角形，即1.顶点坐标不能重复，2.顶点坐标不能共线
+    /**
+     * Checks if the given vertices are valid for a triangle.
+     * <p>
+     * A valid triangle must satisfy the following conditions:
+     * 1. The number of vertices must be 3
+     * 2. The vertices must not be duplicate
+     * 3. The vertices must not be collinear
+     * <p>
+     * This method first checks if the given vertices are valid, and then
+     * calculates the cross product of the two vectors formed by the vertices.
+     * If the cross product is not zero, then the vertices are not collinear,
+     * and the method returns true. Otherwise, the method returns false.
+     * <p>
+     *
+     * @param vertices the vertices to check
+     * @return true if the vertices are valid, false otherwise
+     */
     @Override
     public boolean isRightVertices(double[][] vertices) {
         if (vertices == null || vertices.length != 3) {
             return false;
         }
 
+        // Check if the vertices are duplicate
         double x1 = vertices[0][0];
         double y1 = vertices[0][1];
         double x2 = vertices[1][0];
@@ -76,6 +96,7 @@ public class Triangle extends TwoDimPolygon {
             return false;
         }
 
+        // Calculate the cross product of the two vectors formed by the vertices
         double v1x = x2 - x1;
         double v1y = y2 - y1;
         double v2x = x3 - x1;

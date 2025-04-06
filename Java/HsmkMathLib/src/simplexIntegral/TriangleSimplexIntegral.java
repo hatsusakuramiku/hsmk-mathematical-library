@@ -21,10 +21,17 @@
  */
 package simplexIntegral;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.StringJoiner;
 import java.util.function.BiFunction;
-import simplexIntegral.polygons.Triangle;
 
-final public class TriangleSimplexIntegral implements SimplexIntegral {
+import simplexIntegral.polygon.Polygon;
+import simplexIntegral.polygon.Triangle;
+
+final public class TriangleSimplexIntegral extends SimplexIntegral {
 
         /**
          * Enum representing the integral formulas that can be used.
@@ -370,6 +377,65 @@ final public class TriangleSimplexIntegral implements SimplexIntegral {
 
         }
 
+        private IntegralPointWithWeight[] getFormulaIntegralPointWithWeights(IntegralFormula formula) {
+                switch (formula) {
+                        case ORDER1POINT3 -> {
+                                return ORDER1POINT3;
+                        }
+                        case ORDER3POINT7 -> {
+                                return ORDER3POINT7;
+                        }
+                        case ORDER5POINT12 -> {
+                                return ORDER5POINT12;
+                        }
+                        case ORDER7POINT18 -> {
+                                return ORDER7POINT18;
+                        }
+                        case ORDER7POINT27 -> {
+                                return ORDER7POINT27;
+                        }
+                        case ORDER10POINT30 -> {
+                                return ORDER10POINT30;
+                        }
+
+                        case ORDER11POINT36_v1 -> {
+                                return ORDER11POINT36_v1;
+                        }
+
+                        case ORDER11POINT36_v2 -> {
+                                return ORDER11POINT36_v2;
+                        }
+
+                        case ORDER11POINT36_v3 -> {
+                                return ORDER11POINT36_v3;
+                        }
+
+                        case ORDER11POINT36_v4 -> {
+                                return ORDER11POINT36_v4;
+                        }
+
+                        case ORDER11POINT36_v5 -> {
+                                return ORDER11POINT36_v5;
+                        }
+
+                        case ORDER11POINT36_v6 -> {
+                                return ORDER11POINT36_v6;
+                        }
+
+                        case ORDER11POINT36_v7 -> {
+                                return ORDER11POINT36_v7;
+                        }
+
+                        case ORDER11POINT36_v8 -> {
+                                return ORDER11POINT36_v8;
+                        }
+
+                        default -> {
+                                throw new IllegalArgumentException("Unknown formula: " + formula);
+                        }
+                }
+        }
+
         /**
          * Evaluates the integral of the given function over the given triangle using
          * the given integral points.
@@ -390,64 +456,9 @@ final public class TriangleSimplexIntegral implements SimplexIntegral {
          * @param formula  the integral points to use
          * @return the integral of the function over the triangle
          */
-        public static <T extends BiFunction<Double, Double, Double>> double integrate(Triangle triangle, T f,
+        public <T extends BiFunction<Double, Double, Double>> double integrate(Triangle triangle, T f,
                         IntegralFormula formula) {
-                switch (formula) {
-                        case ORDER1POINT3 -> {
-                                return integrate(triangle, f, ORDER1POINT3);
-                        }
-                        case ORDER3POINT7 -> {
-                                return integrate(triangle, f, ORDER3POINT7);
-                        }
-                        case ORDER5POINT12 -> {
-                                return integrate(triangle, f, ORDER5POINT12);
-                        }
-                        case ORDER7POINT18 -> {
-                                return integrate(triangle, f, ORDER7POINT18);
-                        }
-                        case ORDER7POINT27 -> {
-                                return integrate(triangle, f, ORDER7POINT27);
-                        }
-                        case ORDER10POINT30 -> {
-                                return integrate(triangle, f, ORDER10POINT30);
-                        }
-
-                        case ORDER11POINT36_v1 -> {
-                                return integrate(triangle, f, ORDER11POINT36_v1);
-                        }
-
-                        case ORDER11POINT36_v2 -> {
-                                return integrate(triangle, f, ORDER11POINT36_v2);
-                        }
-
-                        case ORDER11POINT36_v3 -> {
-                                return integrate(triangle, f, ORDER11POINT36_v3);
-                        }
-
-                        case ORDER11POINT36_v4 -> {
-                                return integrate(triangle, f, ORDER11POINT36_v4);
-                        }
-
-                        case ORDER11POINT36_v5 -> {
-                                return integrate(triangle, f, ORDER11POINT36_v5);
-                        }
-
-                        case ORDER11POINT36_v6 -> {
-                                return integrate(triangle, f, ORDER11POINT36_v6);
-                        }
-
-                        case ORDER11POINT36_v7 -> {
-                                return integrate(triangle, f, ORDER11POINT36_v7);
-                        }
-
-                        case ORDER11POINT36_v8 -> {
-                                return integrate(triangle, f, ORDER11POINT36_v8);
-                        }
-
-                        default -> {
-                                throw new IllegalArgumentException("Unknown formula: " + formula);
-                        }
-                }
+                return integrate(triangle, f, getFormulaIntegralPointWithWeights(formula));
         }
 
         /**
@@ -466,9 +477,9 @@ final public class TriangleSimplexIntegral implements SimplexIntegral {
          * @param points   the integral points
          * @return the integral of the function over the triangle
          */
-        private static <T extends BiFunction<Double, Double, Double>> double integrate(Triangle triangle, T f,
+        private <T extends BiFunction<Double, Double, Double>> double integrate(Triangle triangle, T f,
                         IntegralPointWithWeight[] points) {
-                IntegralPointsWithWeight[] pointsWithWeights = getIntegralPointWithWeights(points);
+                IntegralPointsWithWeight[] pointsWithWeights = getIntegralPointsWithWeightArray(points);
                 double result = 0.0;
                 for (IntegralPointsWithWeight point : pointsWithWeights) {
                         result += point.weight * applyArray(f, transformPoints(triangle, point.points));
@@ -476,28 +487,6 @@ final public class TriangleSimplexIntegral implements SimplexIntegral {
                 return result * 2 * triangle.getArea();
         }
 
-        /**
-         * Applies the given function to each point in the given array of points
-         * and returns the sum of the results.
-         * <p>
-         * The given points are in the form of an array of double arrays, where
-         * each double array is a point in the integral.
-         * <p>
-         * The function is applied to each point in the array, and the results are
-         * summed and returned.
-         * <p>
-         * 
-         * @param f      the function to apply
-         * @param points the points to apply the function to
-         * @return the sum of the results of applying the function to the points
-         */
-        private static <T extends BiFunction<Double, Double, Double>> double applyArray(T f, double[][] points) {
-                double result = 0.0;
-                for (double[] point : points) {
-                        result += f.apply(point[0], point[1]);
-                }
-                return result;
-        }
 
         /**
          * Transforms the given points from the integral coordinates to the real
@@ -518,41 +507,22 @@ final public class TriangleSimplexIntegral implements SimplexIntegral {
          * <p>
          * 
          * @param triangle       the triangle to transform the points to
-         * @param IntegralPoints the points to transform
+         * @param integralPoints the points to transform
          * @return the transformed points
          */
-        private static double[][] transformPoints(Triangle triangle, double[][] IntegralPoints) {
+        @Override
+        protected <T extends Polygon> double[][] transformPoints(T triangle, double[][] integralPoints) {
                 double[][] vertices = triangle.getVertices();
-                double[][] result = new double[IntegralPoints.length][2];
-                for (int i = 0; i < IntegralPoints.length; i++) {
-                        result[i][0] = vertices[2][0] + IntegralPoints[i][0] * (vertices[0][0] - vertices[2][0])
-                                        + IntegralPoints[i][1] * (vertices[1][0] - vertices[2][0]); // x
-                        result[i][1] = vertices[2][1] + IntegralPoints[i][0] * (vertices[0][1] - vertices[2][1])
-                                        + IntegralPoints[i][1] * (vertices[1][1] - vertices[2][1]); // y
+                double[][] result = new double[integralPoints.length][2];
+                for (int i = 0; i < integralPoints.length; i++) {
+                        result[i][0] = vertices[2][0] + integralPoints[i][0] * (vertices[0][0] - vertices[2][0])
+                                        + integralPoints[i][1] * (vertices[1][0] - vertices[2][0]); // x
+                        result[i][1] = vertices[2][1] + integralPoints[i][0] * (vertices[0][1] - vertices[2][1])
+                                        + integralPoints[i][1] * (vertices[1][1] - vertices[2][1]); // y
                 }
                 return result;
         }
 
-        /**
-         * Converts the given points to the integral points with weights.
-         * <p>
-         * The given points are the coordinates of the points in the integral, and the
-         * weights are the weights of the points in the integral.
-         * <p>
-         * The integral points with weights are the points in the integral, and the
-         * weights of the points in the integral.
-         * <p>
-         * 
-         * @param points the points to convert
-         * @return the integral points with weights
-         */
-        private static IntegralPointsWithWeight[] getIntegralPointWithWeights(IntegralPointWithWeight[] points) {
-                IntegralPointsWithWeight[] result = new IntegralPointsWithWeight[points.length];
-                for (int i = 0; i < points.length; i++) {
-                        result[i] = new IntegralPointsWithWeight(getIntegralPoints(points[i]), points[i].weight);
-                }
-                return result;
-        }
 
         /**
          * Returns the integral points in the triangle, given the point class and extra
@@ -592,13 +562,21 @@ final public class TriangleSimplexIntegral implements SimplexIntegral {
          * 
          * @throws IllegalArgumentException if the point class is not supported
          */
-        private static double[][] getIntegralPoints(IntegralPointWithWeight points) {
+        @Override
+        protected double[][] getIntegralPoints(IntegralPointWithWeight points) {
                 switch (points.pointClass) {
                         case TrianglePointClass.CLASS_1_VERTICE -> {
-                                return new double[][] { { 0.0, 0.0 }, { 1.0, 0.0 }, { 0.0, 1.0 } };
+                                return new double[][] {
+                                                { 0.0, 0.0 },
+                                                { 1.0, 0.0 },
+                                                { 0.0, 1.0 } };
                         }
                         case TrianglePointClass.CLASS_2_MIDOFEDGE -> {
-                                return new double[][] { { 0.5, 0.0 }, { 0.0, 0.5 }, { 0.5, 0.5 }, { 1.0, 0.5 },
+                                return new double[][] {
+                                                { 0.5, 0.0 },
+                                                { 0.0, 0.5 },
+                                                { 0.5, 0.5 },
+                                                { 1.0, 0.5 },
                                                 { 0.5, 1.0 } };
                         }
                         case TrianglePointClass.CLASS_3_CENTRE -> {
@@ -606,27 +584,69 @@ final public class TriangleSimplexIntegral implements SimplexIntegral {
                         }
                         case TrianglePointClass.CLASS_4_INTERIOROFEDGE -> {
                                 double param = points.extParams[0];
-                                return new double[][] { { param, 0.0 }, { 0.0, param }, { 1.0 - param, param },
-                                                { param, 1.0 - param },
-                                                { 0.0, 1.0 - param }, { 1.0 - param, 0.0 } };
+                                double param2 = 1.0 - param;
+                                return new double[][] {
+                                                { param, 0.0 },
+                                                { 0.0, param },
+                                                { param2, param },
+                                                { param, param2 },
+                                                { 0.0, param2 },
+                                                { param2, 0.0 } };
                         }
                         case TrianglePointClass.CLASS_5_INTERIOR -> {
                                 double param = points.extParams[0];
-                                return new double[][] { { param, param }, { 1.0 - 2 * param, param },
-                                                { param, 1.0 - 2 * param } };
+                                double param2 = 1.0 - 2.0 * param;
+                                return new double[][] {
+                                                { param, param },
+                                                { param2, param },
+                                                { param, param2 } };
                         }
                         case TrianglePointClass.CLASS_6_INTERIOR -> {
                                 double param1 = points.extParams[0];
                                 double param2 = points.extParams[1];
-                                return new double[][] { { param1, param2 }, { param2, param1 },
-                                                { 1.0 - param1 - param2, param2 },
-                                                { param2, 1.0 - param1 - param2 }, { param1, 1.0 - param1 - param2 },
-                                                { 1.0 - param1 - param2, param1 } };
+                                double param3 = 1.0 - param1 - param2;
+                                return new double[][] {
+                                                { param1, param2 },
+                                                { param2, param1 },
+                                                { param3, param2 },
+                                                { param2, param3 },
+                                                { param1, param3 },
+                                                { param3, param1 } };
                         }
                         default -> {
                                 throw new IllegalArgumentException("pointClass is not supported");
                         }
                 }
+        }
+
+        public void saveIntegralPoints(String fileName) {
+                try {
+                        FileWriter fw = new FileWriter(fileName);
+                        BufferedWriter bw = new BufferedWriter(fw);
+                        for (IntegralFormula formula : IntegralFormula.values()) {
+                                bw.append(formula + " = " + integralFormulaToString(formula));
+                                bw.newLine();
+                        }
+                        bw.close();
+                        fw.close();
+                } catch (Exception e) {
+                        e.printStackTrace();
+                }
+
+        }
+
+        private String integralFormulaToString(IntegralFormula formula) {
+                IntegralPointsWithWeight[] pointsWithWeight = getIntegralPointsWithWeightArray(
+                                getFormulaIntegralPointWithWeights(formula));
+                ArrayList<String> pointAndWeights = new ArrayList<>();
+                for (IntegralPointsWithWeight pointWithWeight : pointsWithWeight) {
+                        for (double[] point : pointWithWeight.points) {
+                                pointAndWeights.add(point[0] + ", " + point[1] + ", " + pointWithWeight.weight + ";");
+                        }
+                }
+                StringJoiner sj = new StringJoiner("", "[", "];");
+                Arrays.stream(pointAndWeights.toArray(new String[0])).forEach(sj::add);
+                return sj.toString();
         }
 
 }

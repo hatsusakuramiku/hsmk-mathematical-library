@@ -31,7 +31,10 @@ import integral.algorithm.*;
 import tools.ArrayTools;
 import java.util.Arrays;
 import matrix.Matrix;
-import simplexIntegral.polygons.*;;
+import simplexIntegral.TriangleSimplexIntegral;
+import simplexIntegral.TetrahedronSimplexIntegral;
+import simplexIntegral.function.TriFunction;
+import simplexIntegral.polygon.*;;
 
 public class Main {
   public static final int ASCENDING = 0;
@@ -39,9 +42,17 @@ public class Main {
 
   public static void main(String[] args) {
     double[][] ves = { { 1, 5 }, { 2, 0 }, { 4, 3 } };
+    double[][] ves2 = { { 1, 5, 0 }, { 2, 0, 0 }, { 4, 3, 0 }, { 1, 5, 5 } };
+    TriFunction<Double, Double, Double, Double> f = (x, y, z) -> x * y * z;
+    Tetrahedron tetrahedron = new Tetrahedron(ves2);
     Triangle triangle = new Triangle(ves);
-
-    System.out.println(triangle.getArea());
+    TetrahedronSimplexIntegral teI = new TetrahedronSimplexIntegral();
+    System.out.println("The area of the triangle is: " + triangle.getArea());
+    System.out.println("The measure of the tetrahedron is: " + tetrahedron.getMeasure());
+    System.out.println("The integral of the tetrahedron is: "
+        + teI.integrate(tetrahedron, f, TetrahedronSimplexIntegral.IntegralFormula.ORDER1POINT4));
+    // System.out.println(triangle.isRightVertices(ves));
+    // System.out.println(triangle.getArea());
+    // TriangleSimplexIntegral.saveIntegralPoints("integralPoints.txt");
   }
-
 }

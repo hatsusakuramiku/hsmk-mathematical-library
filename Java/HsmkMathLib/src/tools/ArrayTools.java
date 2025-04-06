@@ -1659,7 +1659,7 @@ final public class ArrayTools {
      * @return a new array containing all the elements of the two arrays
      * @throws IllegalArgumentException if either of the arrays is null
      */
-    public static double[] constructArray(double[] a, double[] b) {
+    public static double[] concatenateArray(double[] a, double[] b) {
         if (a == null || b == null) {
             throw new IllegalArgumentException("Array cannot be null");
         } else if (a.length == 0) {
@@ -1690,7 +1690,7 @@ final public class ArrayTools {
      * @return a new array containing all the elements of the two arrays
      * @throws IllegalArgumentException if either of the arrays is null
      */
-    public static int[] constructArray(int[] a, int[] b) {
+    public static int[] concatenateArray(int[] a, int[] b) {
         if (a == null || b == null) {
             throw new IllegalArgumentException("Array cannot be null");
         } else if (a.length == 0) {
@@ -1721,7 +1721,7 @@ final public class ArrayTools {
      * @return a new array containing all the elements of the two arrays
      * @throws IllegalArgumentException if either of the arrays is null
      */
-    public static boolean[] constructArray(boolean[] a, boolean[] b) {
+    public static boolean[] concatenateArray(boolean[] a, boolean[] b) {
         if (a == null || b == null) {
             throw new IllegalArgumentException("Array cannot be null");
         } else if (a.length == 0) {
@@ -1752,7 +1752,7 @@ final public class ArrayTools {
      * @return a new array containing all the elements of the two arrays
      * @throws IllegalArgumentException if either of the arrays is null
      */
-    public static char[] constructArray(char[] a, char[] b) {
+    public static char[] concatenateArray(char[] a, char[] b) {
         if (a == null || b == null) {
             throw new IllegalArgumentException("Array cannot be null");
         } else if (a.length == 0) {
@@ -1783,7 +1783,7 @@ final public class ArrayTools {
      * @return a new array containing all the elements of the two arrays
      * @throws IllegalArgumentException if either of the arrays is null
      */
-    public static long[] constructArray(long[] a, long[] b) {
+    public static long[] concatenateArray(long[] a, long[] b) {
         if (a == null || b == null) {
             throw new IllegalArgumentException("Array cannot be null");
         } else if (a.length == 0) {
@@ -1814,7 +1814,7 @@ final public class ArrayTools {
      * @return a new array containing all the elements of the two arrays
      * @throws IllegalArgumentException if either of the arrays is null
      */
-    public static float[] constructArray(float[] a, float[] b) {
+    public static float[] concatenateArray(float[] a, float[] b) {
         if (a == null || b == null) {
             throw new IllegalArgumentException("Array cannot be null");
         } else if (a.length == 0) {
@@ -1845,7 +1845,7 @@ final public class ArrayTools {
      * @return a new array containing all the elements of the two arrays
      * @throws IllegalArgumentException if either of the arrays is null
      */
-    public static short[] constructArray(short[] a, short[] b) {
+    public static short[] concatenateArray(short[] a, short[] b) {
         if (a == null || b == null) {
             throw new IllegalArgumentException("Array cannot be null");
         } else if (a.length == 0) {
@@ -1876,7 +1876,7 @@ final public class ArrayTools {
      * @return a new array containing all the elements of the two arrays
      * @throws IllegalArgumentException if either of the arrays is null
      */
-    public static byte[] constructArray(byte[] a, byte[] b) {
+    public static byte[] concatenateArray(byte[] a, byte[] b) {
         if (a == null || b == null) {
             throw new IllegalArgumentException("Array cannot be null");
         } else if (a.length == 0) {
@@ -1907,7 +1907,7 @@ final public class ArrayTools {
      * @return a new array containing all the elements of the two arrays
      * @throws IllegalArgumentException if either of the arrays is null
      */
-    public static Object[] constructArray(Object[] a, Object[] b) {
+    public static Object[] concatenateArray(Object[] a, Object[] b) {
         if (a == null || b == null) {
             throw new IllegalArgumentException("Array cannot be null");
         } else if (a.length == 0) {
@@ -1935,7 +1935,7 @@ final public class ArrayTools {
      * @throws IllegalArgumentException if either of the arrays is null
      */
 
-    public static Object[][] constructArray(Object[][] a, Object[][] b) {
+    public static Object[][] concatenateArray(Object[][] a, Object[][] b) {
         if (a == null || b == null) {
             throw new IllegalArgumentException("Array cannot be null");
         } else if (a.length == 0) {
@@ -1966,7 +1966,7 @@ final public class ArrayTools {
      * @return a new 2D array containing all the elements of the two arrays
      * @throws IllegalArgumentException if either of the arrays is null
      */
-    public static double[][] constructArray(double[][] a, double[][] b) {
+    public static double[][] concatenateArray(double[][] a, double[][] b) {
         if (a == null || b == null) {
             throw new IllegalArgumentException("Array cannot be null");
         } else if (a.length == 0) {
@@ -1997,7 +1997,7 @@ final public class ArrayTools {
      * @return a new 2D array containing all the elements of the two arrays
      * @throws IllegalArgumentException if either of the arrays is null
      */
-    public static int[][] constructArray(int[][] a, int[][] b) {
+    public static int[][] concatenateArray(int[][] a, int[][] b) {
         if (a == null || b == null) {
             throw new IllegalArgumentException("Array cannot be null");
         } else if (a.length == 0) {
@@ -2028,7 +2028,7 @@ final public class ArrayTools {
      * @return a new 2D array containing all the elements of the two arrays
      * @throws IllegalArgumentException if either of the arrays is null
      */
-    public static long[][] constructArray(long[][] a, long[][] b) {
+    public static long[][] concatenateArray(long[][] a, long[][] b) {
         if (a == null || b == null) {
             throw new IllegalArgumentException("Array cannot be null");
         } else if (a.length == 0) {
@@ -2059,7 +2059,7 @@ final public class ArrayTools {
      * @return a new 2D array containing all the elements of the two arrays
      * @throws IllegalArgumentException if either of the arrays is null
      */
-    public static float[][] constructArray(float[][] a, float[][] b) {
+    public static float[][] concatenateArray(float[][] a, float[][] b) {
         if (a == null || b == null) {
             throw new IllegalArgumentException("Array cannot be null");
         } else if (a.length == 0) {
@@ -2090,7 +2090,7 @@ final public class ArrayTools {
      * @return a new 2D array containing all the elements of the two arrays
      * @throws IllegalArgumentException if either of the arrays is null
      */
-    public static boolean[][] constructArray(boolean[][] a, boolean[][] b) {
+    public static boolean[][] concatenateArray(boolean[][] a, boolean[][] b) {
         if (a == null || b == null) {
             throw new IllegalArgumentException("Array cannot be null");
         } else if (a.length == 0) {
@@ -2121,7 +2121,7 @@ final public class ArrayTools {
      * @return a new 2D array containing all the elements of the two arrays
      * @throws IllegalArgumentException if either of the arrays is null
      */
-    public static char[][] constructArray(char[][] a, char[][] b) {
+    public static char[][] concatenateArray(char[][] a, char[][] b) {
         if (a == null || b == null) {
             throw new IllegalArgumentException("Array cannot be null");
         } else if (a.length == 0) {
@@ -2152,7 +2152,7 @@ final public class ArrayTools {
      * @return a new 2D array containing all the elements of the two arrays
      * @throws IllegalArgumentException if either of the arrays is null
      */
-    public static byte[][] constructArray(byte[][] a, byte[][] b) {
+    public static byte[][] concatenateArray(byte[][] a, byte[][] b) {
         if (a == null || b == null) {
             throw new IllegalArgumentException("Array cannot be null");
         } else if (a.length == 0) {
