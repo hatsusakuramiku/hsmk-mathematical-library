@@ -47,6 +47,7 @@ public class Main {
     Tetrahedron tetrahedron = new Tetrahedron(ves2);
     Triangle triangle = new Triangle(ves);
     TetrahedronSimplexIntegral teI = new TetrahedronSimplexIntegral();
+    teI.saveIntegralPoints("TEI.md");
     System.out.println("The area of the triangle is: " + triangle.getArea());
     System.out.println("The measure of the tetrahedron is: " + tetrahedron.getMeasure());
     System.out.println("The integral of the tetrahedron is: "

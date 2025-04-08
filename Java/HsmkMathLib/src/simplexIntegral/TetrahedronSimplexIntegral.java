@@ -21,6 +21,12 @@
  */
 package simplexIntegral;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.StringJoiner;
+
 import simplexIntegral.function.TriFunction;
 import simplexIntegral.polygon.Polygon;
 import simplexIntegral.polygon.Tetrahedron;
@@ -460,6 +466,81 @@ final public class TetrahedronSimplexIntegral extends SimplexIntegral {
     public <T extends TriFunction<Double, Double, Double, Double>> double integrate(
             Tetrahedron tetrahedron, T f, IntegralFormula formula) {
         return integrate(tetrahedron, f, getFormulaIntegralPointWithWeights(formula));
+    }
+
+    /**
+     * Saves the integral points and their weights of all integral formulas to a
+     * file.
+     * <p>
+     * The method iterates over all integral formulas, retrieves their integral
+     * points
+     * and weights, formats them into a string, and writes the strings to a file.
+     * The
+     * file is specified by the parameter fileName.
+     * <p>
+     * The format of the output file is as follows: Each line contains the integral
+     * points and their weights of an integral formula. The integral points and
+     * their
+     * weights are formatted as a string, where each point's coordinates are
+     * followed
+     * by its weight, separated by commas, and each point-weight pair is separated
+     * by
+     * a semicolon. The entire sequence is enclosed in square brackets and ends with
+     * a
+     * semicolon.
+     * <p>
+     * If an error occurs while writing to the file, the error is printed to the
+     * standard error stream.
+     * <p>
+     * 
+     * @param fileName the file name to save the integral points and their weights
+     *                 to
+     */
+    public void saveIntegralPoints(String fileName) {
+        try {
+            FileWriter fw = new FileWriter(fileName);
+            BufferedWriter bw = new BufferedWriter(fw);
+            for (IntegralFormula formula : IntegralFormula.values()) {
+                bw.append(formula + " = " + integralFormulaToString(formula));
+                bw.newLine();
+            }
+            bw.close();
+            fw.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    /**
+     * Converts an integral formula into a string representation of its integral
+     * points
+     * and weights.
+     * <p>
+     * The method retrieves the integral points and their weights for the specified
+     * formula, formats them into a string, and returns the result.
+     * The result string consists of each point's coordinates followed by its
+     * weight,
+     * separated by commas, and each point-weight pair is separated by a semicolon.
+     * The entire sequence is enclosed in square brackets and ends with a semicolon.
+     * <p>
+     * 
+     * @param formula the integral formula to convert into a string representation
+     * @return a string representation of the integral points and their weights
+     */
+
+    private String integralFormulaToString(IntegralFormula formula) {
+        IntegralPointsWithWeight[] pointsWithWeight = getIntegralPointsWithWeightArray(
+                getFormulaIntegralPointWithWeights(formula));
+        ArrayList<String> pointAndWeights = new ArrayList<>();
+        for (IntegralPointsWithWeight pointWithWeight : pointsWithWeight) {
+            for (double[] point : pointWithWeight.points) {
+                pointAndWeights.add(point[0] + ", " + point[1] + ", "  + point[2] + ", "+ pointWithWeight.weight + ";");
+            }
+        }
+        StringJoiner sj = new StringJoiner("", "[", "];");
+        Arrays.stream(pointAndWeights.toArray(new String[0])).forEach(sj::add);
+        return sj.toString();
     }
 
 }

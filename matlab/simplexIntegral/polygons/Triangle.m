@@ -7,7 +7,7 @@ classdef Triangle < TwoDimPolygon
             %
             % @param vertices    the vertices of the triangle
             % @throws error if the vertices do not form a valid triangle
-            if (size(vertices, 1) ~= 3)
+            if size(vertices, 1) ~= 3
                 error('The number of vertices must be 3');
             end
 

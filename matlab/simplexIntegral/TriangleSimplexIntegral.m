@@ -1,4 +1,10 @@
 classdef TriangleSimplexIntegral < handle
+    % TriangleSimplexIntegral is a class for computing the integral of a function over a triangle.
+    % Example:
+    %   vertices = [0 0; 1 0; 0 1];
+    %   func = @(x,y) x + y;
+    %   triangle = Triangle(vertices);
+    %   integralRsult = TriangleSimplexIntegral.integrate(triangle, func, 'ORDER3POINT7');
 
     properties (Access = public, Constant = true)
         % integral formula names
@@ -72,7 +78,7 @@ classdef TriangleSimplexIntegral < handle
             % See also: simplexIntegral.TriangleSimplexIntegral
 
             arguments
-                integrateName
+                integrateName {mustBeTextScalar}
             end
 
             % The points of the integration.
@@ -110,6 +116,8 @@ classdef TriangleSimplexIntegral < handle
                     points = TriangleSimplexIntegral.ORDER11POINT36_v7; % order 11, 36 points (7)
                 case 'ORDER11POINT36_v8'
                     points = TriangleSimplexIntegral.ORDER11POINT36_v8; % order 11, 36 points (8)
+                otherwise
+                    error('Unknown integrateName: %s', integrateName);
             end
 
         end
@@ -136,7 +144,7 @@ classdef TriangleSimplexIntegral < handle
             arguments
                 triangle {mustBeA(triangle, 'Triangle')}
                 func {mustBeA(func, 'function_handle')}
-                integrateName
+                integrateName {mustBeTextScalar}
             end
 
             if (~ismember(upper(integrateName), TriangleSimplexIntegral.formulas))
