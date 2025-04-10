@@ -1,8 +1,7 @@
 package integral.algorithm;
 
-import java.util.function.Function;
-
 import integral.utils.IntegralBase;
+import java.util.function.Function;
 
 /**
  * This class provides an implementation of the Simpson rule for
