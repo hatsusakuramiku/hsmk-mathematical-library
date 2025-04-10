@@ -1,5 +1,6 @@
 *.asv
 test.*
+test_*.*
 *.exe
 .vscode/
 .idea/
@@ -12,3 +13,4 @@ Java/HsmkMathLib/.idea/
 Java/HsmkMathLib/HsmkMathLib.iml
 Java/HsmkMathLib/out/
 Java/HsmkMathLib/src/test/
+.venv/

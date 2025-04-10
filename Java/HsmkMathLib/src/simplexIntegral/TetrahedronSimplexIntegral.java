@@ -64,9 +64,7 @@ final public class TetrahedronSimplexIntegral extends SimplexIntegral {
                     0.1831324329245650E-02, new double[] {
                             0.4256461243139345E-00 }),
             new IntegralPointWithWeight(TetrahedronPointClass.CLASS_8_INTERIOR,
-                    0.7542468904648131E-02, new double[] { 0.9503775858394107E-01
-
-                    }),
+                    0.7542468904648131E-02, new double[] { 0.9503775858394107E-01 }),
             new IntegralPointWithWeight(TetrahedronPointClass.CLASS_9_INTERIOR,
                     0.1360991755970793E-01, new double[] { 0.1252462362578136E-00 })
     };
@@ -84,9 +82,7 @@ final public class TetrahedronSimplexIntegral extends SimplexIntegral {
                     0.1564461923378417E-02, new double[] {
                             0.1480462980008327E-00 }),
             new IntegralPointWithWeight(TetrahedronPointClass.CLASS_8_INTERIOR,
-                    0.7127911446564579E-02, new double[] { 0.1048645248917035E-00
-
-                    }),
+                    0.7127911446564579E-02, new double[] { 0.1048645248917035E-00 }),
             new IntegralPointWithWeight(TetrahedronPointClass.CLASS_9_INTERIOR,
                     0.1321679379720540E-01, new double[] { 0.1258796196682507E-00 })
     };
@@ -535,7 +531,7 @@ final public class TetrahedronSimplexIntegral extends SimplexIntegral {
         ArrayList<String> pointAndWeights = new ArrayList<>();
         for (IntegralPointsWithWeight pointWithWeight : pointsWithWeight) {
             for (double[] point : pointWithWeight.points) {
-                pointAndWeights.add(point[0] + ", " + point[1] + ", "  + point[2] + ", "+ pointWithWeight.weight + ";");
+                pointAndWeights.add(point[0] + ", " + point[1] + ", " + point[2] + ", " + pointWithWeight.weight + ";");
             }
         }
         StringJoiner sj = new StringJoiner("", "[", "];");

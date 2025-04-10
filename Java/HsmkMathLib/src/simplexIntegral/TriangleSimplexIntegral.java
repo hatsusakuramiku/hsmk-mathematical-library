@@ -358,6 +358,18 @@ final public class TriangleSimplexIntegral extends SimplexIntegral {
                                         0.2684471172956770E-01,
                                         new double[] { 0.3148364616424038E-00, 0.4785704481357608E-00 }) };
 
+        private static final IntegralPointWithWeight[] ORDER15POINT57 = new IntegralPointWithWeight[] {
+
+        };
+
+        private static final IntegralPointWithWeight[] ORDER17POINT69 = new IntegralPointWithWeight[] {
+
+        };
+
+        private static final IntegralPointWithWeight[] ORDER19POINT82 = new IntegralPointWithWeight[] {
+
+        };
+
         /**
          * Enum representing the classes of points that can be used in the integral.
          */
@@ -487,7 +499,6 @@ final public class TriangleSimplexIntegral extends SimplexIntegral {
                 return result * 2 * triangle.getArea();
         }
 
-
         /**
          * Transforms the given points from the integral coordinates to the real
          * coordinates of the given triangle.
@@ -522,7 +533,6 @@ final public class TriangleSimplexIntegral extends SimplexIntegral {
                 }
                 return result;
         }
-
 
         /**
          * Returns the integral points in the triangle, given the point class and extra
@@ -620,24 +630,32 @@ final public class TriangleSimplexIntegral extends SimplexIntegral {
         }
 
         /**
-         * Saves the integral points and their weights of all integral formulas to a file.
+         * Saves the integral points and their weights of all integral formulas to a
+         * file.
          * <p>
-         * The method iterates over all integral formulas, retrieves their integral points
-         * and weights, formats them into a string, and writes the strings to a file. The
+         * The method iterates over all integral formulas, retrieves their integral
+         * points
+         * and weights, formats them into a string, and writes the strings to a file.
+         * The
          * file is specified by the parameter fileName.
          * <p>
          * The format of the output file is as follows: Each line contains the integral
-         * points and their weights of an integral formula. The integral points and their
-         * weights are formatted as a string, where each point's coordinates are followed
-         * by its weight, separated by commas, and each point-weight pair is separated by
-         * a semicolon. The entire sequence is enclosed in square brackets and ends with a
+         * points and their weights of an integral formula. The integral points and
+         * their
+         * weights are formatted as a string, where each point's coordinates are
+         * followed
+         * by its weight, separated by commas, and each point-weight pair is separated
+         * by
+         * a semicolon. The entire sequence is enclosed in square brackets and ends with
+         * a
          * semicolon.
          * <p>
          * If an error occurs while writing to the file, the error is printed to the
          * standard error stream.
          * <p>
          * 
-         * @param fileName the file name to save the integral points and their weights to
+         * @param fileName the file name to save the integral points and their weights
+         *                 to
          */
         public void saveIntegralPoints(String fileName) {
                 try {
@@ -655,20 +673,22 @@ final public class TriangleSimplexIntegral extends SimplexIntegral {
 
         }
 
-/**
- * Converts an integral formula into a string representation of its integral points
- * and weights.
- * <p>
- * The method retrieves the integral points and their weights for the specified
- * formula, formats them into a string, and returns the result.
- * The result string consists of each point's coordinates followed by its weight,
- * separated by commas, and each point-weight pair is separated by a semicolon.
- * The entire sequence is enclosed in square brackets and ends with a semicolon.
- * <p>
- * 
- * @param formula the integral formula to convert into a string representation
- * @return a string representation of the integral points and their weights
- */
+        /**
+         * Converts an integral formula into a string representation of its integral
+         * points
+         * and weights.
+         * <p>
+         * The method retrieves the integral points and their weights for the specified
+         * formula, formats them into a string, and returns the result.
+         * The result string consists of each point's coordinates followed by its
+         * weight,
+         * separated by commas, and each point-weight pair is separated by a semicolon.
+         * The entire sequence is enclosed in square brackets and ends with a semicolon.
+         * <p>
+         * 
+         * @param formula the integral formula to convert into a string representation
+         * @return a string representation of the integral points and their weights
+         */
 
         private String integralFormulaToString(IntegralFormula formula) {
                 IntegralPointsWithWeight[] pointsWithWeight = getIntegralPointsWithWeightArray(
