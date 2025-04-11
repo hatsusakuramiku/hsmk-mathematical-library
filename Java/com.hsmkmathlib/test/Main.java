@@ -23,18 +23,10 @@
 package test;
 
 // import sort.algorithm.BubbleSort;
-import sort.algorithm.*;
-
-import java.util.Random;
-import java.util.function.Function;
-import integral.algorithm.*;
-import tools.ArrayTools;
-import java.util.Arrays;
-import matrix.Matrix;
-import simplexIntegral.TriangleSimplexIntegral;
 import simplexIntegral.TetrahedronSimplexIntegral;
 import simplexIntegral.function.TriFunction;
-import simplexIntegral.polygon.*;;
+import simplexIntegral.polygon.*;
+;
 
 public class Main {
   public static final int ASCENDING = 0;
@@ -47,11 +39,11 @@ public class Main {
     Tetrahedron tetrahedron = new Tetrahedron(ves2);
     Triangle triangle = new Triangle(ves);
     TetrahedronSimplexIntegral teI = new TetrahedronSimplexIntegral();
-    teI.saveIntegralPoints("TEI.md");
+    teI.saveIntegralPoints("test_tetrahedronFormula.m");
     System.out.println("The area of the triangle is: " + triangle.getArea());
     System.out.println("The measure of the tetrahedron is: " + tetrahedron.getMeasure());
     System.out.println("The integral of the tetrahedron is: "
-        + teI.integrate(tetrahedron, f, TetrahedronSimplexIntegral.IntegralFormula.ORDER1POINT4));
+        + teI.integrate(tetrahedron, f, "ORDER4POINT23"));
     // System.out.println(triangle.isRightVertices(ves));
     // System.out.println(triangle.getArea());
     // TriangleSimplexIntegral.saveIntegralPoints("integralPoints.txt");

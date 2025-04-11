@@ -21,22 +21,35 @@
  */
 package simplexIntegral;
 
-import java.io.BufferedWriter;
-import java.io.FileWriter;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.StringJoiner;
-
+import java.util.HashMap;
 import simplexIntegral.function.TriFunction;
 import simplexIntegral.polygon.Polygon;
 import simplexIntegral.polygon.Tetrahedron;
 
 final public class TetrahedronSimplexIntegral extends SimplexIntegral {
-    public static enum IntegralFormula {
-        ORDER1POINT4,
-        ORDER4POINT23,
-        ORDER7POINT50_v1,
-        ORDER7POINT50_v2,
+
+    public final static TetrahedronSimplexIntegral INSTANCE = new TetrahedronSimplexIntegral();
+
+    public TetrahedronSimplexIntegral() {
+        super();
+    }
+
+    /**
+     * Initialize the integral formulas for the triangle simplex integral.
+     *
+     * @return a HashMap of integral formulas, where the key is the name of the
+     *         formula, and the value is an array of IntegralPointWithWeight. Each
+     *         IntegralPointWithWeight represents a point in the integral, and its
+     *         weight in the integral.
+     */
+    @Override
+    protected HashMap<String, IntegralPointWithWeight[]> initalIntegralFormulas() {
+        HashMap<String, IntegralPointWithWeight[]> formulas = new HashMap<>();
+        formulas.put("ORDER1POINT4", ORDER1POINT4);
+        formulas.put("ORDER4POINT23", ORDER4POINT23);
+        formulas.put("ORDER7POINT50_v1", ORDER7POINT50_v1);
+        formulas.put("ORDER7POINT50_v2", ORDER7POINT50_v2);
+        return formulas;
     }
 
     private static final IntegralPointWithWeight[] ORDER1POINT4 = new IntegralPointWithWeight[] {
@@ -362,54 +375,6 @@ final public class TetrahedronSimplexIntegral extends SimplexIntegral {
     }
 
     /**
-     * Retrieves the integral points and weights associated with a given integral
-     * formula.
-     * <p>
-     * This method returns an array of {@link IntegralPointWithWeight} corresponding
-     * to the specified
-     * integral formula. Each entry in the array represents a point within the
-     * tetrahedron and its
-     * associated weight for integration.
-     * <p>
-     * Supported integral formulas:
-     * <ul>
-     * <li>{@code ORDER1POINT4}</li>
-     * <li>{@code ORDER4POINT23}</li>
-     * <li>{@code ORDER7POINT50_v1}</li>
-     * <li>{@code ORDER7POINT50_v2}</li>
-     * </ul>
-     * <p>
-     * If an unsupported formula is provided, an {@link IllegalArgumentException} is
-     * thrown.
-     * 
-     * @param formula the integral formula specifying the desired points and weights
-     * @return an array of {@link IntegralPointWithWeight} for the specified formula
-     * @throws IllegalArgumentException if the formula is unknown
-     */
-
-    private IntegralPointWithWeight[] getFormulaIntegralPointWithWeights(IntegralFormula formula) {
-        switch (formula) {
-            case ORDER1POINT4 -> {
-                return ORDER1POINT4;
-            }
-            case ORDER4POINT23 -> {
-                return ORDER4POINT23;
-            }
-
-            case ORDER7POINT50_v1 -> {
-                return ORDER7POINT50_v1;
-            }
-
-            case ORDER7POINT50_v2 -> {
-                return ORDER7POINT50_v2;
-            }
-            default -> {
-                throw new IllegalArgumentException("Unknown formula: " + formula);
-            }
-        }
-    }
-
-    /**
      * Evaluates the integral of the given function over the given tetrahedron using
      * the given integral points.
      * <p>
@@ -440,103 +405,36 @@ final public class TetrahedronSimplexIntegral extends SimplexIntegral {
     }
 
     /**
-     * Evaluates the integral of the given function over the given tetrahedron using
-     * the given integral formula.
+     * Integrates a function over a given tetrahedron using a specified integral
+     * formula.
      * <p>
-     * The integral formula is used to determine the points in the integral and
-     * their weights.
+     * This method facilitates the integration of a tri-variable function over a
+     * tetrahedron
+     * using predefined integral formulas. The integral formula is specified by the
+     * user and
+     * dictates the points and weights used in the integration process.
      * <p>
-     * The integral is calculated as the sum of the function values at the points
-     * multiplied by the weights.
-     * <p>
-     * The integral is then multiplied by 6 times the tetrahedron's measure.
-     * <p>
-     * The integral points are transformed into the tetrahedron's coordinates
-     * before being passed to the function.
-     *
-     * @param tetrahedron the tetrahedron to integrate over
-     * @param f           the function to integrate
-     * @param formula     the integral formula to use
-     * @return the integral of the function over the tetrahedron
+     * The available integral formulas are stored in a map, and the function checks
+     * for the
+     * validity of the specified formula before proceeding with the integration.
+     * 
+     * @param tetrahedron the tetrahedron over which the function is to be
+     *                    integrated
+     * @param f           the tri-variable function to integrate
+     * @param formula     the integral formula to use, specified by its name. The
+     *                    supported formulas are:
+     *                    ORDER1POINT4, ORDER4POINT23, ORDER7POINT50_v1,
+     *                    ORDER7POINT50_v2
+     * @return the result of the integration
+     * @throws IllegalArgumentException if the specified formula is not recognized
      */
     public <T extends TriFunction<Double, Double, Double, Double>> double integrate(
-            Tetrahedron tetrahedron, T f, IntegralFormula formula) {
-        return integrate(tetrahedron, f, getFormulaIntegralPointWithWeights(formula));
-    }
-
-    /**
-     * Saves the integral points and their weights of all integral formulas to a
-     * file.
-     * <p>
-     * The method iterates over all integral formulas, retrieves their integral
-     * points
-     * and weights, formats them into a string, and writes the strings to a file.
-     * The
-     * file is specified by the parameter fileName.
-     * <p>
-     * The format of the output file is as follows: Each line contains the integral
-     * points and their weights of an integral formula. The integral points and
-     * their
-     * weights are formatted as a string, where each point's coordinates are
-     * followed
-     * by its weight, separated by commas, and each point-weight pair is separated
-     * by
-     * a semicolon. The entire sequence is enclosed in square brackets and ends with
-     * a
-     * semicolon.
-     * <p>
-     * If an error occurs while writing to the file, the error is printed to the
-     * standard error stream.
-     * <p>
-     * 
-     * @param fileName the file name to save the integral points and their weights
-     *                 to
-     */
-    public void saveIntegralPoints(String fileName) {
-        try {
-            FileWriter fw = new FileWriter(fileName);
-            BufferedWriter bw = new BufferedWriter(fw);
-            for (IntegralFormula formula : IntegralFormula.values()) {
-                bw.append(formula + " = " + integralFormulaToString(formula));
-                bw.newLine();
-            }
-            bw.close();
-            fw.close();
-        } catch (Exception e) {
-            e.printStackTrace();
+            Tetrahedron tetrahedron, T f, String formula) {
+        formula = formula.toUpperCase();
+        if (!INTEGRALFORMULAS.containsKey(formula)) {
+            throw new IllegalArgumentException("Unknown formula: " + formula);
         }
-
-    }
-
-    /**
-     * Converts an integral formula into a string representation of its integral
-     * points
-     * and weights.
-     * <p>
-     * The method retrieves the integral points and their weights for the specified
-     * formula, formats them into a string, and returns the result.
-     * The result string consists of each point's coordinates followed by its
-     * weight,
-     * separated by commas, and each point-weight pair is separated by a semicolon.
-     * The entire sequence is enclosed in square brackets and ends with a semicolon.
-     * <p>
-     * 
-     * @param formula the integral formula to convert into a string representation
-     * @return a string representation of the integral points and their weights
-     */
-
-    private String integralFormulaToString(IntegralFormula formula) {
-        IntegralPointsWithWeight[] pointsWithWeight = getIntegralPointsWithWeightArray(
-                getFormulaIntegralPointWithWeights(formula));
-        ArrayList<String> pointAndWeights = new ArrayList<>();
-        for (IntegralPointsWithWeight pointWithWeight : pointsWithWeight) {
-            for (double[] point : pointWithWeight.points) {
-                pointAndWeights.add(point[0] + ", " + point[1] + ", " + point[2] + ", " + pointWithWeight.weight + ";");
-            }
-        }
-        StringJoiner sj = new StringJoiner("", "[", "];");
-        Arrays.stream(pointAndWeights.toArray(new String[0])).forEach(sj::add);
-        return sj.toString();
+        return integrate(tetrahedron, f, INTEGRALFORMULAS.get(formula));
     }
 
 }

@@ -21,87 +21,44 @@
  */
 package simplexIntegral;
 
-import java.io.BufferedWriter;
-import java.io.FileWriter;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.StringJoiner;
+import java.util.HashMap;
 import java.util.function.BiFunction;
-
 import simplexIntegral.polygon.Polygon;
 import simplexIntegral.polygon.Triangle;
 
 final public class TriangleSimplexIntegral extends SimplexIntegral {
+        public static final TriangleSimplexIntegral INSTANCE = new TriangleSimplexIntegral();
+
+        private TriangleSimplexIntegral() {
+                super();
+        }
 
         /**
-         * Enum representing the integral formulas that can be used.
-         * <p>
-         * The formulas are identified by their order, number of points and the
-         * version of the formula. The version is needed to distinguish between
-         * different versions of the same formula.
-         * 
-         * <p>
-         * The documentation of the formula is in the
-         * <a href=
-         * "https://hsmkhexo.s3.ap-northeast-1.amazonaws.com/other/%E7%A7%AF%E5%88%86%E5%85%AC%E5%BC%8F%E6%80%BB%E7%BB%93.pdf">TriangleSimplexIntegral</a>.
+         * Initialize the integral formulas for the triangle simplex integral.
+         *
+         * @return a HashMap of integral formulas, where the key is the name of the
+         *         formula, and the value is an array of IntegralPointWithWeight. Each
+         *         IntegralPointWithWeight represents a point in the integral, and its
+         *         weight in the integral.
          */
-        public static enum IntegralFormula {
-                /**
-                 * 1st order 3-point quadrature formula.
-                 */
-                ORDER1POINT3,
-                /**
-                 * 3rd order 7-point quadrature formula.
-                 */
-                ORDER3POINT7,
-                /**
-                 * 5th order 12-point quadrature formula.
-                 */
-                ORDER5POINT12,
-                /**
-                 * 7th order 18-point quadrature formula.
-                 */
-                ORDER7POINT18,
-                /**
-                 * 7th order 27-point quadrature formula.
-                 */
-                ORDER7POINT27,
-                /**
-                 * 10th order 30-point quadrature formula.
-                 */
-                ORDER10POINT30,
-                /**
-                 * 11th order 36-point quadrature formula, version 1.
-                 */
-                ORDER11POINT36_v1,
-                /**
-                 * 11th order 36-point quadrature formula, version 2.
-                 */
-                ORDER11POINT36_v2,
-                /**
-                 * 11th order 36-point quadrature formula, version 3.
-                 */
-                ORDER11POINT36_v3,
-                /**
-                 * 11th order 36-point quadrature formula, version 4.
-                 */
-                ORDER11POINT36_v4,
-                /**
-                 * 11th order 36-point quadrature formula, version 5.
-                 */
-                ORDER11POINT36_v5,
-                /**
-                 * 11th order 36-point quadrature formula, version 6.
-                 */
-                ORDER11POINT36_v6,
-                /**
-                 * 11th order 36-point quadrature formula, version 7.
-                 */
-                ORDER11POINT36_v7,
-                /**
-                 * 11th order 36-point quadrature formula, version 8.
-                 */
-                ORDER11POINT36_v8
+        @Override
+        protected HashMap<String, IntegralPointWithWeight[]> initalIntegralFormulas() {
+                HashMap<String, IntegralPointWithWeight[]> formulas = new HashMap<>();
+                formulas.put("ORDER1POINT3", ORDER1POINT3);
+                formulas.put("ORDER3POINT7", ORDER3POINT7);
+                formulas.put("ORDER5POINT12", ORDER5POINT12);
+                formulas.put("ORDER7POINT18", ORDER7POINT18);
+                formulas.put("ORDER7POINT27", ORDER7POINT27);
+                formulas.put("ORDER10POINT30", ORDER10POINT30);
+                formulas.put("ORDER11POINT36_v1", ORDER11POINT36_v1);
+                formulas.put("ORDER11POINT36_v2", ORDER11POINT36_v2);
+                formulas.put("ORDER11POINT36_v3", ORDER11POINT36_v3);
+                formulas.put("ORDER11POINT36_v4", ORDER11POINT36_v4);
+                formulas.put("ORDER11POINT36_v5", ORDER11POINT36_v5);
+                formulas.put("ORDER11POINT36_v6", ORDER11POINT36_v6);
+                formulas.put("ORDER11POINT36_v7", ORDER11POINT36_v7);
+                formulas.put("ORDER11POINT36_v8", ORDER11POINT36_v8);
+                return formulas;
         }
 
         /**
@@ -358,18 +315,6 @@ final public class TriangleSimplexIntegral extends SimplexIntegral {
                                         0.2684471172956770E-01,
                                         new double[] { 0.3148364616424038E-00, 0.4785704481357608E-00 }) };
 
-        private static final IntegralPointWithWeight[] ORDER15POINT57 = new IntegralPointWithWeight[] {
-
-        };
-
-        private static final IntegralPointWithWeight[] ORDER17POINT69 = new IntegralPointWithWeight[] {
-
-        };
-
-        private static final IntegralPointWithWeight[] ORDER19POINT82 = new IntegralPointWithWeight[] {
-
-        };
-
         /**
          * Enum representing the classes of points that can be used in the integral.
          */
@@ -389,88 +334,35 @@ final public class TriangleSimplexIntegral extends SimplexIntegral {
 
         }
 
-        private IntegralPointWithWeight[] getFormulaIntegralPointWithWeights(IntegralFormula formula) {
-                switch (formula) {
-                        case ORDER1POINT3 -> {
-                                return ORDER1POINT3;
-                        }
-                        case ORDER3POINT7 -> {
-                                return ORDER3POINT7;
-                        }
-                        case ORDER5POINT12 -> {
-                                return ORDER5POINT12;
-                        }
-                        case ORDER7POINT18 -> {
-                                return ORDER7POINT18;
-                        }
-                        case ORDER7POINT27 -> {
-                                return ORDER7POINT27;
-                        }
-                        case ORDER10POINT30 -> {
-                                return ORDER10POINT30;
-                        }
-
-                        case ORDER11POINT36_v1 -> {
-                                return ORDER11POINT36_v1;
-                        }
-
-                        case ORDER11POINT36_v2 -> {
-                                return ORDER11POINT36_v2;
-                        }
-
-                        case ORDER11POINT36_v3 -> {
-                                return ORDER11POINT36_v3;
-                        }
-
-                        case ORDER11POINT36_v4 -> {
-                                return ORDER11POINT36_v4;
-                        }
-
-                        case ORDER11POINT36_v5 -> {
-                                return ORDER11POINT36_v5;
-                        }
-
-                        case ORDER11POINT36_v6 -> {
-                                return ORDER11POINT36_v6;
-                        }
-
-                        case ORDER11POINT36_v7 -> {
-                                return ORDER11POINT36_v7;
-                        }
-
-                        case ORDER11POINT36_v8 -> {
-                                return ORDER11POINT36_v8;
-                        }
-
-                        default -> {
-                                throw new IllegalArgumentException("Unknown formula: " + formula);
-                        }
-                }
-        }
-
         /**
-         * Evaluates the integral of the given function over the given triangle using
-         * the given integral points.
+         * Integrates a bi-variable function over a given triangle using a specified
+         * integral formula.
          * <p>
-         * The given function is the function to integrate, the given triangle is the
-         * triangle to integrate over, and the given integral points are the points to
-         * use for the integral.
-         * <p>
-         * The integral is calculated using the given formula, which can be
-         * {@link IntegralFormula#ORDER1POINT3} or any other supported formula.
-         * <p>
-         * If the given formula is not supported, an
-         * {@link IllegalArgumentException} is thrown.
+         * The method retrieves the integral formula by name and uses it to perform
+         * numerical integration over the triangle. It throws an exception if the
+         * specified formula is not found.
          * <p>
          * 
-         * @param triangle the triangle to integrate over
-         * @param f        the function to integrate
-         * @param formula  the integral points to use
-         * @return the integral of the function over the triangle
+         * @param triangle    the triangle over which the integration is performed
+         * @param f           the bi-variable function to integrate
+         * @param formulaName the name of the integral formula to use for integration.
+         *                    The available formulas are: "ORDER1POINT3",
+         *                    "ORDER3POINT7", "ORDER5POINT12",
+         *                    "ORDER7POINT18", "ORDER7POINT27", "ORDER10POINT30",
+         *                    "ORDER11POINT36_v1",
+         *                    "ORDER11POINT36_v2", "ORDER11POINT36_v3",
+         *                    "ORDER11POINT36_v4", "ORDER11POINT36_v5",
+         *                    "ORDER11POINT36_v6", "ORDER11POINT36_v7",
+         * @return the result of the integration
+         * @throws IllegalArgumentException if the specified formula is not found
          */
         public <T extends BiFunction<Double, Double, Double>> double integrate(Triangle triangle, T f,
-                        IntegralFormula formula) {
-                return integrate(triangle, f, getFormulaIntegralPointWithWeights(formula));
+                        String formulaName) {
+                formulaName = formulaName.toUpperCase();
+                if (!INTEGRALFORMULAS.containsKey(formulaName)) {
+                        throw new IllegalArgumentException("Unknown formula: " + formulaName);
+                }
+                return integrate(triangle, f, INTEGRALFORMULAS.get(formulaName));
         }
 
         /**
@@ -627,81 +519,6 @@ final public class TriangleSimplexIntegral extends SimplexIntegral {
                                 throw new IllegalArgumentException("pointClass is not supported");
                         }
                 }
-        }
-
-        /**
-         * Saves the integral points and their weights of all integral formulas to a
-         * file.
-         * <p>
-         * The method iterates over all integral formulas, retrieves their integral
-         * points
-         * and weights, formats them into a string, and writes the strings to a file.
-         * The
-         * file is specified by the parameter fileName.
-         * <p>
-         * The format of the output file is as follows: Each line contains the integral
-         * points and their weights of an integral formula. The integral points and
-         * their
-         * weights are formatted as a string, where each point's coordinates are
-         * followed
-         * by its weight, separated by commas, and each point-weight pair is separated
-         * by
-         * a semicolon. The entire sequence is enclosed in square brackets and ends with
-         * a
-         * semicolon.
-         * <p>
-         * If an error occurs while writing to the file, the error is printed to the
-         * standard error stream.
-         * <p>
-         * 
-         * @param fileName the file name to save the integral points and their weights
-         *                 to
-         */
-        public void saveIntegralPoints(String fileName) {
-                try {
-                        FileWriter fw = new FileWriter(fileName);
-                        BufferedWriter bw = new BufferedWriter(fw);
-                        for (IntegralFormula formula : IntegralFormula.values()) {
-                                bw.append(formula + " = " + integralFormulaToString(formula));
-                                bw.newLine();
-                        }
-                        bw.close();
-                        fw.close();
-                } catch (Exception e) {
-                        e.printStackTrace();
-                }
-
-        }
-
-        /**
-         * Converts an integral formula into a string representation of its integral
-         * points
-         * and weights.
-         * <p>
-         * The method retrieves the integral points and their weights for the specified
-         * formula, formats them into a string, and returns the result.
-         * The result string consists of each point's coordinates followed by its
-         * weight,
-         * separated by commas, and each point-weight pair is separated by a semicolon.
-         * The entire sequence is enclosed in square brackets and ends with a semicolon.
-         * <p>
-         * 
-         * @param formula the integral formula to convert into a string representation
-         * @return a string representation of the integral points and their weights
-         */
-
-        private String integralFormulaToString(IntegralFormula formula) {
-                IntegralPointsWithWeight[] pointsWithWeight = getIntegralPointsWithWeightArray(
-                                getFormulaIntegralPointWithWeights(formula));
-                ArrayList<String> pointAndWeights = new ArrayList<>();
-                for (IntegralPointsWithWeight pointWithWeight : pointsWithWeight) {
-                        for (double[] point : pointWithWeight.points) {
-                                pointAndWeights.add(point[0] + ", " + point[1] + ", " + pointWithWeight.weight + ";");
-                        }
-                }
-                StringJoiner sj = new StringJoiner("", "[", "];");
-                Arrays.stream(pointAndWeights.toArray(new String[0])).forEach(sj::add);
-                return sj.toString();
         }
 
 }
