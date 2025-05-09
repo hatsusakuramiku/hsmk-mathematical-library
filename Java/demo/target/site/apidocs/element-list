@@ -1,0 +1,11 @@
+com.hsmkmathlib.integral
+com.hsmkmathlib.integral.algorithm
+com.hsmkmathlib.integral.utils
+com.hsmkmathlib.matrix
+com.hsmkmathlib.simplexIntegral
+com.hsmkmathlib.simplexIntegral.function
+com.hsmkmathlib.simplexIntegral.polygon
+com.hsmkmathlib.sort
+com.hsmkmathlib.sort.algorithm
+com.hsmkmathlib.sort.utils
+com.hsmkmathlib.tools

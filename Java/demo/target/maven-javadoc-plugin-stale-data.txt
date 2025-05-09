@@ -1,0 +1,51 @@
+@options
+@packages
+--class-path
+'e:/Github/hsmk-mathematical-library/Java/demo/target/classes;e:/Github/hsmk-mathematical-library/Java/demo/target/test-classes'
+-encoding
+'UTF-8'
+-protected
+--release
+21
+-sourcepath
+'e:/Github/hsmk-mathematical-library/Java/demo/src/test/java'
+-author
+-bottom
+'Copyright &#169; 2025. All rights reserved.'
+-charset
+'UTF-8'
+-d
+'e:/Github/hsmk-mathematical-library/Java/demo/target/site/testapidocs'
+-docencoding
+'UTF-8'
+-Xdoclint:none
+-doctitle
+'demo 1.0-SNAPSHOT Test API'
+-link
+'../apidocs'
+-use
+-version
+-windowtitle
+'demo 1.0-SNAPSHOT Test API'
+test
+e:\Github\hsmk-mathematical-library\Java\demo\src\test\java = 1746759237611
+e:\Github\hsmk-mathematical-library\Java\demo\target\site\testapidocs\allclasses-index.html = 1746762857782
+e:\Github\hsmk-mathematical-library\Java\demo\target\site\testapidocs\allpackages-index.html = 1746762857786
+e:\Github\hsmk-mathematical-library\Java\demo\target\site\testapidocs\constant-values.html = 1746762857740
+e:\Github\hsmk-mathematical-library\Java\demo\target\site\testapidocs\copy.svg = 1746762857835
+e:\Github\hsmk-mathematical-library\Java\demo\target\site\testapidocs\element-list = 1746762857706
+e:\Github\hsmk-mathematical-library\Java\demo\target\site\testapidocs\help-doc.html = 1746762857824
+e:\Github\hsmk-mathematical-library\Java\demo\target\site\testapidocs\index-all.html = 1746762857809
+e:\Github\hsmk-mathematical-library\Java\demo\target\site\testapidocs\index.html = 1746762857816
+e:\Github\hsmk-mathematical-library\Java\demo\target\site\testapidocs\link.svg = 1746762857838
+e:\Github\hsmk-mathematical-library\Java\demo\target\site\testapidocs\member-search-index.js = 1746762857793
+e:\Github\hsmk-mathematical-library\Java\demo\target\site\testapidocs\module-search-index.js = 1746762857788
+e:\Github\hsmk-mathematical-library\Java\demo\target\site\testapidocs\overview-tree.html = 1746762857765
+e:\Github\hsmk-mathematical-library\Java\demo\target\site\testapidocs\package-search-index.js = 1746762857789
+e:\Github\hsmk-mathematical-library\Java\demo\target\site\testapidocs\script.js = 1746762857833
+e:\Github\hsmk-mathematical-library\Java\demo\target\site\testapidocs\search-page.js = 1746762857844
+e:\Github\hsmk-mathematical-library\Java\demo\target\site\testapidocs\search.html = 1746762857812
+e:\Github\hsmk-mathematical-library\Java\demo\target\site\testapidocs\search.js = 1746762857842
+e:\Github\hsmk-mathematical-library\Java\demo\target\site\testapidocs\stylesheet.css = 1746762857829
+e:\Github\hsmk-mathematical-library\Java\demo\target\site\testapidocs\tag-search-index.js = 1746762857795
+e:\Github\hsmk-mathematical-library\Java\demo\target\site\testapidocs\type-search-index.js = 1746762857791
