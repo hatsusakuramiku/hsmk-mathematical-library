@@ -25,7 +25,6 @@ package sort.algorithm;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Arrays;
-
 import sort.utils.SortAlgorithm;
 
 /**
@@ -87,7 +86,7 @@ public final class MergeSort implements SortAlgorithm {
     int sortElementCount = endIndex - startIndex;
     try {
       mergeBase(array, startIndex, sortElementCount, aix, getCompareToMethod(aix));
-    } catch (Exception e) {
+    } catch (IllegalAccessException | NoSuchMethodException | SecurityException | InvocationTargetException e) {
       throw new IllegalArgumentException(e.getMessage());
     }
   }

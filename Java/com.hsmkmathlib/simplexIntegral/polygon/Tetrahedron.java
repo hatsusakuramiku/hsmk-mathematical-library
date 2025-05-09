@@ -19,9 +19,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package simplexIntegral.polygon;
+package simpleIntegral.polygon;
 
 public class Tetrahedron extends ThreeDimPolygon {
+
     private double[] squres = new double[4]; // 存储每个面的面积
 
     public Tetrahedron(double[][] vertices) {
@@ -45,30 +46,28 @@ public class Tetrahedron extends ThreeDimPolygon {
      * <li>squres[3]: Area of face formed by vertices D, A, and B</li>
      * </ul>
      */
-
     private void caculateSqures() {
         double[] A = this.vertices[0];
         double[] B = this.vertices[1];
         double[] C = this.vertices[2];
         double[] D = this.vertices[3];
-        this.squres[0] = faceArea(new double[][] { A, B, C });
-        this.squres[1] = faceArea(new double[][] { B, C, D });
-        this.squres[2] = faceArea(new double[][] { C, D, A });
-        this.squres[3] = faceArea(new double[][] { D, A, B });
+        this.squres[0] = faceArea(new double[][]{A, B, C});
+        this.squres[1] = faceArea(new double[][]{B, C, D});
+        this.squres[2] = faceArea(new double[][]{C, D, A});
+        this.squres[3] = faceArea(new double[][]{D, A, B});
     }
 
     /**
      * Calculates the volume of the tetrahedron.
      * <p>
-     * The volume of a tetrahedron can be calculated using the scalar triple product
-     * of the three vectors formed by the four vertices of the tetrahedron, divided
-     * by 6.
+     * The volume of a tetrahedron can be calculated using the scalar triple
+     * product of the three vectors formed by the four vertices of the
+     * tetrahedron, divided by 6.
      * <p>
-     * The formula is: volume = |(AB x AC) \* AD| / 6
-     * where AB, AC, and AD are the three vectors formed by the four vertices of
-     * the tetrahedron.
+     * The formula is: volume = |(AB x AC) \* AD| / 6 where AB, AC, and AD are
+     * the three vectors formed by the four vertices of the tetrahedron.
      * <p>
-     * 
+     *
      * @return the volume of the tetrahedron
      */
     @Override
@@ -91,10 +90,10 @@ public class Tetrahedron extends ThreeDimPolygon {
 
     // 计算从点from到点to的向量
     private double[] vectorBetween(double[] from, double[] to) {
-        return new double[] {
-                to[0] - from[0],
-                to[1] - from[1],
-                to[2] - from[2]
+        return new double[]{
+            to[0] - from[0],
+            to[1] - from[1],
+            to[2] - from[2]
         };
     }
 
@@ -105,7 +104,6 @@ public class Tetrahedron extends ThreeDimPolygon {
      * @param v the second vector
      * @return the dot product of vectors u and v
      */
-
     private double dotProduct(double[] u, double[] v) {
         return u[0] * v[0] + u[1] * v[1] + u[2] * v[2];
     }
@@ -113,28 +111,26 @@ public class Tetrahedron extends ThreeDimPolygon {
     /**
      * Checks if the given vertices form a valid tetrahedron.
      * <p>
-     * A valid tetrahedron must satisfy the following conditions:
-     * 1. The number of vertices must be exactly 4.
-     * 2. The vertices must not be identical.
-     * 3. The vertices must not be coplanar.
+     * A valid tetrahedron must satisfy the following conditions: 1. The number
+     * of vertices must be exactly 4. 2. The vertices must not be identical. 3.
+     * The vertices must not be coplanar.
      * <p>
      * This method first checks that the number of vertices is correct, then
-     * verifies that not all vertices are the same. It calculates vectors between
-     * vertices and uses the cross product to ensure that no three vertices are
-     * collinear and that not all four vertices are coplanar.
+     * verifies that not all vertices are the same. It calculates vectors
+     * between vertices and uses the cross product to ensure that no three
+     * vertices are collinear and that not all four vertices are coplanar.
      * <p>
      *
      * @param vertices the vertices to check
      * @return true if the vertices form a valid tetrahedron, false otherwise
      */
-
     @Override
     public boolean isRightVertices(double[][] vertices) {
         int n = vertices.length;
         if (n != 4 | vertices[0].length != 3) {
             return false;
         }
-        
+
         // 检查所有点是否相同
         double[] A = vertices[0];
         boolean allSame = true;
@@ -205,17 +201,17 @@ public class Tetrahedron extends ThreeDimPolygon {
     }
 
     /**
-     * Checks if two double arrays are equal, element by element.
-     * Two elements are considered equal if their difference is less than EPSILON.
-     * 
+     * Checks if two double arrays are equal, element by element. Two elements
+     * are considered equal if their difference is less than EPSILON.
+     *
      * @param a the first double array
      * @param b the second double array
      * @return true if the two arrays are equal, false otherwise
      */
     private boolean equals(double[] a, double[] b) {
-        return Math.abs(a[0] - b[0]) < EPSILON &&
-                Math.abs(a[1] - b[1]) < EPSILON &&
-                Math.abs(a[2] - b[2]) < EPSILON;
+        return Math.abs(a[0] - b[0]) < EPSILON
+                && Math.abs(a[1] - b[1]) < EPSILON
+                && Math.abs(a[2] - b[2]) < EPSILON;
     }
 
     /**
@@ -226,7 +222,7 @@ public class Tetrahedron extends ThreeDimPolygon {
      * @return a new vector that is the difference of b and a
      */
     private double[] vector(double[] a, double[] b) {
-        return new double[] { b[0] - a[0], b[1] - a[1], b[2] - a[2] };
+        return new double[]{b[0] - a[0], b[1] - a[1], b[2] - a[2]};
     }
 
     /**
@@ -235,51 +231,50 @@ public class Tetrahedron extends ThreeDimPolygon {
      * <p>
      * The cross product of two vectors in 3D space results in a third vector
      * that is perpendicular to both of the input vectors. The magnitude of the
-     * resulting vector is equal to the area of the parallelogram that the vectors
-     * span.
+     * resulting vector is equal to the area of the parallelogram that the
+     * vectors span.
      * </p>
      *
      * @param u the first vector
      * @param v the second vector
      * @return a new vector that is the cross product of u and v
      */
-
     private double[] crossProduct(double[] u, double[] v) {
-        return new double[] {
-                u[1] * v[2] - u[2] * v[1],
-                u[2] * v[0] - u[0] * v[2],
-                u[0] * v[1] - u[1] * v[0]
+        return new double[]{
+            u[1] * v[2] - u[2] * v[1],
+            u[2] * v[0] - u[0] * v[2],
+            u[0] * v[1] - u[1] * v[0]
         };
     }
 
     /**
      * Calculates the area of a triangle given by three points in 3D space.
-     * 
+     *
      * <p>
      * The area of the triangle is calculated using the cross product of two
      * vectors formed by the points.
      * </p>
-     * 
+     *
      * @param points the three points of the triangle
      * @return the area of the triangle
      */
     private double faceArea(double[][] points) {
         double[] AB = {
-                points[1][0] - points[0][0],
-                points[1][1] - points[0][1],
-                points[1][2] - points[0][2]
+            points[1][0] - points[0][0],
+            points[1][1] - points[0][1],
+            points[1][2] - points[0][2]
         };
         double[] AC = {
-                points[2][0] - points[0][0],
-                points[2][1] - points[0][1],
-                points[2][2] - points[0][2]
+            points[2][0] - points[0][0],
+            points[2][1] - points[0][1],
+            points[2][2] - points[0][2]
         };
 
         // 计算叉乘
         double[] cross = {
-                AB[1] * AC[2] - AB[2] * AC[1],
-                AB[2] * AC[0] - AB[0] * AC[2],
-                AB[0] * AC[1] - AB[1] * AC[0]
+            AB[1] * AC[2] - AB[2] * AC[1],
+            AB[2] * AC[0] - AB[0] * AC[2],
+            AB[0] * AC[1] - AB[1] * AC[0]
         };
 
         return Math.sqrt(cross[0] * cross[0] + cross[1] * cross[1] + cross[2] * cross[2]) / 2;

@@ -21,12 +21,13 @@
  */
 package tools;
 
+import static java.lang.System.arraycopy;
 import java.util.StringJoiner;
 
 /**
  * A utility class that provides static methods for working with arrays.
  * <p>
- * 
+ *
  * Such as
  * <p>
  * - Convert an array to a string
@@ -78,30 +79,28 @@ final public class ArrayTools {
 
     /**
      * Converts an array of objects into a string with the elements separated by
-     * commas, enclosed
-     * in square brackets. calls
+     * commas, enclosed in square brackets. calls
      * {@link #arrayToString(Object[], CharSequence, CharSequence, CharSequence)}
      *
      * @param array the array of objects to be converted into a string
      * @return a string representation of the array with elements separated by
-     *         commas(`,`) and enclosed(`[` and `]`)
-     *         in square brackets, or null if the array is null
+     * commas(`,`) and enclosed(`[` and `]`) in square brackets, or null if the
+     * array is null
      */
     public static String arrayToString(Object[] array) {
         return arrayToString(array, ", ", "[", "]");
     }
 
     /**
-     * Converts an array of objects into a string with the elements separated by the
-     * specified delimiter,
-     * enclosed in square brackets. calls
+     * Converts an array of objects into a string with the elements separated by
+     * the specified delimiter, enclosed in square brackets. calls
      * {@link #arrayToString(Object[], CharSequence, CharSequence, CharSequence)}
      *
-     * @param array     the array of objects to be converted into a string
+     * @param array the array of objects to be converted into a string
      * @param delimiter the sequence of characters to separate each element
-     * @return a string representation of the array with elements separated by the
-     *         specified delimiter
-     *         and enclosed(`[` and `]`), or null if the array is null
+     * @return a string representation of the array with elements separated by
+     * the specified delimiter and enclosed(`[` and `]`), or null if the array
+     * is null
      */
     public static String arrayToString(Object[] array, CharSequence delimiter) {
         return arrayToString(array, delimiter, "[", "]");
@@ -111,16 +110,15 @@ final public class ArrayTools {
      * Converts an array of int into a string with the elements separated by the
      * specified delimiter, enclosed in the specified prefix and suffix.
      *
-     * @param array     the array of int to be converted into a string
+     * @param array the array of int to be converted into a string
      * @param delimiter the sequence of characters to separate each element
-     * @param prefix    the sequence of characters to be added at the beginning of
-     *                  the resulting string
-     * @param suffix    the sequence of characters to be added at the end of the
-     *                  resulting string
-     * @return a string representation of the array with elements separated by the
-     *         specified delimiter
-     *         and enclosed in the specified prefix and suffix, or null if the array
-     *         is null
+     * @param prefix the sequence of characters to be added at the beginning of
+     * the resulting string
+     * @param suffix the sequence of characters to be added at the end of the
+     * resulting string
+     * @return a string representation of the array with elements separated by
+     * the specified delimiter and enclosed in the specified prefix and suffix,
+     * or null if the array is null
      */
     public static String arrayToString(int[] array, CharSequence delimiter, CharSequence prefix,
             CharSequence suffix) {
@@ -135,14 +133,13 @@ final public class ArrayTools {
     }
 
     /**
-     * Converts an array of int into a string with the elements separated by commas,
-     * enclosed in square brackets. calls
+     * Converts an array of int into a string with the elements separated by
+     * commas, enclosed in square brackets. calls
      * {@link #arrayToString(int[], CharSequence, CharSequence, CharSequence)}
      *
      * @param array the array of int to be converted into a string
      * @return a string representation of the array with elements separated by
-     *         commas
-     *         and enclosed in square brackets, or null if the array is null
+     * commas and enclosed in square brackets, or null if the array is null
      */
     public static String arrayToString(int[] array) {
         return arrayToString(array, ", ", "[", "]");
@@ -153,30 +150,29 @@ final public class ArrayTools {
      * specified delimiter, enclosed in square brackets. calls
      * {@link #arrayToString(int[], CharSequence, CharSequence, CharSequence)}
      *
-     * @param array     the array of int to be converted into a string
+     * @param array the array of int to be converted into a string
      * @param delimiter the sequence of characters to separate each element
-     * @return a string representation of the array with elements separated by the
-     *         specified delimiter
-     *         and enclosed in square brackets, or null if the array is null
+     * @return a string representation of the array with elements separated by
+     * the specified delimiter and enclosed in square brackets, or null if the
+     * array is null
      */
     public static String arrayToString(int[] array, CharSequence delimiter) {
         return arrayToString(array, delimiter, "[", "]");
     }
 
     /**
-     * Converts an array of long into a string with the elements separated by the
-     * specified delimiter, enclosed in the specified prefix and suffix.
+     * Converts an array of long into a string with the elements separated by
+     * the specified delimiter, enclosed in the specified prefix and suffix.
      *
-     * @param array     the array of long to be converted into a string
+     * @param array the array of long to be converted into a string
      * @param delimiter the sequence of characters to separate each element
-     * @param prefix    the sequence of characters to be added at the beginning of
-     *                  the resulting string
-     * @param suffix    the sequence of characters to be added at the end of the
-     *                  resulting string
-     * @return a string representation of the array with elements separated by the
-     *         specified delimiter
-     *         and enclosed in the specified prefix and suffix, or null if the array
-     *         is null
+     * @param prefix the sequence of characters to be added at the beginning of
+     * the resulting string
+     * @param suffix the sequence of characters to be added at the end of the
+     * resulting string
+     * @return a string representation of the array with elements separated by
+     * the specified delimiter and enclosed in the specified prefix and suffix,
+     * or null if the array is null
      */
     public static String arrayToString(long[] array, CharSequence delimiter, CharSequence prefix,
             CharSequence suffix) {
@@ -192,47 +188,44 @@ final public class ArrayTools {
 
     /**
      * Converts an array of long into a string with the elements separated by
-     * commas,
-     * enclosed in square brackets. calls
+     * commas, enclosed in square brackets. calls
      * {@link #arrayToString(long[], CharSequence, CharSequence, CharSequence)}
      *
      * @param array the array of long to be converted into a string
      * @return a string representation of the array with elements separated by
-     *         commas
-     *         and enclosed in square brackets, or null if the array is null
+     * commas and enclosed in square brackets, or null if the array is null
      */
     public static String arrayToString(long[] array) {
         return arrayToString(array, ", ", "[", "]");
     }
 
     /**
-     * Converts an array of long into a string with the elements separated by the
-     * specified delimiter, enclosed in square brackets. calls
+     * Converts an array of long into a string with the elements separated by
+     * the specified delimiter, enclosed in square brackets. calls
      * {@link #arrayToString(long[], CharSequence, CharSequence, CharSequence)}
      *
-     * @param array     the array of long to be converted into a string
+     * @param array the array of long to be converted into a string
      * @param delimiter the sequence of characters to separate each element
-     * @return a string representation of the array with elements separated by the
-     *         specified delimiter
-     *         and enclosed in square brackets, or null if the array is null
+     * @return a string representation of the array with elements separated by
+     * the specified delimiter and enclosed in square brackets, or null if the
+     * array is null
      */
     public static String arrayToString(long[] array, CharSequence delimiter) {
         return arrayToString(array, delimiter, "[", "]");
     }
 
     /**
-     * Converts an array of double into a string with the elements separated by the
-     * specified delimiter, enclosed in the specified prefix and suffix. If the
-     * array
-     * is null, returns null.
+     * Converts an array of double into a string with the elements separated by
+     * the specified delimiter, enclosed in the specified prefix and suffix. If
+     * the array is null, returns null.
      *
-     * @param array     the array of double to be converted into a string
+     * @param array the array of double to be converted into a string
      * @param delimiter the sequence of characters to separate each element
-     * @param prefix    the prefix to be added to the start of the string
-     * @param suffix    the suffix to be added to the end of the string
-     * @return a string representation of the array with elements separated by the
-     *         specified delimiter, enclosed in the specified prefix and suffix, or
-     *         null if the array is null
+     * @param prefix the prefix to be added to the start of the string
+     * @param suffix the suffix to be added to the end of the string
+     * @return a string representation of the array with elements separated by
+     * the specified delimiter, enclosed in the specified prefix and suffix, or
+     * null if the array is null
      */
     public static String arrayToString(double[] array, CharSequence delimiter, CharSequence prefix,
             CharSequence suffix) {
@@ -248,47 +241,44 @@ final public class ArrayTools {
 
     /**
      * Converts an array of double into a string with the elements separated by
-     * commas,
-     * enclosed in square brackets. calls
+     * commas, enclosed in square brackets. calls
      * {@link #arrayToString(double[], CharSequence, CharSequence, CharSequence)}
      *
      * @param array the array of double to be converted into a string
      * @return a string representation of the array with elements separated by
-     *         commas
-     *         and enclosed in square brackets, or null if the array is null
+     * commas and enclosed in square brackets, or null if the array is null
      */
     public static String arrayToString(double[] array) {
         return arrayToString(array, ", ", "[", "]");
     }
 
     /**
-     * Converts an array of double into a string with the elements separated by the
-     * specified delimiter, enclosed in square brackets. calls
+     * Converts an array of double into a string with the elements separated by
+     * the specified delimiter, enclosed in square brackets. calls
      * {@link #arrayToString(double[], CharSequence, CharSequence, CharSequence)}
      *
-     * @param array     the array of double to be converted into a string
+     * @param array the array of double to be converted into a string
      * @param delimiter the sequence of characters to separate each element
-     * @return a string representation of the array with elements separated by the
-     *         specified delimiter
-     *         and enclosed in square brackets, or null if the array is null
+     * @return a string representation of the array with elements separated by
+     * the specified delimiter and enclosed in square brackets, or null if the
+     * array is null
      */
     public static String arrayToString(double[] array, CharSequence delimiter) {
         return arrayToString(array, delimiter, "[", "]");
     }
 
     /**
-     * Converts an array of char into a string with the elements separated by the
-     * specified delimiter, enclosed in the specified prefix and suffix. If the
-     * array
-     * is null, returns null.
+     * Converts an array of char into a string with the elements separated by
+     * the specified delimiter, enclosed in the specified prefix and suffix. If
+     * the array is null, returns null.
      *
-     * @param array     the array of char to be converted into a string
+     * @param array the array of char to be converted into a string
      * @param delimiter the sequence of characters to separate each element
-     * @param prefix    the prefix to be added to the start of the string
-     * @param suffix    the suffix to be added to the end of the string
-     * @return a string representation of the array with elements separated by the
-     *         specified delimiter, enclosed in the specified prefix and suffix, or
-     *         null if the array is null
+     * @param prefix the prefix to be added to the start of the string
+     * @param suffix the suffix to be added to the end of the string
+     * @return a string representation of the array with elements separated by
+     * the specified delimiter, enclosed in the specified prefix and suffix, or
+     * null if the array is null
      */
     public static String arrayToString(char[] array, CharSequence delimiter, CharSequence prefix,
             CharSequence suffix) {
@@ -304,50 +294,46 @@ final public class ArrayTools {
 
     /**
      * Converts an array of char into a string with the elements separated by
-     * commas,
-     * enclosed in square brackets. calls
+     * commas, enclosed in square brackets. calls
      * {@link #arrayToString(char[], CharSequence, CharSequence, CharSequence)}
      *
      * @param array the array of char to be converted into a string
      * @return a string representation of the array with elements separated by
-     *         commas
-     *         and enclosed in square brackets, or null if the array is null
+     * commas and enclosed in square brackets, or null if the array is null
      */
     public static String arrayToString(char[] array) {
         return arrayToString(array, ", ", "[", "]");
     }
 
     /**
-     * Converts an array of char into a string with the elements separated by the
-     * specified delimiter, enclosed in square brackets. calls
+     * Converts an array of char into a string with the elements separated by
+     * the specified delimiter, enclosed in square brackets. calls
      * {@link #arrayToString(char[], CharSequence, CharSequence, CharSequence)}
      *
-     * @param array     the array of char to be converted into a string
+     * @param array the array of char to be converted into a string
      * @param delimiter the sequence of characters to separate each element
-     * @return a string representation of the array with elements separated by the
-     *         specified delimiter, enclosed in square brackets, or null if the
-     *         array is
-     *         null
+     * @return a string representation of the array with elements separated by
+     * the specified delimiter, enclosed in square brackets, or null if the
+     * array is null
      */
     public static String arrayToString(char[] array, CharSequence delimiter) {
         return arrayToString(array, delimiter, "[", "]");
     }
 
     /**
-     * Converts an array of float into a string with the elements separated by the
-     * specified delimiter, enclosed in the specified prefix and suffix.
+     * Converts an array of float into a string with the elements separated by
+     * the specified delimiter, enclosed in the specified prefix and suffix.
      *
-     * @param array     the array of float to be converted into a string
+     * @param array the array of float to be converted into a string
      * @param delimiter the sequence of characters to separate each element
-     * @param prefix    the sequence of characters to be added at the beginning of
-     *                  the resulting string
-     * @param suffix    the sequence of characters to be added at the end of the
-     *                  resulting string
-     * @return a string representation of the array with elements separated by the
-     *         specified delimiter and enclosed in the specified prefix and suffix,
-     *         or null if the array is null
+     * @param prefix the sequence of characters to be added at the beginning of
+     * the resulting string
+     * @param suffix the sequence of characters to be added at the end of the
+     * resulting string
+     * @return a string representation of the array with elements separated by
+     * the specified delimiter and enclosed in the specified prefix and suffix,
+     * or null if the array is null
      */
-
     public static String arrayToString(float[] array, CharSequence delimiter, CharSequence prefix,
             CharSequence suffix) {
         if (array == null) {
@@ -365,42 +351,40 @@ final public class ArrayTools {
      * ", ", enclosed in square brackets.
      *
      * @param array the array of float to be converted into a string
-     * @return a string representation of the array with elements separated by ", "
-     *         and enclosed in square brackets, or null if the array is null
+     * @return a string representation of the array with elements separated by
+     * ", " and enclosed in square brackets, or null if the array is null
      */
-
     public static String arrayToString(float[] array) {
         return arrayToString(array, ", ", "[", "]");
     }
 
     /**
-     * Converts an array of float into a string with the elements separated by the
-     * specified delimiter, enclosed in square brackets.
+     * Converts an array of float into a string with the elements separated by
+     * the specified delimiter, enclosed in square brackets.
      *
-     * @param array     the array of float to be converted into a string
+     * @param array the array of float to be converted into a string
      * @param delimiter the sequence of characters to separate each element
-     * @return a string representation of the array with elements separated by the
-     *         specified delimiter and enclosed in square brackets, or null if the
-     *         array is null
+     * @return a string representation of the array with elements separated by
+     * the specified delimiter and enclosed in square brackets, or null if the
+     * array is null
      */
-
     public static String arrayToString(float[] array, CharSequence delimiter) {
         return arrayToString(array, delimiter, "[", "]");
     }
 
     /**
-     * Converts an array of byte into a string with the elements separated by the
-     * specified delimiter, enclosed in the specified prefix and suffix.
+     * Converts an array of byte into a string with the elements separated by
+     * the specified delimiter, enclosed in the specified prefix and suffix.
      *
-     * @param array     the array of byte to be converted into a string
+     * @param array the array of byte to be converted into a string
      * @param delimiter the sequence of characters to separate each element
-     * @param prefix    the sequence of characters to be added at the beginning of
-     *                  the resulting string
-     * @param suffix    the sequence of characters to be added at the end of the
-     *                  resulting string
-     * @return a string representation of the array with elements separated by the
-     *         specified delimiter and enclosed in the specified prefix and suffix,
-     *         or null if the array is null
+     * @param prefix the sequence of characters to be added at the beginning of
+     * the resulting string
+     * @param suffix the sequence of characters to be added at the end of the
+     * resulting string
+     * @return a string representation of the array with elements separated by
+     * the specified delimiter and enclosed in the specified prefix and suffix,
+     * or null if the array is null
      */
     public static String arrayToString(byte[] array, CharSequence delimiter, CharSequence prefix,
             CharSequence suffix) {
@@ -416,48 +400,45 @@ final public class ArrayTools {
 
     /**
      * Converts an array of byte into a string with the elements separated by
-     * commas,
-     * enclosed in square brackets. calls
+     * commas, enclosed in square brackets. calls
      * {@link #arrayToString(byte[], CharSequence, CharSequence, CharSequence)}
      *
      * @param array the array of byte to be converted into a string
      * @return a string representation of the array with elements separated by
-     *         commas
-     *         and enclosed in square brackets, or null if the array is null
+     * commas and enclosed in square brackets, or null if the array is null
      */
     public static String arrayToString(byte[] array) {
         return arrayToString(array, ", ", "[", "]");
     }
 
     /**
-     * Converts an array of byte into a string with the elements separated by the
-     * specified delimiter, enclosed in square brackets.
+     * Converts an array of byte into a string with the elements separated by
+     * the specified delimiter, enclosed in square brackets.
      *
-     * @param array     the array of byte to be converted into a string
+     * @param array the array of byte to be converted into a string
      * @param delimiter the sequence of characters to separate each element
-     * @return a string representation of the array with elements separated by the
-     *         specified delimiter and enclosed in square brackets, or null if the
-     *         array is null
+     * @return a string representation of the array with elements separated by
+     * the specified delimiter and enclosed in square brackets, or null if the
+     * array is null
      */
     public static String arrayToString(byte[] array, CharSequence delimiter) {
         return arrayToString(array, delimiter, "[", "]");
     }
 
     /**
-     * Converts an array of short into a string with the elements separated by the
-     * specified delimiter, enclosed in the specified prefix and suffix.
+     * Converts an array of short into a string with the elements separated by
+     * the specified delimiter, enclosed in the specified prefix and suffix.
      *
-     * @param array     the array of short to be converted into a string
+     * @param array the array of short to be converted into a string
      * @param delimiter the sequence of characters to separate each element
-     * @param prefix    the sequence of characters to be added at the beginning of
-     *                  the resulting string
-     * @param suffix    the sequence of characters to be added at the end of the
-     *                  resulting string
-     * @return a string representation of the array with elements separated by the
-     *         specified delimiter and enclosed in the specified prefix and suffix,
-     *         or null if the array is null
+     * @param prefix the sequence of characters to be added at the beginning of
+     * the resulting string
+     * @param suffix the sequence of characters to be added at the end of the
+     * resulting string
+     * @return a string representation of the array with elements separated by
+     * the specified delimiter and enclosed in the specified prefix and suffix,
+     * or null if the array is null
      */
-
     public static String arrayToString(short[] array, CharSequence delimiter, CharSequence prefix,
             CharSequence suffix) {
         if (array == null) {
@@ -472,30 +453,27 @@ final public class ArrayTools {
 
     /**
      * Converts an array of short into a string with the elements separated by
-     * commas,
-     * enclosed in square brackets. calls
+     * commas, enclosed in square brackets. calls
      * {@link #arrayToString(short[], CharSequence, CharSequence, CharSequence)}
      *
      * @param array the array of short to be converted into a string
      * @return a string representation of the array with elements separated by
-     *         commas
-     *         and enclosed in square brackets, or null if the array is null
+     * commas and enclosed in square brackets, or null if the array is null
      */
     public static String arrayToString(short[] array) {
         return arrayToString(array, ", ", "[", "]");
     }
 
     /**
-     * Converts an array of short into a string with the elements separated by the
-     * specified delimiter, enclosed in square brackets.
+     * Converts an array of short into a string with the elements separated by
+     * the specified delimiter, enclosed in square brackets.
      *
-     * @param array     the array of short to be converted into a string
+     * @param array the array of short to be converted into a string
      * @param delimiter the sequence of characters to separate each element
-     * @return a string representation of the array with elements separated by the
-     *         specified delimiter and enclosed in square brackets, or null if the
-     *         array is null
+     * @return a string representation of the array with elements separated by
+     * the specified delimiter and enclosed in square brackets, or null if the
+     * array is null
      */
-
     public static String arrayToString(short[] array, CharSequence delimiter) {
         return arrayToString(array, delimiter, "[", "]");
     }
@@ -513,26 +491,24 @@ final public class ArrayTools {
     public static final int DESCENDING = 1;
 
     /**
-     * Checks if the given array is sorted within the specified range and
-     * axis.
+     * Checks if the given array is sorted within the specified range and axis.
      *
      * <p>
-     * This method verifies whether the elements in the specified range of the array
-     * are sorted in either ascending or descending order, based on the axis value.
-     * It throws an IllegalArgumentException if the array is null, if the start or
-     * end indices are invalid, or if the axis value is neither ASCENDING nor
-     * DESCENDING.
+     * This method verifies whether the elements in the specified range of the
+     * array are sorted in either ascending or descending order, based on the
+     * axis value. It throws an IllegalArgumentException if the array is null,
+     * if the start or end indices are invalid, or if the axis value is neither
+     * ASCENDING nor DESCENDING.
      *
      * @param array the array to be checked
      * @param start the starting index of the check range
-     * @param end   the ending index of the check range
-     * @param aix   the axis value for the sorting order, either ASCENDING or
-     *              DESCENDING
+     * @param end the ending index of the check range
+     * @param aix the axis value for the sorting order, either ASCENDING or
+     * DESCENDING
      * @return true if the array is sorted within the specified range and axis,
-     *         false otherwise
-     * @throws IllegalArgumentException if the array is null, the start or end index
-     *                                  is invalid,
-     *                                  or the axis value is invalid
+     * false otherwise
+     * @throws IllegalArgumentException if the array is null, the start or end
+     * index is invalid, or the axis value is invalid
      */
     public static <T extends Comparable<T>> boolean isSorted(T[] array, int start, int end, int aix) {
         if (array == null) {
@@ -568,7 +544,8 @@ final public class ArrayTools {
      *
      * <p>
      * This method verifies whether the elements in the array are sorted in
-     * ascending order. It throws an IllegalArgumentException if the array is null.
+     * ascending order. It throws an IllegalArgumentException if the array is
+     * null.
      *
      * @param array the array to be checked
      * @return true if the array is sorted in ascending order, false otherwise
@@ -583,22 +560,21 @@ final public class ArrayTools {
      * axis.
      *
      * <p>
-     * This method verifies whether the elements in the specified range of the array
-     * are sorted in either ascending or descending order, based on the axis value.
-     * It throws an IllegalArgumentException if the array is null, if the start or
-     * end indices are invalid, or if the axis value is neither ASCENDING nor
-     * DESCENDING.
+     * This method verifies whether the elements in the specified range of the
+     * array are sorted in either ascending or descending order, based on the
+     * axis value. It throws an IllegalArgumentException if the array is null,
+     * if the start or end indices are invalid, or if the axis value is neither
+     * ASCENDING nor DESCENDING.
      *
      * @param array the int array to be checked
      * @param start the starting index of the check range
-     * @param end   the ending index of the check range
-     * @param aix   the axis value for the sorting order, either ASCENDING or
-     *              DESCENDING
+     * @param end the ending index of the check range
+     * @param aix the axis value for the sorting order, either ASCENDING or
+     * DESCENDING
      * @return true if the array is sorted within the specified range and axis,
-     *         false otherwise
-     * @throws IllegalArgumentException if the array is null, the start or end index
-     *                                  is invalid,
-     *                                  or the axis value is invalid
+     * false otherwise
+     * @throws IllegalArgumentException if the array is null, the start or end
+     * index is invalid, or the axis value is invalid
      */
     public static boolean isSorted(int[] array, int start, int end, int aix) {
         if (array == null) {
@@ -634,7 +610,8 @@ final public class ArrayTools {
      *
      * <p>
      * This method verifies whether the elements in the array are sorted in
-     * ascending order. It throws an IllegalArgumentException if the array is null.
+     * ascending order. It throws an IllegalArgumentException if the array is
+     * null.
      *
      * @param array the int array to be checked
      * @return true if the array is sorted in ascending order, false otherwise
@@ -649,24 +626,22 @@ final public class ArrayTools {
      * axis.
      *
      * <p>
-     * This method verifies whether the elements in the specified range of the array
-     * are sorted in either ascending or descending order, based on the axis value.
-     * It throws an IllegalArgumentException if the array is null, if the start or
-     * end indices are invalid, or if the axis value is neither ASCENDING nor
-     * DESCENDING.
+     * This method verifies whether the elements in the specified range of the
+     * array are sorted in either ascending or descending order, based on the
+     * axis value. It throws an IllegalArgumentException if the array is null,
+     * if the start or end indices are invalid, or if the axis value is neither
+     * ASCENDING nor DESCENDING.
      *
      * @param array the long array to be checked
      * @param start the starting index of the check range
-     * @param end   the ending index of the check range
-     * @param aix   the axis value for the sorting order, either ASCENDING or
-     *              DESCENDING
+     * @param end the ending index of the check range
+     * @param aix the axis value for the sorting order, either ASCENDING or
+     * DESCENDING
      * @return true if the array is sorted within the specified range and axis,
-     *         false otherwise
-     * @throws IllegalArgumentException if the array is null, the start or end index
-     *                                  is invalid,
-     *                                  or the axis value is invalid
+     * false otherwise
+     * @throws IllegalArgumentException if the array is null, the start or end
+     * index is invalid, or the axis value is invalid
      */
-
     public static boolean isSorted(long[] array, int start, int end, int aix) {
         if (array == null) {
             throw new IllegalArgumentException("Array cannot be null");
@@ -701,7 +676,8 @@ final public class ArrayTools {
      *
      * <p>
      * This method verifies whether the elements in the array are sorted in
-     * ascending order. It throws an IllegalArgumentException if the array is null.
+     * ascending order. It throws an IllegalArgumentException if the array is
+     * null.
      *
      * @param array the long array to be checked
      * @return true if the array is sorted in ascending order, false otherwise
@@ -716,24 +692,22 @@ final public class ArrayTools {
      * axis.
      *
      * <p>
-     * This method verifies whether the elements in the specified range of the array
-     * are sorted in either ascending or descending order, based on the axis value.
-     * It throws an IllegalArgumentException if the array is null, if the start or
-     * end indices are invalid, or if the axis value is neither ASCENDING nor
-     * DESCENDING.
+     * This method verifies whether the elements in the specified range of the
+     * array are sorted in either ascending or descending order, based on the
+     * axis value. It throws an IllegalArgumentException if the array is null,
+     * if the start or end indices are invalid, or if the axis value is neither
+     * ASCENDING nor DESCENDING.
      *
      * @param array the double array to be checked
      * @param start the starting index of the check range
-     * @param end   the ending index of the check range
-     * @param aix   the axis value for the sorting order, either ASCENDING or
-     *              DESCENDING
+     * @param end the ending index of the check range
+     * @param aix the axis value for the sorting order, either ASCENDING or
+     * DESCENDING
      * @return true if the array is sorted within the specified range and axis,
-     *         false otherwise
-     * @throws IllegalArgumentException if the array is null, the start or end index
-     *                                  is invalid,
-     *                                  or the axis value is invalid
+     * false otherwise
+     * @throws IllegalArgumentException if the array is null, the start or end
+     * index is invalid, or the axis value is invalid
      */
-
     public static boolean isSorted(double[] array, int start, int end, int aix) {
         if (array == null) {
             throw new IllegalArgumentException("Array cannot be null");
@@ -768,7 +742,8 @@ final public class ArrayTools {
      *
      * <p>
      * This method verifies whether the elements in the array are sorted in
-     * ascending order. It throws an IllegalArgumentException if the array is null.
+     * ascending order. It throws an IllegalArgumentException if the array is
+     * null.
      *
      * @param array the double array to be checked
      * @return true if the array is sorted in ascending order, false otherwise
@@ -783,22 +758,21 @@ final public class ArrayTools {
      * axis.
      *
      * <p>
-     * This method verifies whether the elements in the specified range of the array
-     * are sorted in either ascending or descending order, based on the axis value.
-     * It throws an IllegalArgumentException if the array is null, if the start or
-     * end indices are invalid, or if the axis value is neither ASCENDING nor
-     * DESCENDING.
+     * This method verifies whether the elements in the specified range of the
+     * array are sorted in either ascending or descending order, based on the
+     * axis value. It throws an IllegalArgumentException if the array is null,
+     * if the start or end indices are invalid, or if the axis value is neither
+     * ASCENDING nor DESCENDING.
      *
      * @param array the float array to be checked
      * @param start the starting index of the check range
-     * @param end   the ending index of the check range
-     * @param aix   the axis value for the sorting order, either ASCENDING or
-     *              DESCENDING
+     * @param end the ending index of the check range
+     * @param aix the axis value for the sorting order, either ASCENDING or
+     * DESCENDING
      * @return true if the array is sorted within the specified range and axis,
-     *         false otherwise
-     * @throws IllegalArgumentException if the array is null, the start or end index
-     *                                  is invalid,
-     *                                  or the axis value is invalid
+     * false otherwise
+     * @throws IllegalArgumentException if the array is null, the start or end
+     * index is invalid, or the axis value is invalid
      */
     public static boolean isSorted(float[] array, int start, int end, int aix) {
         if (array == null) {
@@ -834,7 +808,8 @@ final public class ArrayTools {
      *
      * <p>
      * This method verifies whether the elements in the array are sorted in
-     * ascending order. It throws an IllegalArgumentException if the array is null.
+     * ascending order. It throws an IllegalArgumentException if the array is
+     * null.
      *
      * @param array the float array to be checked
      * @return true if the array is sorted in ascending order, false otherwise
@@ -849,22 +824,21 @@ final public class ArrayTools {
      * axis.
      *
      * <p>
-     * This method verifies whether the elements in the specified range of the array
-     * are sorted in either ascending or descending order, based on the axis value.
-     * It throws an IllegalArgumentException if the array is null, if the start or
-     * end indices are invalid, or if the axis value is neither ASCENDING nor
-     * DESCENDING.
+     * This method verifies whether the elements in the specified range of the
+     * array are sorted in either ascending or descending order, based on the
+     * axis value. It throws an IllegalArgumentException if the array is null,
+     * if the start or end indices are invalid, or if the axis value is neither
+     * ASCENDING nor DESCENDING.
      *
      * @param array the char array to be checked
      * @param start the starting index of the check range
-     * @param end   the ending index of the check range
-     * @param aix   the axis value for the sorting order, either ASCENDING or
-     *              DESCENDING
+     * @param end the ending index of the check range
+     * @param aix the axis value for the sorting order, either ASCENDING or
+     * DESCENDING
      * @return true if the array is sorted within the specified range and axis,
-     *         false otherwise
-     * @throws IllegalArgumentException if the array is null, the start or end index
-     *                                  is invalid,
-     *                                  or the axis value is invalid
+     * false otherwise
+     * @throws IllegalArgumentException if the array is null, the start or end
+     * index is invalid, or the axis value is invalid
      */
     public static boolean isSorted(char[] array, int start, int end, int aix) {
         if (array == null) {
@@ -900,7 +874,8 @@ final public class ArrayTools {
      *
      * <p>
      * This method verifies whether the elements in the array are sorted in
-     * ascending order. It throws an IllegalArgumentException if the array is null.
+     * ascending order. It throws an IllegalArgumentException if the array is
+     * null.
      *
      * @param array the char array to be checked
      * @return true if the array is sorted in ascending order, false otherwise
@@ -915,22 +890,21 @@ final public class ArrayTools {
      * axis.
      *
      * <p>
-     * This method verifies whether the elements in the specified range of the array
-     * are sorted in either ascending or descending order, based on the axis value.
-     * It throws an IllegalArgumentException if the array is null, if the start or
-     * end indices are invalid, or if the axis value is neither ASCENDING nor
-     * DESCENDING.
+     * This method verifies whether the elements in the specified range of the
+     * array are sorted in either ascending or descending order, based on the
+     * axis value. It throws an IllegalArgumentException if the array is null,
+     * if the start or end indices are invalid, or if the axis value is neither
+     * ASCENDING nor DESCENDING.
      *
      * @param array the short array to be checked
      * @param start the starting index of the check range
-     * @param end   the ending index of the check range
-     * @param aix   the axis value for the sorting order, either ASCENDING or
-     *              DESCENDING
+     * @param end the ending index of the check range
+     * @param aix the axis value for the sorting order, either ASCENDING or
+     * DESCENDING
      * @return true if the array is sorted within the specified range and axis,
-     *         false otherwise
-     * @throws IllegalArgumentException if the array is null, the start or end index
-     *                                  is invalid,
-     *                                  or the axis value is invalid
+     * false otherwise
+     * @throws IllegalArgumentException if the array is null, the start or end
+     * index is invalid, or the axis value is invalid
      */
     public static boolean isSorted(short[] array, int start, int end, int aix) {
         if (array == null) {
@@ -966,7 +940,8 @@ final public class ArrayTools {
      *
      * <p>
      * This method verifies whether the elements in the array are sorted in
-     * ascending order. It throws an IllegalArgumentException if the array is null.
+     * ascending order. It throws an IllegalArgumentException if the array is
+     * null.
      *
      * @param array the short array to be checked
      * @return true if the array is sorted in ascending order, false otherwise
@@ -981,22 +956,21 @@ final public class ArrayTools {
      * axis.
      *
      * <p>
-     * This method verifies whether the elements in the specified range of the array
-     * are sorted in either ascending or descending order, based on the axis value.
-     * It throws an IllegalArgumentException if the array is null, if the start or
-     * end indices are invalid, or if the axis value is neither ASCENDING nor
-     * DESCENDING.
+     * This method verifies whether the elements in the specified range of the
+     * array are sorted in either ascending or descending order, based on the
+     * axis value. It throws an IllegalArgumentException if the array is null,
+     * if the start or end indices are invalid, or if the axis value is neither
+     * ASCENDING nor DESCENDING.
      *
      * @param array the byte array to be checked
      * @param start the starting index of the check range
-     * @param end   the ending index of the check range
-     * @param aix   the axis value for the sorting order, either ASCENDING or
-     *              DESCENDING
+     * @param end the ending index of the check range
+     * @param aix the axis value for the sorting order, either ASCENDING or
+     * DESCENDING
      * @return true if the array is sorted within the specified range and axis,
-     *         false otherwise
-     * @throws IllegalArgumentException if the array is null, the start or end index
-     *                                  is invalid,
-     *                                  or the axis value is invalid
+     * false otherwise
+     * @throws IllegalArgumentException if the array is null, the start or end
+     * index is invalid, or the axis value is invalid
      */
     public static boolean isSorted(byte[] array, int start, int end, int aix) {
         if (array == null) {
@@ -1032,7 +1006,8 @@ final public class ArrayTools {
      *
      * <p>
      * This method verifies whether the elements in the array are sorted in
-     * ascending order. It throws an IllegalArgumentException if the array is null.
+     * ascending order. It throws an IllegalArgumentException if the array is
+     * null.
      *
      * @param array the byte array to be checked
      * @return true if the array is sorted in ascending order, false otherwise
@@ -1069,8 +1044,8 @@ final public class ArrayTools {
      * Reverses the elements of the given short array in place.
      *
      * <p>
-     * This method reverses the elements of the given array in place. It throws an
-     * IllegalArgumentException if the array is null.
+     * This method reverses the elements of the given array in place. It throws
+     * an IllegalArgumentException if the array is null.
      *
      * @param array the short array to be reversed
      * @throws IllegalArgumentException if the array is null
@@ -1094,8 +1069,8 @@ final public class ArrayTools {
      * Reverses the elements of the given byte array in place.
      *
      * <p>
-     * This method reverses the elements of the given array in place. It throws an
-     * IllegalArgumentException if the array is null.
+     * This method reverses the elements of the given array in place. It throws
+     * an IllegalArgumentException if the array is null.
      *
      * @param array the byte array to be reversed
      * @throws IllegalArgumentException if the array is null
@@ -1119,8 +1094,8 @@ final public class ArrayTools {
      * Reverses the elements of the given char array in place.
      *
      * <p>
-     * This method reverses the elements of the given array in place. It throws an
-     * IllegalArgumentException if the array is null.
+     * This method reverses the elements of the given array in place. It throws
+     * an IllegalArgumentException if the array is null.
      *
      * @param array the char array to be reversed
      * @throws IllegalArgumentException if the array is null
@@ -1144,8 +1119,8 @@ final public class ArrayTools {
      * Reverses the elements of the given int array in place.
      *
      * <p>
-     * This method reverses the elements of the given array in place. It throws an
-     * IllegalArgumentException if the array is null.
+     * This method reverses the elements of the given array in place. It throws
+     * an IllegalArgumentException if the array is null.
      *
      * @param array the int array to be reversed
      * @throws IllegalArgumentException if the array is null
@@ -1169,8 +1144,8 @@ final public class ArrayTools {
      * Reverses the elements of the given long array in place.
      *
      * <p>
-     * This method reverses the elements of the given array in place. It throws an
-     * IllegalArgumentException if the array is null.
+     * This method reverses the elements of the given array in place. It throws
+     * an IllegalArgumentException if the array is null.
      *
      * @param array the long array to be reversed
      * @throws IllegalArgumentException if the array is null
@@ -1194,8 +1169,8 @@ final public class ArrayTools {
      * Reverses the elements of the given double array in place.
      *
      * <p>
-     * This method reverses the elements of the given array in place. It throws an
-     * IllegalArgumentException if the array is null.
+     * This method reverses the elements of the given array in place. It throws
+     * an IllegalArgumentException if the array is null.
      *
      * @param array the double array to be reversed
      * @throws IllegalArgumentException if the array is null
@@ -1219,8 +1194,8 @@ final public class ArrayTools {
      * Reverses the elements of the given float array in place.
      *
      * <p>
-     * This method reverses the elements of the given array in place. It throws an
-     * IllegalArgumentException if the array is null.
+     * This method reverses the elements of the given array in place. It throws
+     * an IllegalArgumentException if the array is null.
      *
      * @param array the flaot array to be reversed
      * @throws IllegalArgumentException if the array is null
@@ -1244,8 +1219,8 @@ final public class ArrayTools {
      * Reverses the elements of the given boolean array in place.
      *
      * <p>
-     * This method reverses the elements of the given array in place. It throws an
-     * IllegalArgumentException if the array is null.
+     * This method reverses the elements of the given array in place. It throws
+     * an IllegalArgumentException if the array is null.
      *
      * @param array the boolean array to be reversed
      * @throws IllegalArgumentException if the array is null
@@ -1315,8 +1290,8 @@ final public class ArrayTools {
      * Converts an array of base types to an array of its wrapping classes.
      *
      * <p>
-     * This method takes an array of double as an argument and returns an array of
-     * Double. It throws an IllegalArgumentException if the array is null.
+     * This method takes an array of double as an argument and returns an array
+     * of Double. It throws an IllegalArgumentException if the array is null.
      *
      * @param array the double array to be converted
      * @return the Double array
@@ -1337,8 +1312,8 @@ final public class ArrayTools {
      * Converts an array of base types to an array of its wrapping classes.
      *
      * <p>
-     * This method takes an array of float as an argument and returns an array of
-     * Float. It throws an IllegalArgumentException if the array is null.
+     * This method takes an array of float as an argument and returns an array
+     * of Float. It throws an IllegalArgumentException if the array is null.
      *
      * @param array the float array to be converted
      * @return the Float array
@@ -1359,8 +1334,8 @@ final public class ArrayTools {
      * Converts an array of base types to an array of its wrapping classes.
      *
      * <p>
-     * This method takes an array of boolean as an argument and returns an array of
-     * Boolean. It throws an IllegalArgumentException if the array is null.
+     * This method takes an array of boolean as an argument and returns an array
+     * of Boolean. It throws an IllegalArgumentException if the array is null.
      *
      * @param array the boolean array to be converted
      * @return the Boolean array
@@ -1425,8 +1400,8 @@ final public class ArrayTools {
      * Converts an array of base types to an array of its wrapping classes.
      *
      * <p>
-     * This method takes an array of short as an argument and returns an array of
-     * Short. It throws an IllegalArgumentException if the array is null.
+     * This method takes an array of short as an argument and returns an array
+     * of Short. It throws an IllegalArgumentException if the array is null.
      *
      * @param array the short array to be converted
      * @return the Short array
@@ -1466,7 +1441,7 @@ final public class ArrayTools {
         }
         int[] result = new int[array.length];
         for (int i = 0; i < array.length; i++) {
-            result[i] = array[i].intValue();
+            result[i] = array[i];
         }
         return result;
     }
@@ -1476,10 +1451,8 @@ final public class ArrayTools {
      *
      * <p>
      * This method takes an array of Long objects as input and returns a new
-     * array
-     * containing the equivalent primitive long values. It throws an
-     * IllegalArgumentException
-     * if the input array is null.
+     * array containing the equivalent primitive long values. It throws an
+     * IllegalArgumentException if the input array is null.
      *
      * @param array the Long array to be converted
      * @return the primitive long array
@@ -1491,7 +1464,7 @@ final public class ArrayTools {
         }
         long[] result = new long[array.length];
         for (int i = 0; i < array.length; i++) {
-            result[i] = array[i].longValue();
+            result[i] = array[i];
         }
         return result;
     }
@@ -1501,10 +1474,8 @@ final public class ArrayTools {
      *
      * <p>
      * This method takes an array of Double objects as input and returns a new
-     * array
-     * containing the equivalent primitive double values. It throws an
-     * IllegalArgumentException
-     * if the input array is null.
+     * array containing the equivalent primitive double values. It throws an
+     * IllegalArgumentException if the input array is null.
      *
      * @param array the Double array to be converted
      * @return the primitive double array
@@ -1516,7 +1487,7 @@ final public class ArrayTools {
         }
         double[] result = new double[array.length];
         for (int i = 0; i < array.length; i++) {
-            result[i] = array[i].doubleValue();
+            result[i] = array[i];
         }
         return result;
     }
@@ -1526,10 +1497,8 @@ final public class ArrayTools {
      *
      * <p>
      * This method takes an array of Float objects as input and returns a new
-     * array
-     * containing the equivalent primitive float values. It throws an
-     * IllegalArgumentException
-     * if the input array is null.
+     * array containing the equivalent primitive float values. It throws an
+     * IllegalArgumentException if the input array is null.
      *
      * @param array the Float array to be converted
      * @return the primitive float array
@@ -1541,7 +1510,7 @@ final public class ArrayTools {
         }
         float[] result = new float[array.length];
         for (int i = 0; i < array.length; i++) {
-            result[i] = array[i].floatValue();
+            result[i] = array[i];
         }
         return result;
     }
@@ -1551,10 +1520,8 @@ final public class ArrayTools {
      *
      * <p>
      * This method takes an array of Boolean objects as input and returns a new
-     * array
-     * containing the equivalent primitive boolean values. It throws an
-     * IllegalArgumentException
-     * if the input array is null.
+     * array containing the equivalent primitive boolean values. It throws an
+     * IllegalArgumentException if the input array is null.
      *
      * @param array the Boolean array to be converted
      * @return the primitive boolean array
@@ -1566,7 +1533,7 @@ final public class ArrayTools {
         }
         boolean[] result = new boolean[array.length];
         for (int i = 0; i < array.length; i++) {
-            result[i] = array[i].booleanValue();
+            result[i] = array[i];
         }
         return result;
     }
@@ -1575,11 +1542,9 @@ final public class ArrayTools {
      * Converts an array of wrapping classes to an array of its base types.
      *
      * <p>
-     * This method takes an array of Character objects as input and returns a new
-     * array
-     * containing the equivalent primitive char values. It throws an
-     * IllegalArgumentException
-     * if the input array is null.
+     * This method takes an array of Character objects as input and returns a
+     * new array containing the equivalent primitive char values. It throws an
+     * IllegalArgumentException if the input array is null.
      *
      * @param array the Character array to be converted
      * @return the primitive char array
@@ -1591,7 +1556,7 @@ final public class ArrayTools {
         }
         char[] result = new char[array.length];
         for (int i = 0; i < array.length; i++) {
-            result[i] = array[i].charValue();
+            result[i] = array[i];
         }
         return result;
     }
@@ -1601,10 +1566,8 @@ final public class ArrayTools {
      *
      * <p>
      * This method takes an array of Short objects as input and returns a new
-     * array
-     * containing the equivalent primitive short values. It throws an
-     * IllegalArgumentException
-     * if the input array is null.
+     * array containing the equivalent primitive short values. It throws an
+     * IllegalArgumentException if the input array is null.
      *
      * @param array the Short array to be converted
      * @return the primitive short array
@@ -1616,7 +1579,7 @@ final public class ArrayTools {
         }
         short[] result = new short[array.length];
         for (int i = 0; i < array.length; i++) {
-            result[i] = array[i].shortValue();
+            result[i] = array[i];
         }
         return result;
     }
@@ -1626,10 +1589,8 @@ final public class ArrayTools {
      *
      * <p>
      * This method takes an array of Byte objects as input and returns a new
-     * array
-     * containing the equivalent primitive byte values. It throws an
-     * IllegalArgumentException
-     * if the input array is null.
+     * array containing the equivalent primitive byte values. It throws an
+     * IllegalArgumentException if the input array is null.
      *
      * @param array the Byte array to be converted
      * @return the primitive byte array
@@ -1641,7 +1602,7 @@ final public class ArrayTools {
         }
         byte[] result = new byte[array.length];
         for (int i = 0; i < array.length; i++) {
-            result[i] = array[i].byteValue();
+            result[i] = array[i];
         }
         return result;
     }
@@ -1650,9 +1611,9 @@ final public class ArrayTools {
      * Concatenates two arrays into one.
      *
      * <p>
-     * This method takes two arrays as input and returns a new array
-     * containing all the elements of the two arrays. It throws an
-     * IllegalArgumentException if either of the input arrays is null.
+     * This method takes two arrays as input and returns a new array containing
+     * all the elements of the two arrays. It throws an IllegalArgumentException
+     * if either of the input arrays is null.
      *
      * @param a the first array to be concatenated
      * @param b the second array to be concatenated
@@ -1668,12 +1629,8 @@ final public class ArrayTools {
             return a;
         }
         double[] result = new double[a.length + b.length];
-        for (int i = 0; i < a.length; i++) {
-            result[i] = a[i];
-        }
-        for (int i = 0; i < b.length; i++) {
-            result[i + a.length] = b[i];
-        }
+        System.arraycopy(a, 0, result, 0, a.length);
+        System.arraycopy(b, 0, result, a.length, b.length);
         return result;
     }
 
@@ -1681,9 +1638,9 @@ final public class ArrayTools {
      * Concatenates two arrays into one.
      *
      * <p>
-     * This method takes two arrays as input and returns a new array
-     * containing all the elements of the two arrays. It throws an
-     * IllegalArgumentException if either of the input arrays is null.
+     * This method takes two arrays as input and returns a new array containing
+     * all the elements of the two arrays. It throws an IllegalArgumentException
+     * if either of the input arrays is null.
      *
      * @param a the first array to be concatenated
      * @param b the second array to be concatenated
@@ -1699,12 +1656,8 @@ final public class ArrayTools {
             return a;
         }
         int[] result = new int[a.length + b.length];
-        for (int i = 0; i < a.length; i++) {
-            result[i] = a[i];
-        }
-        for (int i = 0; i < b.length; i++) {
-            result[i + a.length] = b[i];
-        }
+        System.arraycopy(a, 0, result, 0, a.length);
+        System.arraycopy(b, 0, result, a.length, b.length);
         return result;
     }
 
@@ -1712,9 +1665,9 @@ final public class ArrayTools {
      * Concatenates two arrays into one.
      *
      * <p>
-     * This method takes two arrays as input and returns a new array
-     * containing all the elements of the two arrays. It throws an
-     * IllegalArgumentException if either of the input arrays is null.
+     * This method takes two arrays as input and returns a new array containing
+     * all the elements of the two arrays. It throws an IllegalArgumentException
+     * if either of the input arrays is null.
      *
      * @param a the first array to be concatenated
      * @param b the second array to be concatenated
@@ -1730,12 +1683,8 @@ final public class ArrayTools {
             return a;
         }
         boolean[] result = new boolean[a.length + b.length];
-        for (int i = 0; i < a.length; i++) {
-            result[i] = a[i];
-        }
-        for (int i = 0; i < b.length; i++) {
-            result[i + a.length] = b[i];
-        }
+        arraycopy(a, 0, result, 0, a.length);
+        System.arraycopy(b, 0, result, a.length, b.length);
         return result;
     }
 
@@ -1743,9 +1692,9 @@ final public class ArrayTools {
      * Concatenates two arrays into one.
      *
      * <p>
-     * This method takes two arrays as input and returns a new array
-     * containing all the elements of the two arrays. It throws an
-     * IllegalArgumentException if either of the input arrays is null.
+     * This method takes two arrays as input and returns a new array containing
+     * all the elements of the two arrays. It throws an IllegalArgumentException
+     * if either of the input arrays is null.
      *
      * @param a the first array to be concatenated
      * @param b the second array to be concatenated
@@ -1761,12 +1710,8 @@ final public class ArrayTools {
             return a;
         }
         char[] result = new char[a.length + b.length];
-        for (int i = 0; i < a.length; i++) {
-            result[i] = a[i];
-        }
-        for (int i = 0; i < b.length; i++) {
-            result[i + a.length] = b[i];
-        }
+        System.arraycopy(a, 0, result, 0, a.length);
+        System.arraycopy(b, 0, result, a.length, b.length);
         return result;
     }
 
@@ -1774,9 +1719,9 @@ final public class ArrayTools {
      * Concatenates two arrays into one.
      *
      * <p>
-     * This method takes two arrays as input and returns a new array
-     * containing all the elements of the two arrays. It throws an
-     * IllegalArgumentException if either of the input arrays is null.
+     * This method takes two arrays as input and returns a new array containing
+     * all the elements of the two arrays. It throws an IllegalArgumentException
+     * if either of the input arrays is null.
      *
      * @param a the first array to be concatenated
      * @param b the second array to be concatenated
@@ -1792,12 +1737,8 @@ final public class ArrayTools {
             return a;
         }
         long[] result = new long[a.length + b.length];
-        for (int i = 0; i < a.length; i++) {
-            result[i] = a[i];
-        }
-        for (int i = 0; i < b.length; i++) {
-            result[i + a.length] = b[i];
-        }
+        System.arraycopy(a, 0, result, 0, a.length);
+        System.arraycopy(b, 0, result, a.length, b.length);
         return result;
     }
 
@@ -1805,9 +1746,9 @@ final public class ArrayTools {
      * Concatenates two arrays into one.
      *
      * <p>
-     * This method takes two arrays as input and returns a new array
-     * containing all the elements of the two arrays. It throws an
-     * IllegalArgumentException if either of the input arrays is null.
+     * This method takes two arrays as input and returns a new array containing
+     * all the elements of the two arrays. It throws an IllegalArgumentException
+     * if either of the input arrays is null.
      *
      * @param a the first array to be concatenated
      * @param b the second array to be concatenated
@@ -1823,12 +1764,8 @@ final public class ArrayTools {
             return a;
         }
         float[] result = new float[a.length + b.length];
-        for (int i = 0; i < a.length; i++) {
-            result[i] = a[i];
-        }
-        for (int i = 0; i < b.length; i++) {
-            result[i + a.length] = b[i];
-        }
+        System.arraycopy(a, 0, result, 0, a.length);
+        System.arraycopy(b, 0, result, a.length, b.length);
         return result;
     }
 
@@ -1836,9 +1773,9 @@ final public class ArrayTools {
      * Concatenates two arrays into one.
      *
      * <p>
-     * This method takes two arrays as input and returns a new array
-     * containing all the elements of the two arrays. It throws an
-     * IllegalArgumentException if either of the input arrays is null.
+     * This method takes two arrays as input and returns a new array containing
+     * all the elements of the two arrays. It throws an IllegalArgumentException
+     * if either of the input arrays is null.
      *
      * @param a the first array to be concatenated
      * @param b the second array to be concatenated
@@ -1854,12 +1791,8 @@ final public class ArrayTools {
             return a;
         }
         short[] result = new short[a.length + b.length];
-        for (int i = 0; i < a.length; i++) {
-            result[i] = a[i];
-        }
-        for (int i = 0; i < b.length; i++) {
-            result[i + a.length] = b[i];
-        }
+        System.arraycopy(a, 0, result, 0, a.length);
+        System.arraycopy(b, 0, result, a.length, b.length);
         return result;
     }
 
@@ -1867,9 +1800,9 @@ final public class ArrayTools {
      * Concatenates two arrays into one.
      *
      * <p>
-     * This method takes two arrays as input and returns a new array
-     * containing all the elements of the two arrays. It throws an
-     * IllegalArgumentException if either of the input arrays is null.
+     * This method takes two arrays as input and returns a new array containing
+     * all the elements of the two arrays. It throws an IllegalArgumentException
+     * if either of the input arrays is null.
      *
      * @param a the first array to be concatenated
      * @param b the second array to be concatenated
@@ -1885,12 +1818,8 @@ final public class ArrayTools {
             return a;
         }
         byte[] result = new byte[a.length + b.length];
-        for (int i = 0; i < a.length; i++) {
-            result[i] = a[i];
-        }
-        for (int i = 0; i < b.length; i++) {
-            result[i + a.length] = b[i];
-        }
+        System.arraycopy(a, 0, result, 0, a.length);
+        System.arraycopy(b, 0, result, a.length, b.length);
         return result;
     }
 
@@ -1898,9 +1827,9 @@ final public class ArrayTools {
      * Concatenates two arrays into one.
      *
      * <p>
-     * This method takes two arrays as input and returns a new array
-     * containing all the elements of the two arrays. It throws an
-     * IllegalArgumentException if either of the input arrays is null.
+     * This method takes two arrays as input and returns a new array containing
+     * all the elements of the two arrays. It throws an IllegalArgumentException
+     * if either of the input arrays is null.
      *
      * @param a the first array to be concatenated
      * @param b the second array to be concatenated
@@ -1934,7 +1863,6 @@ final public class ArrayTools {
      * @return a new 2D array containing all the elements of the two arrays
      * @throws IllegalArgumentException if either of the arrays is null
      */
-
     public static Object[][] concatenateArray(Object[][] a, Object[][] b) {
         if (a == null || b == null) {
             throw new IllegalArgumentException("Array cannot be null");
@@ -1944,12 +1872,8 @@ final public class ArrayTools {
             return a;
         }
         Object[][] result = new Object[a.length + b.length][];
-        for (int i = 0; i < a.length; i++) {
-            result[i] = a[i];
-        }
-        for (int i = 0; i < b.length; i++) {
-            result[i + a.length] = b[i];
-        }
+        System.arraycopy(a, 0, result, 0, a.length);
+        System.arraycopy(b, 0, result, a.length, b.length);
         return result;
     }
 
@@ -1975,12 +1899,8 @@ final public class ArrayTools {
             return a;
         }
         double[][] result = new double[a.length + b.length][];
-        for (int i = 0; i < a.length; i++) {
-            result[i] = a[i];
-        }
-        for (int i = 0; i < b.length; i++) {
-            result[i + a.length] = b[i];
-        }
+        System.arraycopy(a, 0, result, 0, a.length);
+        System.arraycopy(b, 0, result, a.length, b.length);
         return result;
     }
 
@@ -2006,12 +1926,8 @@ final public class ArrayTools {
             return a;
         }
         int[][] result = new int[a.length + b.length][];
-        for (int i = 0; i < a.length; i++) {
-            result[i] = a[i];
-        }
-        for (int i = 0; i < b.length; i++) {
-            result[i + a.length] = b[i];
-        }
+        System.arraycopy(a, 0, result, 0, a.length);
+        System.arraycopy(b, 0, result, a.length, b.length);
         return result;
     }
 
@@ -2037,12 +1953,8 @@ final public class ArrayTools {
             return a;
         }
         long[][] result = new long[a.length + b.length][];
-        for (int i = 0; i < a.length; i++) {
-            result[i] = a[i];
-        }
-        for (int i = 0; i < b.length; i++) {
-            result[i + a.length] = b[i];
-        }
+        System.arraycopy(a, 0, result, 0, a.length);
+        System.arraycopy(b, 0, result, a.length, b.length);
         return result;
     }
 
@@ -2068,12 +1980,8 @@ final public class ArrayTools {
             return a;
         }
         float[][] result = new float[a.length + b.length][];
-        for (int i = 0; i < a.length; i++) {
-            result[i] = a[i];
-        }
-        for (int i = 0; i < b.length; i++) {
-            result[i + a.length] = b[i];
-        }
+        System.arraycopy(a, 0, result, 0, a.length);
+        System.arraycopy(b, 0, result, a.length, b.length);
         return result;
     }
 
@@ -2099,12 +2007,8 @@ final public class ArrayTools {
             return a;
         }
         boolean[][] result = new boolean[a.length + b.length][];
-        for (int i = 0; i < a.length; i++) {
-            result[i] = a[i];
-        }
-        for (int i = 0; i < b.length; i++) {
-            result[i + a.length] = b[i];
-        }
+        System.arraycopy(a, 0, result, 0, a.length);
+        System.arraycopy(b, 0, result, a.length, b.length);
         return result;
     }
 
@@ -2130,12 +2034,8 @@ final public class ArrayTools {
             return a;
         }
         char[][] result = new char[a.length + b.length][];
-        for (int i = 0; i < a.length; i++) {
-            result[i] = a[i];
-        }
-        for (int i = 0; i < b.length; i++) {
-            result[i + a.length] = b[i];
-        }
+        System.arraycopy(a, 0, result, 0, a.length);
+        System.arraycopy(b, 0, result, a.length, b.length);
         return result;
     }
 
@@ -2161,11 +2061,35 @@ final public class ArrayTools {
             return a;
         }
         byte[][] result = new byte[a.length + b.length][];
-        for (int i = 0; i < a.length; i++) {
-            result[i] = a[i];
+        System.arraycopy(a, 0, result, 0, a.length);
+        System.arraycopy(b, 0, result, a.length, b.length);
+        return result;
+    }
+
+    /**
+     * Converts a 2D array of double to a 2D array of its wrapping class Double.
+     *
+     * <p>
+     * This method takes a 2D array of double as an argument and returns a new
+     * 2D array containing the equivalent Double values. It throws an
+     * IllegalArgumentException if the array is null.
+     *
+     * @param array the 2D array of double to be converted
+     * @return a new 2D array containing the equivalent Double values
+     * @throws IllegalArgumentException if the array is null
+     */
+    public static Double[][] pacakageArray(double[][] array) {
+        if (array == null) {
+            return null;
         }
-        for (int i = 0; i < b.length; i++) {
-            result[i + a.length] = b[i];
+        if (array.length == 0) {
+            return new Double[0][0];
+
+        }
+        Double[][] result = new Double[array.length][];
+        for (int i = 0; i < array.length; i++) {
+            result[i] = packageArray(array[i]);
+
         }
         return result;
     }

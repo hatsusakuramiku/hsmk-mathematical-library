@@ -70,10 +70,6 @@ classdef TetrahedronSimplexIntegral < handle
             integral = 6 * tetrahedron.getMeasure() * sum(func(transformedPoints(:, 1), transformedPoints(:, 2), transformedPoints(:, 3)) .* transformedPoints(:, 4));
         end
 
-    end
-
-    methods (Access = private, Static = true)
-
         function pointAndWeights = transformPoints(tetrahedron, integralPoints)
             % Transform the given integral points to the real coordinates of the
             % given tetrahedron.
@@ -108,6 +104,12 @@ classdef TetrahedronSimplexIntegral < handle
             pointAndWeights(:, 3) = a .* vertices(1, 3) + b .* vertices(2, 3) + c .* vertices(3, 3) + d .* vertices(4, 3); % z
             pointAndWeights(:, 4) = integralPoints(:, 4);
         end
+
+    end
+
+    methods (Access = private, Static = true)
+
+        
 
         function points = getSimplexPoints(integrateName)
             % Get the integration points for the given integrate name.

@@ -24,7 +24,6 @@ package sort.algorithm;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-
 import sort.utils.SortAlgorithm;
 
 /**
@@ -94,7 +93,7 @@ public final class HeapSort implements SortAlgorithm {
         swap(array, startIndex, i);
         heapify(array, startIndex, startIndex, i - startIndex, aix, compareMethod);
       }
-    } catch (Exception e) {
+    } catch (IllegalAccessException | NoSuchMethodException | SecurityException | InvocationTargetException e) {
       throw new IllegalArgumentException(e.getMessage());
     }
   }

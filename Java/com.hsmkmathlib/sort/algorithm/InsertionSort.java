@@ -22,8 +22,8 @@
 
 package sort.algorithm;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-
 import sort.utils.SortAlgorithm;
 
 /**
@@ -105,7 +105,7 @@ public final class InsertionSort implements SortAlgorithm {
                 }
                 array[j + 1] = current;
             }
-        } catch (Exception e) {
+        } catch (IllegalAccessException | NoSuchMethodException | SecurityException | InvocationTargetException e) {
             throw new IllegalArgumentException(e.getMessage());
         }
     }

@@ -19,7 +19,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package simplexIntegral.polygon;
+package simpleIntegral.polygon;
 
 public abstract class Polygon {
     protected double[][] vertices;

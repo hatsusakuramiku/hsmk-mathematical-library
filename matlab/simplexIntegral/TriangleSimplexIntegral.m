@@ -30,41 +30,6 @@ classdef TriangleSimplexIntegral < handle
 
     methods (Access = private, Static = true)
 
-        function pointAndWeights = transformPoints(triangle, integralPoints)
-            % Transform the given points from the integral coordinates to the real
-            % coordinates of the given triangle.
-            %
-            % Parameters:
-            %   triangle (simplexIntegral.polygons.Triangle): The triangle to transform the points to
-            %   integralPoints (:, 3) (double): The points to transform
-            %       The points are given as a matrix, where each row is a point, and
-            %       the columns are the coordinates of the points.
-            %       The first column is the x coordinate, the second column is the y
-            %       coordinate, and the third column is the weight of the point.
-            %
-            % Returns:
-            %   The transformed points in the real coordinates of the given triangle.
-            %
-            % See also: simplexIntegral.polygons.Triangle, simplexIntegral.integrals.IntegralPointWithWeight
-
-            arguments
-                triangle {mustBeA(triangle, 'Triangle')}
-                integralPoints (:, 3) {mustBeReal, mustBeFinite}
-            end
-
-            vertices = triangle.getVertices();
-            pointAndWeights = zeros(size(integralPoints));
-            % The transformation is done with the following formulas:
-            % x = x3 + li * (x1 - x3) + lj * (x2 - x3)
-            % y = y3 + li * (y1 - y3) + lj * (y2 - y3)
-            % where (x1, y1), (x2, y2), and (x3, y3) are the coordinates of the vertices of
-            % this triangle, and
-            % (li, lj) are the coordinates of the point in the integral.
-            pointAndWeights(:, 1) = vertices(2, 1) + integralPoints(:, 1) .* (vertices(1, 1) - vertices(2, 1)) + integralPoints(:, 2) .* (vertices(3, 1) - vertices(2, 1)); % x
-            pointAndWeights(:, 2) = vertices(2, 2) + integralPoints(:, 1) .* (vertices(1, 2) - vertices(2, 2)) + integralPoints(:, 2) .* (vertices(3, 2) - vertices(2, 2)); % y
-            pointAndWeights(:, 3) = integralPoints(:, 3); % weight
-        end
-
         function points = getSimplexPoints(integrateName)
             % Get the points for the given integration order.
             %
@@ -125,6 +90,41 @@ classdef TriangleSimplexIntegral < handle
     end
 
     methods (Access = public, Static = true)
+
+        function pointAndWeights = transformPoints(triangle, integralPoints)
+            % Transform the given points from the integral coordinates to the real
+            % coordinates of the given triangle.
+            %
+            % Parameters:
+            %   triangle (simplexIntegral.polygons.Triangle): The triangle to transform the points to
+            %   integralPoints (:, 3) (double): The points to transform
+            %       The points are given as a matrix, where each row is a point, and
+            %       the columns are the coordinates of the points.
+            %       The first column is the x coordinate, the second column is the y
+            %       coordinate, and the third column is the weight of the point.
+            %
+            % Returns:
+            %   The transformed points in the real coordinates of the given triangle.
+            %
+            % See also: simplexIntegral.polygons.Triangle, simplexIntegral.integrals.IntegralPointWithWeight
+
+            arguments
+                triangle {mustBeA(triangle, 'Triangle')}
+                integralPoints (:, 3) {mustBeReal, mustBeFinite}
+            end
+
+            vertices = triangle.getVertices();
+            pointAndWeights = zeros(size(integralPoints));
+            % The transformation is done with the following formulas:
+            % x = x3 + li * (x1 - x3) + lj * (x2 - x3)
+            % y = y3 + li * (y1 - y3) + lj * (y2 - y3)
+            % where (x1, y1), (x2, y2), and (x3, y3) are the coordinates of the vertices of
+            % this triangle, and
+            % (li, lj) are the coordinates of the point in the integral.
+            pointAndWeights(:, 1) = vertices(2, 1) + integralPoints(:, 1) .* (vertices(1, 1) - vertices(2, 1)) + integralPoints(:, 2) .* (vertices(3, 1) - vertices(2, 1)); % x
+            pointAndWeights(:, 2) = vertices(2, 2) + integralPoints(:, 1) .* (vertices(1, 2) - vertices(2, 2)) + integralPoints(:, 2) .* (vertices(3, 2) - vertices(2, 2)); % y
+            pointAndWeights(:, 3) = integralPoints(:, 3); % weight
+        end
 
         function integral = integrate(triangle, func, integrateName)
             %INTEGRATE Calculate the integral of the given function over the given triangle.

@@ -19,7 +19,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package simplexIntegral.polygon;
+package simpleIntegral.polygon;
 
 public abstract class ThreeDimPolygon extends Polygon {
     protected static final double EPSILON = 1e-8;
@@ -59,6 +59,7 @@ public abstract class ThreeDimPolygon extends Polygon {
      * @param vertices the vertices to check
      * @return true if the vertices are valid, false otherwise
      */
+    @Override
     public boolean isRightVertices(double[][] vertices) {
         int n = vertices.length;
         if (n < 4) {
