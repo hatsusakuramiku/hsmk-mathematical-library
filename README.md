@@ -111,21 +111,21 @@
 > **文件编码**: UTF-8
 > **字符集**: UTF-8
 
-[javadoc](http://htmlpreview.github.io/?https://github.com/hatsusakuramiku/hsmk-mathematical-library/blob/main/Java/doc/index.html)
+[javadoc](http://htmlpreview.github.io/?https://github.com/hatsusakuramiku/hsmk-mathematical-library/blob/main/Java/demo/target/site/index.html)
 
 ### 排序
 
-- [x] [冒泡排序](/Java/HsmkMathLib/src/sort/BubbleSort.java)
-- [x] [插入排序](/Java/HsmkMathLib/src/sort/InsertionSort.java)
-- [x] [选择排序](/Java/HsmkMathLib/src/sort/SelectionSort.java)
-- [x] [归并排序](/Java/HsmkMathLib/src/sort/MergeSort.java)
-- [x] [堆排序](/Java/HsmkMathLib/src/sort/HeapSort.java)
+- [x] [冒泡排序](/Java/demo/src/main/Java/demo/src/main/java/com/hsmkmathlib//sort/BubbleSort.java)
+- [x] [插入排序](/Java/demo/src/main/java/com/hsmkmathlib//sort/InsertionSort.java)
+- [x] [选择排序](/Java/demo/src/main/java/com/hsmkmathlib//sort/SelectionSort.java)
+- [x] [归并排序](/Java/demo/src/main/java/com/hsmkmathlib//sort/MergeSort.java)
+- [x] [堆排序](/Java/demo/src/main/java/com/hsmkmathlib//sort/HeapSort.java)
 
 ### 数值积分
 
 #### 一维积分
 
-- [x] [梯形积分](/Java/HsmkMathLib/src/Integral/Trapezoid.java)
+- [x] [梯形积分](/Java/demo/src/main/java/com/hsmkmathlib//Integral/Trapezoid.java)
 - [ ] 辛普森积分
 - [ ] 高斯勒让德积分
 
