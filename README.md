@@ -111,7 +111,7 @@
 > **文件编码**: UTF-8
 > **字符集**: UTF-8
 
-[javadoc](http://htmlpreview.github.io/?https://github.com/hatsusakuramiku/hsmk-mathematical-library/blob/main/Java/demo/target/site/index.html)
+[javadoc](http://htmlpreview.github.io/?https://github.com/hatsusakuramiku/hsmk-mathematical-library/blob/main/Java/demo/target/site/apidocs/index.html)
 
 ### 排序
 
@@ -131,8 +131,8 @@
 
 #### 二维积分
 
-- [x] 二维单纯形上的单纯对称积分
+- [x] [二维单纯形上的单纯对称积分](/Java/demo/src/main/java/com/hsmkmathlib/simplexIntegral/TriangleIntegral.java), [文档](https://htmlpreview.github.io/?https://raw.githubusercontent.com/hatsusakuramiku/hsmk-mathematical-library/main/Java/demo/target/site/apidocs/com/hsmkmathlib/simplexIntegral/package-summary.html)
 
 #### 三维积分
 
-- [x] 三维单纯形上的单纯对称积分
+- [x] [三维单纯形上的单纯对称积分](/Java/demo/src/main/java/com/hsmkmathlib/simplexIntegral/TetrahedronIntegral.java), [文档](https://htmlpreview.github.io/?https://raw.githubusercontent.com/hatsusakuramiku/hsmk-mathematical-library/main/Java/demo/target/site/apidocs/com/hsmkmathlib/simplexIntegral/package-summary.html)
