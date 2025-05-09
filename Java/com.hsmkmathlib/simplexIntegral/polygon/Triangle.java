@@ -19,7 +19,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package simpleIntegral.polygon;
+package simplexIntegral.polygon;
 
 public class Triangle extends TwoDimPolygon {
 

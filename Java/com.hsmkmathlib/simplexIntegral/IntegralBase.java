@@ -1,12 +1,12 @@
-package simpleIntegral;
+package simplexIntegral;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.function.BiFunction;
-import simpleIntegral.function.TriFunction;
-import simpleIntegral.polygon.Polygon;
+import simplexIntegral.function.TriFunction;
+import simplexIntegral.polygon.Polygon;
 
 public abstract class IntegralBase {
 

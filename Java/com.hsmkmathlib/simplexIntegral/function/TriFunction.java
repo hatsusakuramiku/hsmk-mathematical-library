@@ -19,7 +19,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-package simpleIntegral.function;
+package simplexIntegral.function;
 
 public interface TriFunction<A, B, C, D> {
     D apply(A a, B b, C c);

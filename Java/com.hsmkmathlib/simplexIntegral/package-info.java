@@ -24,4 +24,4 @@
  * This package contains numerical integrations on triangular and tetrahedral
  * elements, which are most commonly used in simplex meshes
  */
-package simpleIntegral;
+package simplexIntegral;

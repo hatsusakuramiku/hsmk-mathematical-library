@@ -1,12 +1,12 @@
-package simpleIntegral;
+package simplexIntegral;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.StringJoiner;
-import simpleIntegral.function.TriFunction;
-import simpleIntegral.polygon.Polygon;
-import simpleIntegral.polygon.Tetrahedron;
+import simplexIntegral.function.TriFunction;
+import simplexIntegral.polygon.Polygon;
+import simplexIntegral.polygon.Tetrahedron;
 import tools.ArrayTools;
 
 public class TetrahedronIntegral extends IntegralBase {

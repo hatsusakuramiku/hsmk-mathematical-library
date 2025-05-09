@@ -1,12 +1,12 @@
-package simpleIntegral;
+package simplexIntegral;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.StringJoiner;
 import java.util.function.BiFunction;
-import simpleIntegral.polygon.Polygon;
-import simpleIntegral.polygon.Triangle;
+import simplexIntegral.polygon.Polygon;
+import simplexIntegral.polygon.Triangle;
 import tools.ArrayTools;
 
 public class TriangleIntegral extends IntegralBase {
