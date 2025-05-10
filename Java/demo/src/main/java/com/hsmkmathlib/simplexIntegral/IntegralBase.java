@@ -21,10 +21,13 @@
  */
 package com.hsmkmathlib.simplexIntegral;
 
-import java.io.BufferedWriter;
+import com.google.gson.Gson;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.BufferedWriter;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.StringJoiner;
 import java.util.function.BiFunction;
 
 import com.hsmkmathlib.simplexIntegral.function.TriFunction;
@@ -107,10 +110,12 @@ public abstract class IntegralBase {
      * weights to
      */
     public void saveIntegralPoints(String fileName) {
+        String[] outSj_Strings = {"", "[", "];"};
+        String[] inerSj_Strings = {", ", "", ";\n"};
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(fileName))) {
             INTEGRALFORMULAS.forEach((formula, integralPoints) -> {
                 try {
-                    bw.write(formula + " = " + integralFormulaToString(integralPoints));
+                    bw.write(formula + " = " + integralFormulaToString(integralPoints, outSj_Strings, inerSj_Strings));
                     bw.newLine();
                 } catch (IOException e) {
                     System.err.println("Error writing to file: " + e.getMessage());
@@ -123,9 +128,9 @@ public abstract class IntegralBase {
 
     /**
      * Converts an array of IntegralPointWithWeight objects into a formatted
-     * string representation.
+     * string representation specific to the integral formula.
      * <p>
-     * This method takes an array of IntegralPointWithWeight, retrieves the
+     * The method takes an array of IntegralPointWithWeight, retrieves the
      * integral points and their weights, and formats them as a string. Each
      * point's coordinates are followed by its weight, separated by commas, and
      * each point-weight pair is separated by a semicolon. The entire sequence
@@ -136,10 +141,23 @@ public abstract class IntegralBase {
      * <p>
      *
      * @param points the array of IntegralPointWithWeight objects to convert
+     * @param outSj_Strings the outer StringJoiner's delimiter strings
+     * @param inerSj_Strings the inner StringJoiner's delimiter strings
      * @return the formatted string representation of the integral points and
      * weights
      */
-    protected abstract String integralFormulaToString(Double[][] points);
+    protected String integralFormulaToString(Double[][] points, String[] outSj_Strings, String[] inerSj_Strings) {
+        StringJoiner outSj = new StringJoiner(outSj_Strings[0], outSj_Strings[1], outSj_Strings[2]);
+
+        for (Double[] point : points) {
+            StringJoiner inerSj = new StringJoiner(inerSj_Strings[0], inerSj_Strings[1], inerSj_Strings[2]);
+            for (Double p : point) {
+                inerSj.add(String.valueOf(p));
+            }
+            outSj.add(inerSj.toString());
+        }
+        return outSj.toString();
+    }
 
     /**
      * Retrieves the names of all integral formulas available in this instance.
@@ -207,5 +225,21 @@ public abstract class IntegralBase {
         initalIntegralFormulas().forEach((formulaName, pointWithWeights) -> {
             INTEGRALFORMULAS.put(formulaName, pointWithWeights);
         });
+    }
+
+    public void saveIntegralPointsToJson(String filename) {
+        if (filename == null || filename.isEmpty()) {
+            filename = "integralFormula";
+        }
+        filename += ".json";
+
+        Gson gson = new Gson();
+        String json = gson.toJson(INTEGRALFORMULAS);
+        try (FileWriter writer = new FileWriter(filename)) {
+            writer.write(json);
+            System.out.println("JSON 文件已成功生成: " + filename);
+        } catch (IOException e) {
+            
+        }
     }
 }

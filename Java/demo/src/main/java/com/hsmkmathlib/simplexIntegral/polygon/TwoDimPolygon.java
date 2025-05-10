@@ -111,7 +111,7 @@ abstract public class TwoDimPolygon extends Polygon {
             return false;
         }
 
-        return !hasIntersectingEdges(vertices);
+        return hasIntersectingEdges(vertices);
     }
 
     /**

@@ -36,15 +36,17 @@ public class Main {
     public static final int DESCENDING = 1;
 
     public static void main(String[] args) {
-        double[][] ves = {{1, 5}, {2, 0}, {4, 3}};
+        double[][] ves = {{1, 0}, {0, 0}, {0, 1}};
         double[][] ves2 = {{1, 5, 0}, {2, 0, 0}, {4, 3, 0}, {1, 5, 5}};
         TriFunction<Double, Double, Double, Double> f = (x, y, z) -> x * y * z;
         Tetrahedron tetrahedron = new Tetrahedron(ves2);
         Triangle triangle = new Triangle(ves);
         TetrahedronIntegral teI = new TetrahedronIntegral();
         TriangleIntegral trI = new TriangleIntegral();
-        trI.saveIntegralPoints("test_triangleFormula.m");
-        teI.saveIntegralPoints("test_tetrahedronFormula.m");
+        // trI.saveIntegralPoints("triangleFormula.m");
+        // teI.saveIntegralPoints("tetrahedronFormula.m");
+        trI.saveIntegralPointsToJson("./temp/triangle_formula");
+        teI.saveIntegralPointsToJson("./temp/tetrahendron_formula");
         System.out.println("The area of the triangle is: " + triangle.getArea());
         System.out.println("The measure of the tetrahedron is: " + tetrahedron.getMeasure());
         System.out.println("The integral of the tetrahedron is: "

@@ -21,15 +21,11 @@
  */
 package com.hsmkmathlib.simplexIntegral;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.StringJoiner;
 import java.util.function.BiFunction;
 
 import com.hsmkmathlib.simplexIntegral.polygon.Polygon;
 import com.hsmkmathlib.simplexIntegral.polygon.Triangle;
-
 import com.hsmkmathlib.tools.ArrayTools;
 
 public class TriangleIntegral extends IntegralBase {
@@ -45,20 +41,6 @@ public class TriangleIntegral extends IntegralBase {
             {0.5000000000000000, 0.0000000000000000, 0.0666666666666667},
             {0.0000000000000000, 0.5000000000000000, 0.0666666666666667},
             {0.5000000000000000, 0.5000000000000000, 0.0666666666666667},
-            {1.0000000000000000, 0.5000000000000000, 0.0666666666666667},
-            {0.5000000000000000, 1.0000000000000000, 0.0666666666666667},
-            {0.3333333333333333, 0.3333333333333333, 0.2250000000000000}
-        });
-
-        formulas.put("ORDER3POINT7", new Double[][]{
-            {0.0000000000000000, 0.0000000000000000, 0.0250000000000000},
-            {1.0000000000000000, 0.0000000000000000, 0.0250000000000000},
-            {0.0000000000000000, 1.0000000000000000, 0.0250000000000000},
-            {0.5000000000000000, 0.0000000000000000, 0.0666666666666667},
-            {0.0000000000000000, 0.5000000000000000, 0.0666666666666667},
-            {0.5000000000000000, 0.5000000000000000, 0.0666666666666667},
-            {1.0000000000000000, 0.5000000000000000, 0.0666666666666667},
-            {0.5000000000000000, 1.0000000000000000, 0.0666666666666667},
             {0.3333333333333333, 0.3333333333333333, 0.2250000000000000}
         });
 
@@ -84,8 +66,6 @@ public class TriangleIntegral extends IntegralBase {
             {0.5000000000000000, 0.0000000000000000, 0.0126984126984127},
             {0.0000000000000000, 0.5000000000000000, 0.0126984126984127},
             {0.5000000000000000, 0.5000000000000000, 0.0126984126984127},
-            {1.0000000000000000, 0.5000000000000000, 0.0126984126984127},
-            {0.5000000000000000, 1.0000000000000000, 0.0126984126984127},
             {0.2113248654051871, 0.0000000000000000, 0.0091463414634146},
             {0.0000000000000000, 0.2113248654051871, 0.0091463414634146},
             {0.7886751345948129, 0.2113248654051871, 0.0091463414634146},
@@ -107,8 +87,6 @@ public class TriangleIntegral extends IntegralBase {
             {0.5000000000000000, 0.0000000000000000, 0.0005228925775971},
             {0.0000000000000000, 0.5000000000000000, 0.0005228925775971},
             {0.5000000000000000, 0.5000000000000000, 0.0005228925775971},
-            {1.0000000000000000, 0.5000000000000000, 0.0005228925775971},
-            {0.5000000000000000, 1.0000000000000000, 0.0005228925775971},
             {0.1044413784858067, 0.0000000000000000, 0.0057807445363853},
             {0.0000000000000000, 0.1044413784858067, 0.0057807445363853},
             {0.8955586215141933, 0.1044413784858067, 0.0057807445363853},
@@ -520,37 +498,6 @@ public class TriangleIntegral extends IntegralBase {
             result[i][2] = integralPoints[i][2];
         }
         return result;
-    }
-
-    /**
-     * Converts an array of IntegralPointWithWeight objects into a formatted
-     * string representation specific to the triangle simplex.
-     * <p>
-     * This method takes an array of IntegralPointWithWeight, retrieves the
-     * integral points and their weights, and formats them as a string. Each
-     * point's coordinates are followed by its weight, separated by commas, and
-     * each point-weight pair is separated by a semicolon. The entire sequence
-     * is enclosed in square brackets and ends with a semicolon.
-     * <p>
-     * This string representation is used to describe the integral formula in a
-     * human-readable format.
-     * <p>
-     *
-     * @param points the array of IntegralPointWithWeight objects to convert
-     * @return the formatted string representation of the integral points and
-     * weights
-     */
-    @Override
-    protected String integralFormulaToString(Double[][] pointWithWeights) {
-
-        ArrayList<String> pointAndWeights = new ArrayList<>();
-        for (Double[] pointWithWeight : pointWithWeights) {
-
-            pointAndWeights.add(pointWithWeight[0] + ", " + pointWithWeight[1] + ", " + pointWithWeight[2] + ";\n");
-        }
-        StringJoiner sj = new StringJoiner("", "[", "];");
-        Arrays.stream(pointAndWeights.toArray(String[]::new)).forEach(sj::add);
-        return sj.toString();
     }
 
     /**

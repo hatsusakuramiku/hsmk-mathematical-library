@@ -1,0 +1,374 @@
+catchphrase:
+  # catchphrase
+  # CATCHPHRASE: 小真寻的口癖，在文本末尾添加指定文字~
+  CATCHPHRASE: ""
+hook:
+  # hook
+  # CHECK_NOTICE_INFO_CD: 群检测，个人权限检测等各种检测提示信息cd
+  # MALICIOUS_BAN_TIME: 恶意命令触发检测触发后ban的时长（分钟）
+  # MALICIOUS_CHECK_TIME: 恶意命令触发检测规定时间内（秒）
+  # MALICIOUS_BAN_COUNT: 恶意命令触发检测最大触发次数
+  # IS_SEND_TIP_MESSAGE: 是否发送阻断时提示消息
+  # BAN_RESULT: 对被ban用户发送的消息
+  CHECK_NOTICE_INFO_CD: 300
+  MALICIOUS_BAN_TIME: 30
+  MALICIOUS_CHECK_TIME: 5
+  MALICIOUS_BAN_COUNT: 6
+  IS_SEND_TIP_MESSAGE: true
+  BAN_RESULT: 才不会给你发消息.
+chat_check:
+  # chat_check
+  # STATUS: 是否开启群组两日内未发送任何消息，关闭该群全部被动
+  STATUS: true
+_backup:
+  # _backup
+  # BACKUP_FLAG: 是否开启文件备份
+  # BACKUP_DIR_OR_FILE: 备份的文件夹或文件
+  BACKUP_FLAG: false
+  BACKUP_DIR_OR_FILE:
+    - data
+image_management:
+  # 图库操作
+  # IMAGE_DIR_LIST: 公开图库列表，可自定义添加 [如果含有send_setu插件，请不要添加色图库]
+  # WITHDRAW_IMAGE_MESSAGE: 自动撤回，参1：延迟撤回发送图库图片的时间(秒)，0 为关闭 | 参2：监控聊天类型，0(私聊) 1(群聊) 2(群聊+私聊)
+  # DELETE_IMAGE_LEVEL: 删除图库图片需要的管理员等级
+  # MOVE_IMAGE_LEVEL: 移动图库图片需要的管理员等级
+  # UPLOAD_IMAGE_LEVEL: 上传图库图片需要的管理员等级
+  # SHOW_ID: 是否消息显示图片下标id
+  IMAGE_DIR_LIST:
+    - 美图
+    - 萝莉
+    - 壁纸
+  WITHDRAW_IMAGE_MESSAGE:
+    - 0
+    - 1
+  DELETE_IMAGE_LEVEL: 7
+  MOVE_IMAGE_LEVEL: 7
+  UPLOAD_IMAGE_LEVEL: 6
+  SHOW_ID: true
+word_clouds:
+  # 词云
+  # WORD_CLOUDS_TEMPLATE: 词云模板 参1：图片生成，默认使用真寻图片，可在项目路径resources/image/wordcloud下配置图片，多张则随机 | 参2/其他：黑底图片
+  WORD_CLOUDS_TEMPLATE: 1
+send_setu:
+  # 色图
+  # INITIAL_SETU_PROBABILITY: 初始色图概率，总概率 = 初始色图概率 + 好感度
+  # WITHDRAW_SETU_MESSAGE: 自动撤回，参1：延迟撤回色图时间(秒)，0 为关闭 | 参2：监控聊天类型，0(私聊) 1(群聊) 2(群聊+私聊)
+  # ONLY_USE_LOCAL_SETU: 仅仅使用本地色图，不在线搜索
+  # DOWNLOAD_SETU: 是否存储下载的色图，使用本地色图可以加快图片发送速度
+  # TIMEOUT: 色图下载超时限制(秒)
+  # SHOW_INFO: 是否显示色图的基本信息，如PID等
+  # ALLOW_GROUP_R18: 在群聊中启用R18权限
+  # MAX_ONCE_NUM2FORWARD: 单次发送的图片数量达到指定值时转发为合并消息
+  # MAX_ONCE_NUM: 单次发送图片数量限制
+  INITIAL_SETU_PROBABILITY: 0.7
+  WITHDRAW_SETU_MESSAGE:
+    - 0
+    - 1
+  ONLY_USE_LOCAL_SETU: false
+  DOWNLOAD_SETU: true
+  TIMEOUT: 10
+  SHOW_INFO: true
+  ALLOW_GROUP_R18: false
+  MAX_ONCE_NUM2FORWARD:
+  MAX_ONCE_NUM: 10
+sign_in:
+  # 签到
+  # MAX_SIGN_GOLD: 签到好感度加成额外获得的最大金币数
+  # SIGN_CARD1_PROB: 签到好感度双倍加持卡Ⅰ掉落概率
+  # SIGN_CARD2_PROB: 签到好感度双倍加持卡Ⅲ掉落概率
+  # SIGN_CARD3_PROB: 签到好感度双倍加持卡Ⅲ掉落概率
+  # IMAGE_STYLE: 签到图片样式, [normal, zhenxun]
+  MAX_SIGN_GOLD: 200
+  SIGN_CARD1_PROB: 0.2
+  SIGN_CARD2_PROB: 0.09
+  SIGN_CARD3_PROB: 0.05
+  IMAGE_STYLE: zhenxun
+pixiv:
+  # Pix
+  # PIXIV_NGINX_URL: PIXPixiv反向代理
+  # PIXIV_SMALL_NGINX_URL: PIXPixiv反向代理，缩略图
+  PIXIV_NGINX_URL: i.pixiv.cat
+  PIXIV_SMALL_NGINX_URL: i.suimoe.com
+mute_setting:
+  # 刷屏禁言
+  # MUTE_LEVEL: 更改禁言设置的管理权限
+  # MUTE_DEFAULT_COUNT: 刷屏禁言默认检测次数
+  # MUTE_DEFAULT_TIME: 刷屏检测默认规定时间
+  # MUTE_DEFAULT_DURATION: 刷屏检测默禁言时长（分钟）
+  MUTE_LEVEL: 5
+  MUTE_DEFAULT_COUNT: 10
+  MUTE_DEFAULT_TIME: 7
+  MUTE_DEFAULT_DURATION: 10
+alapi:
+  # 网易云热评
+  # ALAPI_TOKEN: 在https://admin.alapi.cn/user/login登录后获取token
+  ALAPI_TOKEN: jDeETEsDxojVY14s
+ban:
+  # Ban
+  # BAN_LEVEL: ban/unban所需要的管理员权限等级
+  BAN_LEVEL: 5
+wbtop:
+  # 微博热搜
+  # COOKIE: 微博cookie
+  COOKIE:
+invite_manager:
+  # 记录请求
+  # MESSAGE: 强制拉群后进群回复的内容
+  # FLAG: 强制拉群后进群退出并回复内容
+  # WELCOME_MSG_CD: 群欢迎消息cd
+  # AUTO_ADD_FRIEND: 是否自动同意好友添加
+  # AUTO_ADD_GROUP: 是否自动同意邀请入群
+  MESSAGE: 请不要未经同意就拉小真寻入群！告辞！
+  FLAG: true
+  WELCOME_MSG_CD: 5
+  AUTO_ADD_FRIEND: true
+  AUTO_ADD_GROUP: true
+_task:
+  # 复读
+  # DEFAULT_GROUP_WELCOME: 被动 进群欢迎 进群默认开关状态
+  # DEFAULT_REFUND_GROUP_REMIND: 被动 退群提醒 进群默认开关状态
+  # DEFAULT_FUDU: 被动 复读 进群默认开关状态
+  # DEFAULT_BROADCAST: 被动 广播 进群默认开关状态
+  # DEFAULT_BILIBILI_PARSE: 被动 B站转发解析 进群默认开关状态
+  DEFAULT_GROUP_WELCOME: true
+  DEFAULT_REFUND_GROUP_REMIND: true
+  DEFAULT_FUDU: true
+  DEFAULT_BROADCAST: true
+  DEFAULT_BILIBILI_PARSE: true
+web-ui:
+  # WebUi
+  # USERNAME: 前端管理用户名
+  # PASSWORD: 前端管理密码
+  # SECRET: JWT密钥
+  USERNAME: hsmk
+  PASSWORD: Aa640306413
+  SECRET: -nRkPPKsAggHFIhGsPMZE9KPV_NjSPuvDPqiFvkrkto
+word_bank:
+  # 词库
+  # WORD_BANK_LEVEL: 设置增删词库的权限等级
+  WORD_BANK_LEVEL: 5
+plugin_switch:
+  # 功能开关
+  # CHANGE_GROUP_SWITCH_LEVEL: 开关群功能权限
+  CHANGE_GROUP_SWITCH_LEVEL: 2
+coser:
+  # coser
+  # WITHDRAW_COS_MESSAGE: 自动撤回，参1：延迟撤回色图时间(秒)，0 为关闭 | 参2：监控聊天类型，0(私聊) 1(群聊) 2(群聊+私聊)
+  WITHDRAW_COS_MESSAGE:
+    - 0
+    - 1
+reload_setting:
+  # 重载配置
+  # AUTO_RELOAD: 自动重载配置文件
+  # AUTO_RELOAD_TIME: 自动重载配置文件时长
+  AUTO_RELOAD: true
+  AUTO_RELOAD_TIME: 180
+admin_bot_manage:
+  # 群管理员变动监测
+  # SET_GROUP_WELCOME_MESSAGE_LEVEL: 设置群欢迎消息所需要的管理员权限等级
+  # ADMIN_DEFAULT_AUTH: 设置群欢迎消息所需要的管理员权限等级
+  SET_GROUP_WELCOME_MESSAGE_LEVEL: 2
+  ADMIN_DEFAULT_AUTH: 5
+pixiv_rank_search:
+  # P站排行/搜图
+  # TIMEOUT: 图片下载超时限制
+  # MAX_PAGE_LIMIT: 作品最大页数限制，超过的作品会被略过
+  # ALLOW_GROUP_R18: 图允许群聊中使用 r18 参数
+  TIMEOUT: 10
+  MAX_PAGE_LIMIT: 20
+  ALLOW_GROUP_R18: false
+hibiapi:
+  # Pix
+  # HIBIAPI: 如果没有自建或其他hibiapi请不要修改
+  HIBIAPI: https://api.obfs.dev
+super_help:
+  # 超级用户帮助
+  # TYPE: 超级用户帮助样式，normal, zhenxun
+  TYPE: zhenxun
+check:
+  # 服务器自我检查
+  # TYPE: 自检触发方式 ['message', 'poke', 'mix']
+  TYPE: message
+pix:
+  # Pix
+  # PIX_IMAGE_SIZE: PIX图库下载的画质,可能的值:large,medium,original,square_medium
+  # SEARCH_HIBIAPI_BOOKMARKS: 最低收藏，PIX使用HIBIAPI搜索图片时达到最低收藏才会添加至图库
+  # WITHDRAW_PIX_MESSAGE: 自动撤回，参1：延迟撤回色图时间(秒)，0 为关闭 | 参2：监控聊天类型，0(私聊) 1(群聊) 2(群聊+私聊)
+  # PIX_OMEGA_PIXIV_RATIO: PIX图库 与 额外图库OmegaPixivIllusts 混合搜索的比例 参1：PIX图库 参2：OmegaPixivIllusts扩展图库（没有此图库请设置为0）
+  # TIMEOUT: 下载图片超时限制（秒）
+  # SHOW_INFO: 是否显示图片的基本信息，如PID等
+  # MAX_ONCE_NUM2FORWARD: 单次发送的图片数量达到指定值时转发为合并消息
+  # ALLOW_GROUP_SETU: 允许非超级用户使用-s参数
+  # ALLOW_GROUP_R18: 允许非超级用户使用-r参数
+  # PIX_API: 符合pix-api的Api
+  # TOKEN: 获取调用token
+  PIX_IMAGE_SIZE: master
+  SEARCH_HIBIAPI_BOOKMARKS: 5000
+  WITHDRAW_PIX_MESSAGE:
+    - 0
+    - 1
+  PIX_OMEGA_PIXIV_RATIO:
+    - 10
+    - 0
+  TIMEOUT: 10
+  SHOW_INFO: true
+  MAX_ONCE_NUM2FORWARD:
+  ALLOW_GROUP_SETU: false
+  ALLOW_GROUP_R18: false
+  PIX_API: http://pix.zhenxun.org
+  TOKEN: bearer
+    eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbiI6Ijc5NGI3MzFkYjNkNzNiZWE5ZWUzMWQ3MWVhYzEwMjc5MzM3ZDcxM2ZlN2MzZTFiZThhNTZiYzQ4Nzg2OTUzY2QiLCJleHAiOjE4OTcxMjc0OTgsInN1YiI6ImFjY2VzcyIsImlzX3N1cGVydXNlciI6ZmFsc2V9.AXTpphLd8kBex5cTxz8GHwGGt8NaRv-iDXcWyVJXwBs
+fudu:
+  # 复读
+  # FUDU_PROBABILITY: 复读概率
+  FUDU_PROBABILITY: 0.7
+gold_redbag:
+  # 金币红包
+  # DEFAULT_TIMEOUT: 普通红包默认超时时间
+  # DEFAULT_INTERVAL: 用户发送普通红包最小间隔时间
+  # RANK_NUM: 结算排行显示前N位
+  DEFAULT_TIMEOUT: 600
+  DEFAULT_INTERVAL: 60
+  RANK_NUM: 10
+chat_history:
+  # 消息存储
+  # FLAG: 是否开启消息自从存储
+  FLAG: true
+shop:
+  # 商店
+  # STYLE: 商店样式类型，[normal, zhenxun]
+  STYLE: zhenxun
+search_image:
+  # 识图
+  # MAX_FIND_IMAGE_COUNT: 搜索动漫返回的最大数量
+  # API_KEY: Saucenao的API_KEY，通过 https://saucenao.com/user.php?page=search-api 注册获取
+  MAX_FIND_IMAGE_COUNT: 3
+  API_KEY: b366286b853960b1eab3f2d48de37942752608ae
+translate:
+  # 翻译
+  # APPID: 百度翻译APPID
+  # SECRET_KEY: 百度翻译秘钥
+  APPID:
+  SECRET_KEY:
+admin_help:
+  # 群组管理员帮助
+  # TYPE: 管理员帮助样式，normal, zhenxun
+  TYPE: zhenxun
+nickname:
+  # 昵称系统
+  # BLACK_WORD: 昵称所屏蔽的关键词，已设置的昵称会被替换为 *，未设置的昵称会在设置时提示
+  BLACK_WORD:
+    - 爸
+    - 爹
+    - 爷
+    - 父
+search_anime:
+  # 搜番
+  # SEARCH_ANIME_MAX_INFO: 搜索动漫返回的最大数量
+  SEARCH_ANIME_MAX_INFO: 20
+help:
+  # 帮助
+  # TYPE: 帮助图片样式 ['normal', 'HTML', 'zhenxun']
+  TYPE: normal
+mahiro_report:
+  # 真寻日报
+  # FULL_SHOW: 完全显示it资讯和60s
+  FULL_SHOW: true
+bym_ai:
+  # BYM_AI
+  # BYM_AI_CHAT_URL: ai聊天接口地址，可以填入url和平台名称，当你使用平台名称时，默认使用平台官方api, 目前有[gemini, DeepSeek, 硅基流动, 阿里云百炼, 百度智能云, 字节火山引擎], 填入对应名称即可, 如 gemini
+  # BYM_AI_CHAT_TOKEN: ai聊天接口密钥，使用列表
+  # BYM_AI_CHAT_MODEL: ai聊天接口模型
+  # BYM_AI_TOOL_MODEL: ai工具接口模型
+  # BYM_AI_CHAT: 是否开启伪人回复
+  # BYM_AI_CHAT_RATE: 伪人回复概率 0-1
+  # BYM_AI_CHAT_SMART: 是否开启智能模式
+  # BYM_AI_TTS_URL: tts接口地址
+  # BYM_AI_TTS_TOKEN: tts接口密钥
+  # BYM_AI_TTS_VOICE: tts接口音色
+  # ENABLE_IMPRESSION: 使用签到数据作为基础好感度
+  # CACHE_SIZE: 私聊下缓存聊天记录数据大小（每位用户）
+  # ENABLE_GROUP_CHAT: 在群组中时共用缓存
+  # GROUP_CACHE_SIZE: 群组内聊天记录数据大小
+  # https://api.deepseek.com/chat/completions
+  # - sk-c90fe503c2bc4d8cbb257c66d817ada7
+  BYM_AI_CHAT_URL: https://api.deepseek.com/chat/completions
+  BYM_AI_CHAT_TOKEN:
+    - sk-c90fe503c2bc4d8cbb257c66d817ada7
+  BYM_AI_CHAT_MODEL: deepseek-chat
+  BYM_AI_TOOL_MODEL: deepseek-chat
+  BYM_AI_CHAT: true
+  BYM_AI_CHAT_RATE: 0.1
+  BYM_AI_CHAT_SMART: true
+  BYM_AI_TTS_URL:
+  BYM_AI_TTS_TOKEN:
+  BYM_AI_TTS_VOICE:
+  ENABLE_IMPRESSION: true
+  CACHE_SIZE: 40
+  ENABLE_GROUP_CHAT: true
+  GROUP_CACHE_SIZE: 40
+summary_group:
+  # 群聊总结
+  # SUMMARY_PROVIDERS: 配置多个 AI 服务提供商及其模型信息 (列表)
+  # CURRENT_ACTIVE_MODEL_NAME: 当前激活使用的 AI 模型名称 (格式: ProviderName/ModelName)
+  # PROXY: 网络代理地址，例如 http://127.0.0.1:7890
+  # TIME_OUT: API请求超时时间（秒）
+  # MAX_RETRIES: API请求失败时的最大重试次数
+  # RETRY_DELAY: API请求重试前的延迟时间（秒）
+  # SUMMARY_MAX_LENGTH: 手动触发总结时，默认获取的最大消息数量
+  # SUMMARY_MIN_LENGTH: 触发总结所需的最少消息数量
+  # SUMMARY_COOL_DOWN: 用户手动触发总结的冷却时间（秒，0表示无冷却）
+  # SUMMARY_ADMIN_LEVEL: 设置/取消本群定时总结所需的最低管理员等级
+  # CONCURRENT_TASKS: 同时处理总结任务的最大数量
+  # SUMMARY_OUTPUT_TYPE: 总结输出类型 (image 或 text)
+  # SUMMARY_FALLBACK_ENABLED: 当图片生成失败时是否自动回退到文本模式
+  # EXCLUDE_BOT_MESSAGES: 是否在总结时排除 Bot 自身发送的消息
+  # SUMMARY_DEFAULT_MODEL_NAME: 默认使用的 AI 模型名称 (格式: ProviderName/ModelName)
+  SUMMARY_PROVIDERS:
+    - name: DeepSeek
+      api_key: sk-c90fe503c2bc4d8cbb257c66d817ada7
+      api_base: https://api.deepseek.com
+      models:
+        - model_name: deepseek-chat
+          max_tokens: 4096
+          temperature: 0.7
+        - model_name: deepseek-reasoner
+    - name: GLM
+      api_key: "**********.***********"
+      api_base: https://open.bigmodel.cn/api/paas
+      api_type: zhipu
+      models:
+        - model_name: glm-4-flash
+          max_tokens: 4096
+          temperature: 0.7
+    - name: ARK
+      api_key: "********-****-****-****-************"
+      api_base: https://ark.cn-beijing.volces.com/api/v3
+      api_type: openai
+      models:
+        - model_name: ep-202503210****-****
+    - name: Gemini
+      api_key:
+        - AIzaSy*****************************
+        - AIzaSy*****************************
+        - AIzaSy*****************************
+      api_base: https://generativelanguage.googleapis.com
+      temperature: 0.8
+      models:
+        - model_name: gemini-2.0-flash
+        - model_name: gemini-2.5-flash-preview-04-17
+  CURRENT_ACTIVE_MODEL_NAME: DeepSeek/deepseek-chat
+  PROXY:
+  TIME_OUT: 120
+  MAX_RETRIES: 3
+  RETRY_DELAY: 2
+  SUMMARY_MAX_LENGTH: 1000
+  SUMMARY_MIN_LENGTH: 50
+  SUMMARY_COOL_DOWN: 600
+  SUMMARY_ADMIN_LEVEL: 10
+  CONCURRENT_TASKS: 2
+  SUMMARY_OUTPUT_TYPE: image
+  SUMMARY_FALLBACK_ENABLED: false
+  EXCLUDE_BOT_MESSAGES: false
+  SUMMARY_DEFAULT_MODEL_NAME: DeepSeek/deepseek-chat

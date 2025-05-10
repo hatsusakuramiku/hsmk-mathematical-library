@@ -21,10 +21,7 @@
  */
 package com.hsmkmathlib.simplexIntegral;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.StringJoiner;
 
 import com.hsmkmathlib.simplexIntegral.function.TriFunction;
 import com.hsmkmathlib.simplexIntegral.polygon.Polygon;
@@ -214,19 +211,6 @@ public class TetrahedronIntegral extends IntegralBase {
             transformedPoints[i][3] = integralPoints[i][3];
         }
         return transformedPoints;
-    }
-
-    @Override
-    protected String integralFormulaToString(Double[][] pointWithWeights) {
-        ArrayList<String> pointAndWeights = new ArrayList<>();
-        for (Double[] pointWithWeight : pointWithWeights) {
-
-            pointAndWeights.add(pointWithWeight[0] + ", " + pointWithWeight[1] + ", " + pointWithWeight[2] + ", "
-                    + pointWithWeight[3] + ";\n");
-        }
-        StringJoiner sj = new StringJoiner("", "[", "];");
-        Arrays.stream(pointAndWeights.toArray(String[]::new)).forEach(sj::add);
-        return sj.toString();
     }
 
     /**
