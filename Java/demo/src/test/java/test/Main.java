@@ -21,39 +21,40 @@
  */
 package test;
 
+import com.hsmkmathlib.matrix.Matrix;
+import com.hsmkmathlib.matrix.MatrixUtils;
+import com.hsmkmathlib.tools.ArrayTools;
+
 // import sort.algorithm.BubbleSort;
-import java.util.Arrays;
-
-import com.hsmkmathlib.simplexIntegral.TetrahedronIntegral;
-import com.hsmkmathlib.simplexIntegral.TriangleIntegral;
-import com.hsmkmathlib.simplexIntegral.function.TriFunction;
-import com.hsmkmathlib.simplexIntegral.polygon.Tetrahedron;
-import com.hsmkmathlib.simplexIntegral.polygon.Triangle;
-
 public class Main {
 
     public static final int ASCENDING = 0;
     public static final int DESCENDING = 1;
 
     public static void main(String[] args) {
-        double[][] ves = {{1, 0}, {0, 0}, {0, 1}};
-        double[][] ves2 = {{1, 5, 0}, {2, 0, 0}, {4, 3, 0}, {1, 5, 5}};
-        TriFunction<Double, Double, Double, Double> f = (x, y, z) -> x * y * z;
-        Tetrahedron tetrahedron = new Tetrahedron(ves2);
-        Triangle triangle = new Triangle(ves);
-        TetrahedronIntegral teI = new TetrahedronIntegral();
-        TriangleIntegral trI = new TriangleIntegral();
-        // trI.saveIntegralPoints("triangleFormula.m");
-        // teI.saveIntegralPoints("tetrahedronFormula.m");
-        trI.saveIntegralPointsToJson("./temp/triangle_formula");
-        teI.saveIntegralPointsToJson("./temp/tetrahendron_formula");
-        System.out.println("The area of the triangle is: " + triangle.getArea());
-        System.out.println("The measure of the tetrahedron is: " + tetrahedron.getMeasure());
-        System.out.println("The integral of the tetrahedron is: "
-                + teI.integrate(tetrahedron, f, teI.getEnableIntegralFormulaName()[0]));
-        // System.out.println(triangle.isRightVertices(ves));
-        // System.out.println(triangle.getArea());
-        // TriangleSimplexIntegral.saveIntegralPoints("integralPoints.txt");
-        System.out.println(Arrays.toString(teI.getEnableIntegralFormulaName()));
+        // double[][] ves = {{1, 0}, {0, 0}, {0, 1}};
+        // double[][] ves2 = {{1, 5, 0}, {2, 0, 0}, {4, 3, 0}, {1, 5, 5}};
+        // TriFunction<Double, Double, Double, Double> f = (x, y, z) -> x * y * z;
+        // Tetrahedron tetrahedron = new Tetrahedron(ves2);
+        // Triangle triangle = new Triangle(ves);
+        // TetrahedronIntegral teI = new TetrahedronIntegral();
+        // TriangleIntegral trI = new TriangleIntegral();
+        // // trI.saveIntegralPoints("triangleFormula.m");
+        // // teI.saveIntegralPoints("tetrahedronFormula.m");
+        // trI.saveIntegralPointsToJson("./temp/triangle_formula");
+        // teI.saveIntegralPointsToJson("./temp/tetrahendron_formula");
+        // System.out.println("The area of the triangle is: " + triangle.getArea());
+        // System.out.println("The measure of the tetrahedron is: " + tetrahedron.getMeasure());
+        // System.out.println("The integral of the tetrahedron is: "
+        //         + teI.integrate(tetrahedron, f, teI.getEnableIntegralFormulaName()[0]));
+        // // System.out.println(triangle.isRightVertices(ves));
+        // // System.out.println(triangle.getArea());
+        // // TriangleSimplexIntegral.saveIntegralPoints("integralPoints.txt");
+        // System.out.println(Arrays.toString(teI.getEnableIntegralFormulaName()));
+        Matrix a = new Matrix(new double[][]{{1, 2, 3}, {4, 5, 6}, {7, 8, 9}}, false);
+        Matrix b = new Matrix(new double[][]{{1, 2, 3, 0}, {4, 5, 6, 0}, {7, 8, 9, 0}}, false);
+        Matrix c = MatrixUtils.multiply(a, b);
+        System.out.println(ArrayTools.arrayToString(c.getRow(0)));
+        System.out.println(MatrixUtils.onesMatrix(1, 1, 1));
     }
 }

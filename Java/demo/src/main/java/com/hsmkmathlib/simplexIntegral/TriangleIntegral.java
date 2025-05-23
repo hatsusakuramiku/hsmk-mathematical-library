@@ -30,6 +30,73 @@ import com.hsmkmathlib.tools.ArrayTools;
 
 public class TriangleIntegral extends IntegralBase {
 
+    /**
+     * Integrates a bi-variable function over a given triangle using a specified
+     * integral formula.
+     * <p>
+     * The method retrieves the integral formula by name and uses it to perform
+     * numerical integration over the triangle. It throws an exception if the
+     * specified formula is not found.
+     * <p>
+     * The supported integral formulas can be found at
+     * <a herf="https://hsmkhexo.s3.ap-northeast-1.amazonaws.com/other/%E7%A7%AF%E5%88%86%E5%85%AC%E5%BC%8F%E6%80%BB%E7%BB%93.pdf">online
+     * documentation</a>.
+     * <p>
+     *
+     * @param triangle the triangle over which the integration is performed
+     * @param func the bi-variable function to integrate
+     * @param formulaName the name of the integral formula to use for
+     * integration. The available formulas are: "ORDER1POINT3", "ORDER3POINT7",
+     * "ORDER5POINT12", "ORDER7POINT18", "ORDER7POINT27", "ORDER10POINT30",
+     * "ORDER11POINT36_v1", "ORDER11POINT36_v2", "ORDER11POINT36_v3",
+     * "ORDER11POINT36_v4", "ORDER11POINT36_v5", "ORDER11POINT36_v6",
+     * "ORDER11POINT36_v7". Or use the method
+     * {@link getEnableIntegralFormulaName()} to get all the available formulas.
+     * @return the result of the integration
+     * @throws IllegalArgumentException if the specified formula is not found
+     */
+    public double integrate(Triangle triangle, BiFunction<Double, Double, Double> func, String formulaName) {
+        return integrate(triangle, func, INTEGRALFORMULAS.get(formulaName));
+    }
+
+    /**
+     * Integrates a bi-variable function over a given triangle using the
+     * specified integral points and weights.
+     * <p>
+     * The method retrieves the integral points and weights, transforms them
+     * into the real coordinates of the triangle, and then applies the function
+     * to each point and multiplies the result by its weight. The results are
+     * then summed up.
+     * <p>
+     * The integral points and weights are expected to be in the format of a 2D
+     * array of doubles, where each row has 3 elements: the x and y coordinates
+     * of the point, and its weight. The array must not be null and must have at
+     * least one row. Each row must have exactly 3 elements.
+     * <p>
+     * The method throws an exception if the function or the integral points and
+     * weights are null, or if the integral points and weights array is not in
+     * the correct format.
+     * <p>
+     *
+     * @param triangle the triangle over which the integration is performed
+     * @param func the bi-variable function to integrate
+     * @param pointWithWeights the integral points and weights to use for
+     * integration. The array must have 3 elements in each row.
+     * @return the result of the integration
+     * @throws IllegalArgumentException if the function or the integral points
+     * and weights are null, or if the integral points and weights array is not
+     * in the correct format
+     */
+    public double integrate(Triangle triangle, BiFunction<Double, Double, Double> func, Double[][] pointWithWeights) {
+        if (func == null || pointWithWeights == null) {
+            throw new IllegalArgumentException("The function and pointWithWeights cannot be null.");
+        }
+        if (pointWithWeights[0].length != 3) {
+            throw new IllegalArgumentException("The pointWithWeights array must have 3 elements in each row.");
+        }
+        return applyArrayAndTimesWithWeightsAndSum(func, transformPoints(triangle, pointWithWeights));
+    }
+
     @Override
     protected HashMap<String, Double[][]> initalIntegralFormulas() {
         HashMap<String, Double[][]> formulas = new HashMap<>();
@@ -498,73 +565,6 @@ public class TriangleIntegral extends IntegralBase {
             result[i][2] = integralPoints[i][2];
         }
         return result;
-    }
-
-    /**
-     * Integrates a bi-variable function over a given triangle using a specified
-     * integral formula.
-     * <p>
-     * The method retrieves the integral formula by name and uses it to perform
-     * numerical integration over the triangle. It throws an exception if the
-     * specified formula is not found.
-     * <p>
-     * The supported integral formulas can be found at
-     * <a herf="https://hsmkhexo.s3.ap-northeast-1.amazonaws.com/other/%E7%A7%AF%E5%88%86%E5%85%AC%E5%BC%8F%E6%80%BB%E7%BB%93.pdf">online
-     * documentation</a>.
-     * <p>
-     *
-     * @param triangle the triangle over which the integration is performed
-     * @param func the bi-variable function to integrate
-     * @param formulaName the name of the integral formula to use for
-     * integration. The available formulas are: "ORDER1POINT3", "ORDER3POINT7",
-     * "ORDER5POINT12", "ORDER7POINT18", "ORDER7POINT27", "ORDER10POINT30",
-     * "ORDER11POINT36_v1", "ORDER11POINT36_v2", "ORDER11POINT36_v3",
-     * "ORDER11POINT36_v4", "ORDER11POINT36_v5", "ORDER11POINT36_v6",
-     * "ORDER11POINT36_v7". Or use the method
-     * {@link getEnableIntegralFormulaName()} to get all the available formulas.
-     * @return the result of the integration
-     * @throws IllegalArgumentException if the specified formula is not found
-     */
-    public double integrate(Triangle triangle, BiFunction<Double, Double, Double> func, String formulaName) {
-        return integrate(triangle, func, INTEGRALFORMULAS.get(formulaName));
-    }
-
-    /**
-     * Integrates a bi-variable function over a given triangle using the
-     * specified integral points and weights.
-     * <p>
-     * The method retrieves the integral points and weights, transforms them
-     * into the real coordinates of the triangle, and then applies the function
-     * to each point and multiplies the result by its weight. The results are
-     * then summed up.
-     * <p>
-     * The integral points and weights are expected to be in the format of a 2D
-     * array of doubles, where each row has 3 elements: the x and y coordinates
-     * of the point, and its weight. The array must not be null and must have at
-     * least one row. Each row must have exactly 3 elements.
-     * <p>
-     * The method throws an exception if the function or the integral points and
-     * weights are null, or if the integral points and weights array is not in
-     * the correct format.
-     * <p>
-     *
-     * @param triangle the triangle over which the integration is performed
-     * @param func the bi-variable function to integrate
-     * @param pointWithWeights the integral points and weights to use for
-     * integration. The array must have 3 elements in each row.
-     * @return the result of the integration
-     * @throws IllegalArgumentException if the function or the integral points
-     * and weights are null, or if the integral points and weights array is not
-     * in the correct format
-     */
-    public double integrate(Triangle triangle, BiFunction<Double, Double, Double> func, Double[][] pointWithWeights) {
-        if (func == null || pointWithWeights == null) {
-            throw new IllegalArgumentException("The function and pointWithWeights cannot be null.");
-        }
-        if (pointWithWeights[0].length != 3) {
-            throw new IllegalArgumentException("The pointWithWeights array must have 3 elements in each row.");
-        }
-        return applyArrayAndTimesWithWeightsAndSum(func, transformPoints(triangle, pointWithWeights));
     }
 
     /**

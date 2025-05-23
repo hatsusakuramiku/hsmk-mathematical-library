@@ -34,30 +34,6 @@ public class Tetrahedron extends ThreeDimPolygon {
     }
 
     /**
-     * Calculates the areas of the four triangular faces of the tetrahedron.
-     * <p>
-     * Each face is defined by three of the four vertices of the tetrahedron.
-     * The areas are stored in the 'squres' array where each index corresponds
-     * to a specific face:
-     * <ul>
-     * <li>squres[0]: Area of face formed by vertices A, B, and C</li>
-     * <li>squres[1]: Area of face formed by vertices B, C, and D</li>
-     * <li>squres[2]: Area of face formed by vertices C, D, and A</li>
-     * <li>squres[3]: Area of face formed by vertices D, A, and B</li>
-     * </ul>
-     */
-    private void caculateSqures() {
-        double[] A = this.vertices[0];
-        double[] B = this.vertices[1];
-        double[] C = this.vertices[2];
-        double[] D = this.vertices[3];
-        this.squres[0] = faceArea(new double[][]{A, B, C});
-        this.squres[1] = faceArea(new double[][]{B, C, D});
-        this.squres[2] = faceArea(new double[][]{C, D, A});
-        this.squres[3] = faceArea(new double[][]{D, A, B});
-    }
-
-    /**
      * Calculates the volume of the tetrahedron.
      * <p>
      * The volume of a tetrahedron can be calculated using the scalar triple
@@ -86,26 +62,6 @@ public class Tetrahedron extends ThreeDimPolygon {
         double scalarTripleProduct = dotProduct(AB, cross);
 
         return Math.abs(scalarTripleProduct) / 6.0;
-    }
-
-    // 计算从点from到点to的向量
-    private double[] vectorBetween(double[] from, double[] to) {
-        return new double[]{
-            to[0] - from[0],
-            to[1] - from[1],
-            to[2] - from[2]
-        };
-    }
-
-    /**
-     * Computes the dot product of two 3-dimensional vectors.
-     *
-     * @param u the first vector
-     * @param v the second vector
-     * @return the dot product of vectors u and v
-     */
-    private double dotProduct(double[] u, double[] v) {
-        return u[0] * v[0] + u[1] * v[1] + u[2] * v[2];
     }
 
     /**
@@ -198,6 +154,50 @@ public class Tetrahedron extends ThreeDimPolygon {
         }
 
         return false;
+    }
+
+    /**
+     * Calculates the areas of the four triangular faces of the tetrahedron.
+     * <p>
+     * Each face is defined by three of the four vertices of the tetrahedron.
+     * The areas are stored in the 'squres' array where each index corresponds
+     * to a specific face:
+     * <ul>
+     * <li>squres[0]: Area of face formed by vertices A, B, and C</li>
+     * <li>squres[1]: Area of face formed by vertices B, C, and D</li>
+     * <li>squres[2]: Area of face formed by vertices C, D, and A</li>
+     * <li>squres[3]: Area of face formed by vertices D, A, and B</li>
+     * </ul>
+     */
+    private void caculateSqures() {
+        double[] A = this.vertices[0];
+        double[] B = this.vertices[1];
+        double[] C = this.vertices[2];
+        double[] D = this.vertices[3];
+        this.squres[0] = faceArea(new double[][]{A, B, C});
+        this.squres[1] = faceArea(new double[][]{B, C, D});
+        this.squres[2] = faceArea(new double[][]{C, D, A});
+        this.squres[3] = faceArea(new double[][]{D, A, B});
+    }
+
+    // 计算从点from到点to的向量
+    private double[] vectorBetween(double[] from, double[] to) {
+        return new double[]{
+            to[0] - from[0],
+            to[1] - from[1],
+            to[2] - from[2]
+        };
+    }
+
+    /**
+     * Computes the dot product of two 3-dimensional vectors.
+     *
+     * @param u the first vector
+     * @param v the second vector
+     * @return the dot product of vectors u and v
+     */
+    private double dotProduct(double[] u, double[] v) {
+        return u[0] * v[0] + u[1] * v[1] + u[2] * v[2];
     }
 
     /**

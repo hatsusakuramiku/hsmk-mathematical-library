@@ -25,6 +25,7 @@ package com.hsmkmathlib.sort.algorithm;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Arrays;
+
 import com.hsmkmathlib.sort.utils.SortAlgorithm;
 
 /**
@@ -89,6 +90,328 @@ public final class MergeSort implements SortAlgorithm {
     } catch (IllegalAccessException | NoSuchMethodException | SecurityException | InvocationTargetException e) {
       throw new IllegalArgumentException(e.getMessage());
     }
+  }
+
+  /**
+   * Sorts the given array using the Merge Sort algorithm.
+   *
+   * <p>
+   * This implementation takes an array, a start index, an end index, and an axis
+   * value as parameters. It first checks if the array is null, if the array is
+   * empty, if the range given is invalid, or if the axis value is invalid. If the
+   * array is valid, it implements the Merge Sort algorithm. The algorithm works
+   * by dividing the input into two halves, recursively sorts them, and then
+   * merges them back together in sorted order.
+   *
+   * @param array      the array to be sorted
+   * @param startIndex the starting index of the array
+   * @param endIndex   the ending index of the array, doesn't include the end
+   * @param aix        the axis value for sorting order
+   */
+  @Override
+  public void sort(float[] array, int startIndex, int endIndex, int aix) {
+    if (array == null) {
+      throw new IllegalArgumentException("Array cannot be null");
+    }
+    if (array.length == 0) {
+      throw new IllegalArgumentException("Array cannot be empty");
+    }
+    if (!checkRange(array.length, startIndex, endIndex)) {
+      throw new IllegalArgumentException("Invalid range");
+    }
+    if (!checkAix(aix)) {
+      throw new IllegalArgumentException("Invalid axis value");
+    }
+    if (array.length == 1) {
+      return;
+    }
+    int sortElementCount = endIndex - startIndex;
+    mergeBase(array, startIndex, sortElementCount, aix);
+  }
+
+  /**
+   * Sorts a portion of the specified double array using the Merge Sort algorithm.
+   *
+   * <p>
+   * This method sorts the elements in the specified range of the array in
+   * either ascending or descending order, based on the provided axis value.
+   * It performs checks for null or empty arrays, invalid range, and invalid
+   * axis values, throwing an IllegalArgumentException if any of these conditions
+   * are met. The sorting process involves dividing the array into two halves,
+   * recursively sorting them, and then merging them back together in sorted
+   * order.
+   *
+   * @param array      the double array to be sorted
+   * @param startIndex the starting index of the sort range
+   * @param endIndex   the ending index of the sort range, exclusive
+   * @param aix        the axis value for sorting order, 0 for ascending, 1 for
+   *                   descending
+   * @throws IllegalArgumentException if the array is null, empty, contains an
+   *                                  invalid range, or has an invalid axis value
+   */
+
+  @Override
+  public void sort(double[] array, int startIndex, int endIndex, int aix) {
+    if (array == null) {
+      throw new IllegalArgumentException("Array cannot be null");
+    }
+    if (array.length == 0) {
+      throw new IllegalArgumentException("Array cannot be empty");
+    }
+    if (!checkRange(array.length, startIndex, endIndex)) {
+      throw new IllegalArgumentException("Invalid range");
+    }
+    if (!checkAix(aix)) {
+      throw new IllegalArgumentException("Invalid axis value");
+    }
+    if (array.length == 1) {
+      return;
+    }
+    int sortElementCount = endIndex - startIndex;
+    mergeBase(array, startIndex, sortElementCount, aix);
+  }
+
+  /**
+   * Sorts a long array within the specified range and axis.
+   *
+   * @param array      the long array to be sorted
+   * @param startIndex the starting index of the sort range
+   * @param endIndex   the ending index of the sort range
+   * @param aix        the axis value for sorting order
+   * @throws IllegalArgumentException if the array is null, empty, contains
+   *                                  invalid range,
+   *                                  invalid axis value
+   */
+  @Override
+  public void sort(long[] array, int startIndex, int endIndex, int aix) {
+    if (array == null) {
+      throw new IllegalArgumentException("Array cannot be null");
+    }
+    if (array.length == 0) {
+      throw new IllegalArgumentException("Array cannot be empty");
+    }
+    if (!checkRange(array.length, startIndex, endIndex)) {
+      throw new IllegalArgumentException("Invalid range");
+    }
+    if (!checkAix(aix)) {
+      throw new IllegalArgumentException("Invalid axis value");
+    }
+    if (array.length == 1) {
+      return;
+    }
+    int sortElementCount = endIndex - startIndex;
+    mergeBase(array, startIndex, sortElementCount, aix);
+  }
+
+  /**
+   * Sorts the given short array using the Merge Sort algorithm.
+   *
+   * <p>
+   * This implementation takes a short array, a starting index, an ending index,
+   * and an axis value as parameters. It first checks if the array is null or if
+   * the range given is invalid. If the array is valid, it implements the Merge
+   * Sort algorithm. The algorithm works by recursively dividing the array into
+   * subarrays and merging them in order.
+   *
+   * @param array      the short array to be sorted
+   * @param startIndex the starting index of the sort range
+   * @param endIndex   the ending index of the sort range
+   * @param aix        the axis value for sorting order, 0 for ascending, 1 for
+   *                   descending
+   * @throws IllegalArgumentException if the array is null, empty, contains
+   *                                  invalid range, or invalid axis value
+   */
+  @Override
+  public void sort(short[] array, int startIndex, int endIndex, int aix) {
+    if (array == null) {
+      throw new IllegalArgumentException("Array cannot be null");
+    }
+    if (array.length == 0) {
+      throw new IllegalArgumentException("Array cannot be empty");
+    }
+    if (!checkRange(array.length, startIndex, endIndex)) {
+      throw new IllegalArgumentException("Invalid range");
+    }
+    if (!checkAix(aix)) {
+      throw new IllegalArgumentException("Invalid axis value");
+    }
+    if (array.length == 1) {
+      return;
+    }
+    int sortElementCount = endIndex - startIndex;
+    mergeBase(array, startIndex, sortElementCount, aix);
+  }
+
+  /**
+   * Sorts the given byte array using the Merge Sort algorithm.
+   *
+   * <p>
+   * This implementation takes a byte array, a starting index, an ending index,
+   * and an axis value as parameters. It first checks if the array is null or if
+   * the range given is invalid. If the array is valid, it implements the
+   * Merge Sort algorithm. The algorithm works by recursively dividing the array
+   * into subarrays and merging them in order.
+   *
+   * @param array      the byte array to be sorted
+   * @param startIndex the starting index of the sort range
+   * @param endIndex   the ending index of the sort range
+   * @param aix        the axis value for sorting order, 0 for ascending, 1 for
+   *                   descending
+   * @throws IllegalArgumentException if the array is null, empty, contains
+   *                                  invalid range, or invalid axis value
+   */
+  @Override
+  public void sort(byte[] array, int startIndex, int endIndex, int aix) {
+    if (array == null) {
+      throw new IllegalArgumentException("Array cannot be null");
+    }
+    if (array.length == 0) {
+      throw new IllegalArgumentException("Array cannot be empty");
+    }
+    if (!checkRange(array.length, startIndex, endIndex)) {
+      throw new IllegalArgumentException("Invalid range");
+    }
+    if (!checkAix(aix)) {
+      throw new IllegalArgumentException("Invalid axis value");
+    }
+    if (array.length == 1) {
+      return;
+    }
+    int sortElementCount = endIndex - startIndex;
+    mergeBase(array, startIndex, sortElementCount, aix);
+  }
+
+  /**
+   * Sorts the given array using the Merge Sort algorithm.
+   *
+   * <p>
+   * This method sorts the specified range of the array in either ascending or
+   * descending order,
+   * depending on the axis value provided. It first checks for null or empty
+   * arrays, invalid range,
+   * invalid axis values in the array and throws an
+   * IllegalArgumentException if
+   * any of these conditions are met. The sorting is done by dividing the array
+   * into a sorted and
+   * unsorted region, and inserting each subsequent element from the unsorted
+   * region into the
+   * correct position within the sorted region.
+   *
+   * @param array      the array to be sorted
+   * @param startIndex the starting index of the sort range
+   * @param endIndex   the ending index of the sort range, doesn't include this
+   *                   index
+   * @param aix        the axis value for sorting order, 0 for ascending, 1 for
+   *                   descending
+   * @throws IllegalArgumentException if the array is null, empty, contains
+   *                                  invalid range,
+   *                                  invalid axis value
+   */
+  @Override
+  public void sort(char[] array, int startIndex, int endIndex, int aix) {
+    if (array == null) {
+      throw new IllegalArgumentException("Array cannot be null");
+    }
+    if (array.length == 0) {
+      throw new IllegalArgumentException("Array cannot be empty");
+    }
+    if (!checkRange(array.length, startIndex, endIndex)) {
+      throw new IllegalArgumentException("Invalid range");
+    }
+    if (!checkAix(aix)) {
+      throw new IllegalArgumentException("Invalid axis value");
+    }
+    if (array.length == 1) {
+      return;
+    }
+    int sortElementCount = endIndex - startIndex;
+    mergeBase(array, startIndex, sortElementCount, aix);
+  }
+
+  /**
+   * Sorts the given int array using the Merge Sort algorithm.
+   *
+   * <p>
+   * This method sorts the specified range of the array in either ascending or
+   * descending order, depending on the axis value provided. It first checks for
+   * null or empty arrays, invalid range, and invalid axis values, throwing an
+   * IllegalArgumentException if any of these conditions are met. The sorting is
+   * performed via recursive division and merging of the array elements.
+   *
+   * @param array      the array to be sorted
+   * @param startIndex the starting index of the sort range
+   * @param endIndex   the ending index of the sort range, doesn't include this
+   *                   index
+   * @param aix        the axis value for sorting order, 0 for ascending, 1 for
+   *                   descending
+   * @throws IllegalArgumentException if the array is null, empty, contains
+   *                                  invalid range, or has an invalid axis value
+   */
+
+  @Override
+  public void sort(int[] array, int startIndex, int endIndex, int aix) {
+    if (array == null) {
+      throw new IllegalArgumentException("Array cannot be null");
+    }
+    if (array.length == 0) {
+      throw new IllegalArgumentException("Array cannot be empty");
+    }
+    if (!checkRange(array.length, startIndex, endIndex)) {
+      throw new IllegalArgumentException("Invalid range");
+    }
+    if (!checkAix(aix)) {
+      throw new IllegalArgumentException("Invalid axis value");
+    }
+    if (array.length == 1) {
+      return;
+    }
+    int sortElementCount = endIndex - startIndex;
+    mergeBase(array, startIndex, sortElementCount, aix);
+  }
+
+  @Override
+  /**
+   * Sorts the given array using the Merge Sort algorithm.
+   *
+   * <p>
+   * This method sorts the specified range of the array in either ascending or
+   * descending order, depending on the axis value provided. It first checks for
+   * null or empty arrays, invalid range, invalid axis values, or null elements
+   * in the array and throws an IllegalArgumentException if any of these
+   * conditions are met. The sorting is done via recursive division and merging
+   * of the array elements.
+   *
+   * @param array      the array to be sorted
+   * @param startIndex the starting index of the sort range
+   * @param endIndex   the ending index of the sort range, doesn't include this
+   *                   index
+   * @param aix        the axis value for sorting order, 0 for ascending, 1 for
+   *                   descending
+   * @throws IllegalArgumentException if the array is null, empty, contains
+   *                                  invalid range, invalid axis value, or null
+   *                                  elements
+   */
+  public <T extends Comparable<T>> void sort(T[] array, int startIndex, int endIndex, int aix) {
+    if (array == null) {
+      throw new IllegalArgumentException("Array cannot be null");
+    }
+    if (array.length == 0) {
+      throw new IllegalArgumentException("Array cannot be empty");
+    }
+    if (!checkRange(array.length, startIndex, endIndex)) {
+      throw new IllegalArgumentException("Invalid range");
+    }
+    if (!checkAix(aix)) {
+      throw new IllegalArgumentException("Invalid axis value");
+    }
+    if (array.length == 1) {
+      return;
+    }
+    if (checkArrayHasNull(array)) {
+      throw new IllegalArgumentException("Array cannot contain null elements");
+    }
+    int sortElementCount = endIndex - startIndex;
+    mergeBase(array, startIndex, sortElementCount, aix);
   }
 
   /**
@@ -166,43 +489,6 @@ public final class MergeSort implements SortAlgorithm {
   }
 
   /**
-   * Sorts the given array using the Merge Sort algorithm.
-   *
-   * <p>
-   * This implementation takes an array, a start index, an end index, and an axis
-   * value as parameters. It first checks if the array is null, if the array is
-   * empty, if the range given is invalid, or if the axis value is invalid. If the
-   * array is valid, it implements the Merge Sort algorithm. The algorithm works
-   * by dividing the input into two halves, recursively sorts them, and then
-   * merges them back together in sorted order.
-   *
-   * @param array      the array to be sorted
-   * @param startIndex the starting index of the array
-   * @param endIndex   the ending index of the array, doesn't include the end
-   * @param aix        the axis value for sorting order
-   */
-  @Override
-  public void sort(float[] array, int startIndex, int endIndex, int aix) {
-    if (array == null) {
-      throw new IllegalArgumentException("Array cannot be null");
-    }
-    if (array.length == 0) {
-      throw new IllegalArgumentException("Array cannot be empty");
-    }
-    if (!checkRange(array.length, startIndex, endIndex)) {
-      throw new IllegalArgumentException("Invalid range");
-    }
-    if (!checkAix(aix)) {
-      throw new IllegalArgumentException("Invalid axis value");
-    }
-    if (array.length == 1) {
-      return;
-    }
-    int sortElementCount = endIndex - startIndex;
-    mergeBase(array, startIndex, sortElementCount, aix);
-  }
-
-  /**
    * Recursively divides the array into subarrays and merges them in order.
    *
    * @param array            the array to be sorted
@@ -260,48 +546,6 @@ public final class MergeSort implements SortAlgorithm {
   }
 
   /**
-   * Sorts a portion of the specified double array using the Merge Sort algorithm.
-   *
-   * <p>
-   * This method sorts the elements in the specified range of the array in
-   * either ascending or descending order, based on the provided axis value.
-   * It performs checks for null or empty arrays, invalid range, and invalid
-   * axis values, throwing an IllegalArgumentException if any of these conditions
-   * are met. The sorting process involves dividing the array into two halves,
-   * recursively sorting them, and then merging them back together in sorted
-   * order.
-   *
-   * @param array      the double array to be sorted
-   * @param startIndex the starting index of the sort range
-   * @param endIndex   the ending index of the sort range, exclusive
-   * @param aix        the axis value for sorting order, 0 for ascending, 1 for
-   *                   descending
-   * @throws IllegalArgumentException if the array is null, empty, contains an
-   *                                  invalid range, or has an invalid axis value
-   */
-
-  @Override
-  public void sort(double[] array, int startIndex, int endIndex, int aix) {
-    if (array == null) {
-      throw new IllegalArgumentException("Array cannot be null");
-    }
-    if (array.length == 0) {
-      throw new IllegalArgumentException("Array cannot be empty");
-    }
-    if (!checkRange(array.length, startIndex, endIndex)) {
-      throw new IllegalArgumentException("Invalid range");
-    }
-    if (!checkAix(aix)) {
-      throw new IllegalArgumentException("Invalid axis value");
-    }
-    if (array.length == 1) {
-      return;
-    }
-    int sortElementCount = endIndex - startIndex;
-    mergeBase(array, startIndex, sortElementCount, aix);
-  }
-
-  /**
    * Recursively divides the array into subarrays and merges them in order.
    *
    * @param array            the array to be sorted
@@ -356,38 +600,6 @@ public final class MergeSort implements SortAlgorithm {
       rightIndex++;
       index++;
     }
-  }
-
-  /**
-   * Sorts a long array within the specified range and axis.
-   *
-   * @param array      the long array to be sorted
-   * @param startIndex the starting index of the sort range
-   * @param endIndex   the ending index of the sort range
-   * @param aix        the axis value for sorting order
-   * @throws IllegalArgumentException if the array is null, empty, contains
-   *                                  invalid range,
-   *                                  invalid axis value
-   */
-  @Override
-  public void sort(long[] array, int startIndex, int endIndex, int aix) {
-    if (array == null) {
-      throw new IllegalArgumentException("Array cannot be null");
-    }
-    if (array.length == 0) {
-      throw new IllegalArgumentException("Array cannot be empty");
-    }
-    if (!checkRange(array.length, startIndex, endIndex)) {
-      throw new IllegalArgumentException("Invalid range");
-    }
-    if (!checkAix(aix)) {
-      throw new IllegalArgumentException("Invalid axis value");
-    }
-    if (array.length == 1) {
-      return;
-    }
-    int sortElementCount = endIndex - startIndex;
-    mergeBase(array, startIndex, sortElementCount, aix);
   }
 
   /**
@@ -449,45 +661,6 @@ public final class MergeSort implements SortAlgorithm {
   }
 
   /**
-   * Sorts the given short array using the Merge Sort algorithm.
-   *
-   * <p>
-   * This implementation takes a short array, a starting index, an ending index,
-   * and an axis value as parameters. It first checks if the array is null or if
-   * the range given is invalid. If the array is valid, it implements the Merge
-   * Sort algorithm. The algorithm works by recursively dividing the array into
-   * subarrays and merging them in order.
-   *
-   * @param array      the short array to be sorted
-   * @param startIndex the starting index of the sort range
-   * @param endIndex   the ending index of the sort range
-   * @param aix        the axis value for sorting order, 0 for ascending, 1 for
-   *                   descending
-   * @throws IllegalArgumentException if the array is null, empty, contains
-   *                                  invalid range, or invalid axis value
-   */
-  @Override
-  public void sort(short[] array, int startIndex, int endIndex, int aix) {
-    if (array == null) {
-      throw new IllegalArgumentException("Array cannot be null");
-    }
-    if (array.length == 0) {
-      throw new IllegalArgumentException("Array cannot be empty");
-    }
-    if (!checkRange(array.length, startIndex, endIndex)) {
-      throw new IllegalArgumentException("Invalid range");
-    }
-    if (!checkAix(aix)) {
-      throw new IllegalArgumentException("Invalid axis value");
-    }
-    if (array.length == 1) {
-      return;
-    }
-    int sortElementCount = endIndex - startIndex;
-    mergeBase(array, startIndex, sortElementCount, aix);
-  }
-
-  /**
    * Recursively divides the array into subarrays and merges them in order.
    *
    * @param array            the array to be sorted
@@ -543,45 +716,6 @@ public final class MergeSort implements SortAlgorithm {
       rightIndex++;
       index++;
     }
-  }
-
-  /**
-   * Sorts the given byte array using the Merge Sort algorithm.
-   *
-   * <p>
-   * This implementation takes a byte array, a starting index, an ending index,
-   * and an axis value as parameters. It first checks if the array is null or if
-   * the range given is invalid. If the array is valid, it implements the
-   * Merge Sort algorithm. The algorithm works by recursively dividing the array
-   * into subarrays and merging them in order.
-   *
-   * @param array      the byte array to be sorted
-   * @param startIndex the starting index of the sort range
-   * @param endIndex   the ending index of the sort range
-   * @param aix        the axis value for sorting order, 0 for ascending, 1 for
-   *                   descending
-   * @throws IllegalArgumentException if the array is null, empty, contains
-   *                                  invalid range, or invalid axis value
-   */
-  @Override
-  public void sort(byte[] array, int startIndex, int endIndex, int aix) {
-    if (array == null) {
-      throw new IllegalArgumentException("Array cannot be null");
-    }
-    if (array.length == 0) {
-      throw new IllegalArgumentException("Array cannot be empty");
-    }
-    if (!checkRange(array.length, startIndex, endIndex)) {
-      throw new IllegalArgumentException("Invalid range");
-    }
-    if (!checkAix(aix)) {
-      throw new IllegalArgumentException("Invalid axis value");
-    }
-    if (array.length == 1) {
-      return;
-    }
-    int sortElementCount = endIndex - startIndex;
-    mergeBase(array, startIndex, sortElementCount, aix);
   }
 
   /**
@@ -643,53 +777,6 @@ public final class MergeSort implements SortAlgorithm {
   }
 
   /**
-   * Sorts the given array using the Merge Sort algorithm.
-   *
-   * <p>
-   * This method sorts the specified range of the array in either ascending or
-   * descending order,
-   * depending on the axis value provided. It first checks for null or empty
-   * arrays, invalid range,
-   * invalid axis values in the array and throws an
-   * IllegalArgumentException if
-   * any of these conditions are met. The sorting is done by dividing the array
-   * into a sorted and
-   * unsorted region, and inserting each subsequent element from the unsorted
-   * region into the
-   * correct position within the sorted region.
-   *
-   * @param array      the array to be sorted
-   * @param startIndex the starting index of the sort range
-   * @param endIndex   the ending index of the sort range, doesn't include this
-   *                   index
-   * @param aix        the axis value for sorting order, 0 for ascending, 1 for
-   *                   descending
-   * @throws IllegalArgumentException if the array is null, empty, contains
-   *                                  invalid range,
-   *                                  invalid axis value
-   */
-  @Override
-  public void sort(char[] array, int startIndex, int endIndex, int aix) {
-    if (array == null) {
-      throw new IllegalArgumentException("Array cannot be null");
-    }
-    if (array.length == 0) {
-      throw new IllegalArgumentException("Array cannot be empty");
-    }
-    if (!checkRange(array.length, startIndex, endIndex)) {
-      throw new IllegalArgumentException("Invalid range");
-    }
-    if (!checkAix(aix)) {
-      throw new IllegalArgumentException("Invalid axis value");
-    }
-    if (array.length == 1) {
-      return;
-    }
-    int sortElementCount = endIndex - startIndex;
-    mergeBase(array, startIndex, sortElementCount, aix);
-  }
-
-  /**
    * Recursively divides the array into subarrays and merges them in order.
    *
    * @param array            the array to be sorted
@@ -748,47 +835,6 @@ public final class MergeSort implements SortAlgorithm {
   }
 
   /**
-   * Sorts the given int array using the Merge Sort algorithm.
-   *
-   * <p>
-   * This method sorts the specified range of the array in either ascending or
-   * descending order, depending on the axis value provided. It first checks for
-   * null or empty arrays, invalid range, and invalid axis values, throwing an
-   * IllegalArgumentException if any of these conditions are met. The sorting is
-   * performed via recursive division and merging of the array elements.
-   *
-   * @param array      the array to be sorted
-   * @param startIndex the starting index of the sort range
-   * @param endIndex   the ending index of the sort range, doesn't include this
-   *                   index
-   * @param aix        the axis value for sorting order, 0 for ascending, 1 for
-   *                   descending
-   * @throws IllegalArgumentException if the array is null, empty, contains
-   *                                  invalid range, or has an invalid axis value
-   */
-
-  @Override
-  public void sort(int[] array, int startIndex, int endIndex, int aix) {
-    if (array == null) {
-      throw new IllegalArgumentException("Array cannot be null");
-    }
-    if (array.length == 0) {
-      throw new IllegalArgumentException("Array cannot be empty");
-    }
-    if (!checkRange(array.length, startIndex, endIndex)) {
-      throw new IllegalArgumentException("Invalid range");
-    }
-    if (!checkAix(aix)) {
-      throw new IllegalArgumentException("Invalid axis value");
-    }
-    if (array.length == 1) {
-      return;
-    }
-    int sortElementCount = endIndex - startIndex;
-    mergeBase(array, startIndex, sortElementCount, aix);
-  }
-
-  /**
    * Recursively divides the array into subarrays and merges them in order.
    *
    * @param array            the array to be sorted
@@ -844,51 +890,6 @@ public final class MergeSort implements SortAlgorithm {
       rightIndex++;
       index++;
     }
-  }
-
-  @Override
-  /**
-   * Sorts the given array using the Merge Sort algorithm.
-   *
-   * <p>
-   * This method sorts the specified range of the array in either ascending or
-   * descending order, depending on the axis value provided. It first checks for
-   * null or empty arrays, invalid range, invalid axis values, or null elements
-   * in the array and throws an IllegalArgumentException if any of these
-   * conditions are met. The sorting is done via recursive division and merging
-   * of the array elements.
-   *
-   * @param array      the array to be sorted
-   * @param startIndex the starting index of the sort range
-   * @param endIndex   the ending index of the sort range, doesn't include this
-   *                   index
-   * @param aix        the axis value for sorting order, 0 for ascending, 1 for
-   *                   descending
-   * @throws IllegalArgumentException if the array is null, empty, contains
-   *                                  invalid range, invalid axis value, or null
-   *                                  elements
-   */
-  public <T extends Comparable<T>> void sort(T[] array, int startIndex, int endIndex, int aix) {
-    if (array == null) {
-      throw new IllegalArgumentException("Array cannot be null");
-    }
-    if (array.length == 0) {
-      throw new IllegalArgumentException("Array cannot be empty");
-    }
-    if (!checkRange(array.length, startIndex, endIndex)) {
-      throw new IllegalArgumentException("Invalid range");
-    }
-    if (!checkAix(aix)) {
-      throw new IllegalArgumentException("Invalid axis value");
-    }
-    if (array.length == 1) {
-      return;
-    }
-    if (checkArrayHasNull(array)) {
-      throw new IllegalArgumentException("Array cannot contain null elements");
-    }
-    int sortElementCount = endIndex - startIndex;
-    mergeBase(array, startIndex, sortElementCount, aix);
   }
 
   /**

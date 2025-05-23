@@ -21,71 +21,20 @@
  */
 package com.hsmkmathlib.simplexIntegral;
 
-import com.google.gson.Gson;
+import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.BufferedWriter;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.StringJoiner;
 import java.util.function.BiFunction;
 
+import com.google.gson.Gson;
 import com.hsmkmathlib.simplexIntegral.function.TriFunction;
 import com.hsmkmathlib.simplexIntegral.polygon.Polygon;
 
 public abstract class IntegralBase {
 
     protected final HashMap<String, Double[][]> INTEGRALFORMULAS = initalIntegralFormulas();
-
-    abstract protected HashMap<String, Double[][]> initalIntegralFormulas();
-
-    /**
-     * Applies the given bi-function to each point in the given array of points,
-     * and returns the sum of the results.
-     * <p>
-     * The bi-function is applied to the first two elements of each point in the
-     * given array of points, and the results are summed up.
-     * <p>
-     * This method is used to apply a function to each point in the integral,
-     * and calculate the integral.
-     * <p>
-     *
-     * @param f the bi-function to apply
-     * @param points the array of points to apply the function to
-     * @return the sum of the results
-     */
-    protected <T extends BiFunction<Double, Double, Double>> double applyArray(T func, Double[][] points) {
-        double result = 0.0;
-        for (Double[] point : points) {
-            result += func.apply(point[0], point[1]);
-        }
-        return result;
-    }
-
-    /**
-     * Applies the given tri-function to each point in the given array of
-     * points, and returns the sum of the results.
-     * <p>
-     * The tri-function is applied to the first three elements of each point in
-     * the given array of points, and the results are summed up.
-     * <p>
-     * This method is used to apply a function to each point in the integral,
-     * and calculate the integral.
-     * <p>
-     *
-     * @param f the tri-function to apply
-     * @param points the array of points to apply the function to
-     * @return the sum of the results
-     */
-    protected <T extends TriFunction<Double, Double, Double, Double>> double applyArray(T f, Double[][] points) {
-        double result = 0.0;
-        for (Double[] point : points) {
-            result += f.apply(point[0], point[1], point[2]);
-        }
-        return result;
-    }
-
-    abstract protected <T extends Polygon> Double[][] transformPoints(T polygon, Double[][] integralPoints);
 
     /**
      * Saves the integral points and their weights of all integral formulas to a
@@ -124,39 +73,6 @@ public abstract class IntegralBase {
         } catch (IOException e) {
             System.err.println("Error initializing file writer: " + e.getMessage());
         }
-    }
-
-    /**
-     * Converts an array of IntegralPointWithWeight objects into a formatted
-     * string representation specific to the integral formula.
-     * <p>
-     * The method takes an array of IntegralPointWithWeight, retrieves the
-     * integral points and their weights, and formats them as a string. Each
-     * point's coordinates are followed by its weight, separated by commas, and
-     * each point-weight pair is separated by a semicolon. The entire sequence
-     * is enclosed in square brackets and ends with a semicolon.
-     * <p>
-     * This string representation is used to describe the integral formula in a
-     * human-readable format.
-     * <p>
-     *
-     * @param points the array of IntegralPointWithWeight objects to convert
-     * @param outSj_Strings the outer StringJoiner's delimiter strings
-     * @param inerSj_Strings the inner StringJoiner's delimiter strings
-     * @return the formatted string representation of the integral points and
-     * weights
-     */
-    protected String integralFormulaToString(Double[][] points, String[] outSj_Strings, String[] inerSj_Strings) {
-        StringJoiner outSj = new StringJoiner(outSj_Strings[0], outSj_Strings[1], outSj_Strings[2]);
-
-        for (Double[] point : points) {
-            StringJoiner inerSj = new StringJoiner(inerSj_Strings[0], inerSj_Strings[1], inerSj_Strings[2]);
-            for (Double p : point) {
-                inerSj.add(String.valueOf(p));
-            }
-            outSj.add(inerSj.toString());
-        }
-        return outSj.toString();
     }
 
     /**
@@ -241,5 +157,88 @@ public abstract class IntegralBase {
         } catch (IOException e) {
             
         }
+    }
+
+    abstract protected HashMap<String, Double[][]> initalIntegralFormulas();
+
+    /**
+     * Applies the given bi-function to each point in the given array of points,
+     * and returns the sum of the results.
+     * <p>
+     * The bi-function is applied to the first two elements of each point in the
+     * given array of points, and the results are summed up.
+     * <p>
+     * This method is used to apply a function to each point in the integral,
+     * and calculate the integral.
+     * <p>
+     *
+     * @param f the bi-function to apply
+     * @param points the array of points to apply the function to
+     * @return the sum of the results
+     */
+    protected <T extends BiFunction<Double, Double, Double>> double applyArray(T func, Double[][] points) {
+        double result = 0.0;
+        for (Double[] point : points) {
+            result += func.apply(point[0], point[1]);
+        }
+        return result;
+    }
+
+    /**
+     * Applies the given tri-function to each point in the given array of
+     * points, and returns the sum of the results.
+     * <p>
+     * The tri-function is applied to the first three elements of each point in
+     * the given array of points, and the results are summed up.
+     * <p>
+     * This method is used to apply a function to each point in the integral,
+     * and calculate the integral.
+     * <p>
+     *
+     * @param f the tri-function to apply
+     * @param points the array of points to apply the function to
+     * @return the sum of the results
+     */
+    protected <T extends TriFunction<Double, Double, Double, Double>> double applyArray(T f, Double[][] points) {
+        double result = 0.0;
+        for (Double[] point : points) {
+            result += f.apply(point[0], point[1], point[2]);
+        }
+        return result;
+    }
+
+    abstract protected <T extends Polygon> Double[][] transformPoints(T polygon, Double[][] integralPoints);
+
+    /**
+     * Converts an array of IntegralPointWithWeight objects into a formatted
+     * string representation specific to the integral formula.
+     * <p>
+     * The method takes an array of IntegralPointWithWeight, retrieves the
+     * integral points and their weights, and formats them as a string. Each
+     * point's coordinates are followed by its weight, separated by commas, and
+     * each point-weight pair is separated by a semicolon. The entire sequence
+     * is enclosed in square brackets and ends with a semicolon.
+     * <p>
+     * This string representation is used to describe the integral formula in a
+     * human-readable format.
+     * <p>
+     *
+     * @param points the array of IntegralPointWithWeight objects to convert
+     * @param outSj_Strings the outer StringJoiner's delimiter strings
+     * @param inerSj_Strings the inner StringJoiner's delimiter strings
+     * @return the formatted string representation of the integral points and
+     * weights
+     */
+    protected String integralFormulaToString(Double[][] points, String[] outSj_Strings, String[] inerSj_Strings) {
+        StringJoiner outSj = new StringJoiner(outSj_Strings[0], outSj_Strings[1], outSj_Strings[2]);
+
+        for (Double[] point : points) {
+            StringJoiner inerSj = new StringJoiner(inerSj_Strings[0], inerSj_Strings[1], inerSj_Strings[2]);
+            for (Double p : point) {
+                inerSj.add(String.valueOf(p));
+            }
+            outSj.add(inerSj.toString());
+        }
+        return outSj.toString();
     }
 }

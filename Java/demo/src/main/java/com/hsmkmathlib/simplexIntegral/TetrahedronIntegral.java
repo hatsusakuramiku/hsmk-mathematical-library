@@ -30,6 +30,66 @@ import com.hsmkmathlib.tools.ArrayTools;
 
 public class TetrahedronIntegral extends IntegralBase {
 
+    /**
+     * Integrates a tri-variable function over a given tetrahedron using a
+     * specified integral formula.
+     * <p>
+     * The method retrieves the integral formula by name and uses it to perform
+     * numerical integration over the tetrahedron. It throws an exception if the
+     * specified formula is not found.
+     * <p>
+     * The supported integral formulas can be found at
+     * <a herf="https://hsmkhexo.s3.ap-northeast-1.amazonaws.com/other/%E7%A7%AF%E5%88%86%E5%85%AC%E5%BC%8F%E6%80%BB%E7%BB%93.pdf">online
+     * documentation</a>.
+     * <p>
+     *
+     * @param tetrahedron the tetrahedron over which the integration is
+     * performed
+     * @param func the tri-variable function to integrate
+     * @param formulaName the name of the integral formula to use for
+     * integration. The available formulas are: "ORDER1POINT4", "ORDER4POINT23",
+     * "ORDER7POINT50_v1", "ORDER7POINT50_v2". Or use the method
+     * {@link getEnableIntegralFormulaName()} to get all the available formulas.
+     * @return the result of the integration
+     * @throws IllegalArgumentException if the specified formula is not found
+     */
+    public double integrate(Tetrahedron tetrahedron, TriFunction<Double, Double, Double, Double> func,
+            String formulaName) {
+        return integrate(tetrahedron, func, INTEGRALFORMULAS.get(formulaName));
+    }
+
+    /**
+     * Integrates a tri-variable function over a given tetrahedron using
+     * provided integral points and weights.
+     * <p>
+     * This method applies the provided tri-variable function to each point in
+     * the given array of points. The result is multiplied by the weight of each
+     * point and the results are summed up to compute the integral.
+     * <p>
+     * The method checks for null inputs and ensures the pointWithWeights array
+     * has the correct structure before proceeding with the integration.
+     * <p>
+     *
+     * @param tetrahedron the tetrahedron over which the function is to be
+     * integrated
+     * @param func the tri-variable function to integrate
+     * @param pointWithWeights an array of points and their weights used for
+     * integration
+     * @return the result of the integration
+     * @throws IllegalArgumentException if the function, pointWithWeights is
+     * null, or if pointWithWeights does not have the correct structure
+     */
+    public double integrate(Tetrahedron tetrahedron, TriFunction<Double, Double, Double, Double> func,
+            Double[][] pointWithWeights) {
+        if (func == null || pointWithWeights == null) {
+            throw new IllegalArgumentException("The function and pointWithWeights cannot be null.");
+        }
+        if (pointWithWeights[0].length != 4) {
+            throw new IllegalArgumentException("The pointWithWeights array must have 3 elements in each row.");
+        }
+        return applyArrayAndTimesWithWeightsAndSum(func, transformPoints(tetrahedron, pointWithWeights));
+    }
+
     @Override
     protected HashMap<String, Double[][]> initalIntegralFormulas() {
         HashMap<String, Double[][]> formulas = new HashMap<>();
@@ -211,66 +271,6 @@ public class TetrahedronIntegral extends IntegralBase {
             transformedPoints[i][3] = integralPoints[i][3];
         }
         return transformedPoints;
-    }
-
-    /**
-     * Integrates a tri-variable function over a given tetrahedron using a
-     * specified integral formula.
-     * <p>
-     * The method retrieves the integral formula by name and uses it to perform
-     * numerical integration over the tetrahedron. It throws an exception if the
-     * specified formula is not found.
-     * <p>
-     * The supported integral formulas can be found at
-     * <a herf="https://hsmkhexo.s3.ap-northeast-1.amazonaws.com/other/%E7%A7%AF%E5%88%86%E5%85%AC%E5%BC%8F%E6%80%BB%E7%BB%93.pdf">online
-     * documentation</a>.
-     * <p>
-     *
-     * @param tetrahedron the tetrahedron over which the integration is
-     * performed
-     * @param func the tri-variable function to integrate
-     * @param formulaName the name of the integral formula to use for
-     * integration. The available formulas are: "ORDER1POINT4", "ORDER4POINT23",
-     * "ORDER7POINT50_v1", "ORDER7POINT50_v2". Or use the method
-     * {@link getEnableIntegralFormulaName()} to get all the available formulas.
-     * @return the result of the integration
-     * @throws IllegalArgumentException if the specified formula is not found
-     */
-    public double integrate(Tetrahedron tetrahedron, TriFunction<Double, Double, Double, Double> func,
-            String formulaName) {
-        return integrate(tetrahedron, func, INTEGRALFORMULAS.get(formulaName));
-    }
-
-    /**
-     * Integrates a tri-variable function over a given tetrahedron using
-     * provided integral points and weights.
-     * <p>
-     * This method applies the provided tri-variable function to each point in
-     * the given array of points. The result is multiplied by the weight of each
-     * point and the results are summed up to compute the integral.
-     * <p>
-     * The method checks for null inputs and ensures the pointWithWeights array
-     * has the correct structure before proceeding with the integration.
-     * <p>
-     *
-     * @param tetrahedron the tetrahedron over which the function is to be
-     * integrated
-     * @param func the tri-variable function to integrate
-     * @param pointWithWeights an array of points and their weights used for
-     * integration
-     * @return the result of the integration
-     * @throws IllegalArgumentException if the function, pointWithWeights is
-     * null, or if pointWithWeights does not have the correct structure
-     */
-    public double integrate(Tetrahedron tetrahedron, TriFunction<Double, Double, Double, Double> func,
-            Double[][] pointWithWeights) {
-        if (func == null || pointWithWeights == null) {
-            throw new IllegalArgumentException("The function and pointWithWeights cannot be null.");
-        }
-        if (pointWithWeights[0].length != 4) {
-            throw new IllegalArgumentException("The pointWithWeights array must have 3 elements in each row.");
-        }
-        return applyArrayAndTimesWithWeightsAndSum(func, transformPoints(tetrahedron, pointWithWeights));
     }
 
     /**

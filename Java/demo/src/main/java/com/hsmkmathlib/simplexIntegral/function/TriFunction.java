@@ -21,7 +21,13 @@
  */
 package com.hsmkmathlib.simplexIntegral.function;
 
+import java.util.function.Function;
+
 public interface TriFunction<A, B, C, D> {
 
     D apply(A a, B b, C c);
+
+    default <E> TriFunction<A, B, C, E> andThen(Function<? super D, ? extends E> after) {
+        return (A a, B b, C c) -> after.apply(apply(a, b, c));
+    }
 }

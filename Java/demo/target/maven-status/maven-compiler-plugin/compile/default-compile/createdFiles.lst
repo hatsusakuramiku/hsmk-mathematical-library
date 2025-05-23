@@ -2,6 +2,7 @@ com\hsmkmathlib\tools\package-info.class
 com\hsmkmathlib\simplexIntegral\polygon\TwoDimPolygon.class
 com\hsmkmathlib\integral\algorithm\Trapezoid.class
 com\hsmkmathlib\sort\algorithm\MergeSort.class
+com\hsmkmathlib\matrix\MatrixUtils.class
 com\hsmkmathlib\simplexIntegral\package-info.class
 com\hsmkmathlib\simplexIntegral\polygon\Triangle.class
 com\hsmkmathlib\simplexIntegral\TetrahedronIntegral.class

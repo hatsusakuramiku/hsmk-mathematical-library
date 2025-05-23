@@ -21,75 +21,242 @@
  */
 package com.hsmkmathlib.matrix;
 
-import java.util.Arrays;
+import com.hsmkmathlib.tools.ArrayTools;
 
-public class Matrix {
+/**
+ * A class representing a matrix with double precision values.
+ * <p>
+ * This class provides functionality for:
+ * <ul>
+ * <li>Matrix creation and initialization</li>
+ * <li>Basic matrix operations (addition, subtraction, multiplication)</li>
+ * <li>Element-wise operations</li>
+ * <li>Matrix properties (square, symmetric, diagonal)</li>
+ * <li>Matrix transposition</li>
+ * <li>Accessing rows, columns, and individual elements</li>
+ * </ul>
+ */
+final public class Matrix {
 
-    protected int rows;
-    protected int cols;
-    protected double[][] data;
+    private int rows;
+    private int cols;
+    private double[][] data;
 
-    @Override
-    public String toString() {
-        return "Matrix{"
-                + "rows=" + rows
-                + ", cols=" + cols
-                + ", data=" + Arrays.toString(data)
-                + '}';
-    }
-
+    /**
+     * Creates a new matrix with specified dimensions.
+     *
+     * @param rows the number of rows
+     * @param cols the number of columns
+     * @throws IllegalArgumentException if rows or cols are not positive
+     */
     public Matrix(int rows, int cols) {
-        if (rows <= 0 || cols <= 0) {
-            throw new IllegalArgumentException("Rows and columns must be positive integers");
-        }
-        this.rows = rows;
-        this.cols = cols;
-        this.data = new double[rows][cols]; // initialize all elements to 0
-    }
-
-    public Matrix(int rows, int cols, double defaultValue) {
-        if (rows <= 0 || cols <= 0) {
-            throw new IllegalArgumentException("Rows and columns must be positive integers");
+        if (!isRowAndColValid(rows, cols)) {
+            throw new IllegalArgumentException("Invalid matrix dimensions");
         }
         this.rows = rows;
         this.cols = cols;
         this.data = new double[rows][cols];
-        for (int i = 0; i < rows; i++) {
-            for (int j = 0; j < cols; j++) {
-                this.data[i][j] = defaultValue;
-            }
-        }
     }
 
+    /**
+     * Creates a new matrix from a 2D array of doubles.
+     *
+     * @param data the 2D array containing matrix elements
+     * @throws IllegalArgumentException if data is null or contains null rows
+     */
     public Matrix(double[][] data) {
-        if (data == null || data.length == 0 || data[0].length == 0) {
-            throw new IllegalArgumentException("Data must be non-empty");
+        if (!isDataAndElementNotNull(data)) {
+            throw new IllegalArgumentException("Data and elements are null");
         }
         this.rows = data.length;
         this.cols = data[0].length;
-        this.data = new double[rows][cols];
-        for (int i = 0; i < rows; i++) {
-            System.arraycopy(data[i], 0, this.data[i], 0, cols);
+        this.data = ArrayTools.copyArray(data);
+    }
+
+    /**
+     * Creates a new matrix from a 2D array of doubles with option to copy data.
+     *
+     * @param data the 2D array containing matrix elements
+     * @param isCopy if true, creates a deep copy of the data; if false, uses
+     * the provided array directly
+     * @throws IllegalArgumentException if data is null or contains null rows
+     */
+    public Matrix(double[][] data, boolean isCopy) {
+        if (!isDataAndElementNotNull(data)) {
+            throw new IllegalArgumentException("Data and elements are null");
+        }
+        this.rows = data.length;
+        this.cols = data[0].length;
+        if (isCopy) {
+            this.data = ArrayTools.copyArray(data);
+        } else {
+            this.data = data;
         }
     }
 
-    public boolean equals(Matrix other) {
-        if (other == null || rows != other.rows || cols != other.cols) {
+    /**
+     * Creates a new matrix as a copy of another matrix.
+     *
+     * @param other the matrix to copy
+     * @throws IllegalArgumentException if other is null or contains invalid
+     * data
+     */
+    public Matrix(Matrix other) {
+        if (other == null) {
+            throw new IllegalArgumentException("Other matrix is null");
+        }
+        if (!isDataAndElementNotNull(other.data)) {
+            throw new IllegalArgumentException("Other matrix data and elements are null");
+        }
+        this.rows = other.rows;
+        this.cols = other.cols;
+        this.data = ArrayTools.copyArray(other.data);
+    }
+
+    /**
+     * Checks if the matrix has the same dimensions as another matrix.
+     *
+     * @param other the matrix to compare with
+     * @return true if the matrices have the same dimensions, false otherwise
+     */
+    public boolean isSameSize(Matrix other) {
+        if (other == null) {
             return false;
         }
-        for (int i = 0; i < rows; i++) {
-            for (int j = 0; j < cols; j++) {
-                if (data[i][j] != other.data[i][j]) {
-                    return false;
-                }
-            }
-        }
-        return true;
+        return rows == other.rows && cols == other.cols;
     }
 
-    public void plus(Matrix other) {
-        if (other == null || rows != other.rows || cols != other.cols) {
-            throw new IllegalArgumentException("Matrices must have the same dimensions");
+    /**
+     * Gets the number of rows in the matrix.
+     *
+     * @return the number of rows
+     */
+    public int getRows() {
+        return rows;
+    }
+
+    /**
+     * Gets the number of columns in the matrix.
+     *
+     * @return the number of columns
+     */
+    public int getCols() {
+        return cols;
+    }
+
+    /**
+     * Gets a deep copy of the matrix data.
+     *
+     * @return a copy of the matrix data
+     */
+    public double[][] getData() {
+        return ArrayTools.copyArray(data);
+    }
+
+    /**
+     * Gets the element at the specified position.
+     *
+     * @param row the row index
+     * @param col the column index
+     * @return the element at the specified position
+     * @throws IllegalArgumentException if the indices are out of bounds
+     */
+    public double get(int row, int col) {
+        if (!isRowAndColIndexValid(row, col)) {
+            throw new IllegalArgumentException("Invalid matrix element index");
+        }
+        return data[row][col];
+    }
+
+    /**
+     * Gets a copy of the specified row.
+     *
+     * @param row the row index
+     * @return a copy of the specified row
+     * @throws IllegalArgumentException if the row index is out of bounds
+     */
+    public double[] getRow(int row) {
+        if (!isRowIndexValid(row)) {
+            throw new IllegalArgumentException("Invalid matrix row index");
+        }
+        return ArrayTools.copyArray(data[row]);
+    }
+
+    /**
+     * Gets a portion of the specified row.
+     *
+     * @param rowIndex the row index
+     * @param startIndex the starting column index
+     * @param endIndex the ending column index
+     * @return a copy of the specified portion of the row
+     * @throws IllegalArgumentException if any index is out of bounds
+     */
+    public double[] getRow(int rowIndex, int startIndex, int endIndex) {
+        if (!isRowIndexValid(rowIndex)) {
+            throw new IllegalArgumentException("Invalid matrix row index");
+        }
+        if (!isIntervalValid(this.cols, startIndex, endIndex)) {
+            throw new IllegalArgumentException("Invalid matrix row interval");
+        }
+        double[] result = new double[endIndex - startIndex + 1];
+        System.arraycopy(data[rowIndex], startIndex, result, 0, endIndex - startIndex + 1);
+        return result;
+    }
+
+    /**
+     * Gets a copy of the specified column.
+     *
+     * @param col the column index
+     * @return a copy of the specified column
+     * @throws IllegalArgumentException if the column index is out of bounds
+     */
+    public double[] getCol(int col) {
+        if (!isColIndexValid(col)) {
+            throw new IllegalArgumentException("Invalid matrix column index");
+        }
+        double[] result = new double[rows];
+        for (int i = 0; i < rows; i++) {
+            result[i] = data[i][col];
+        }
+        return result;
+    }
+
+    /**
+     * Gets a portion of the specified column.
+     *
+     * @param colIndex the column index
+     * @param startIndex the starting row index
+     * @param endIndex the ending row index
+     * @return a copy of the specified portion of the column
+     * @throws IllegalArgumentException if any index is out of bounds
+     */
+    public double[] getCol(int colIndex, int startIndex, int endIndex) {
+        if (!isColIndexValid(colIndex)) {
+            throw new IllegalArgumentException("Invalid matrix column index");
+        }
+        if (!isIntervalValid(this.rows, startIndex, endIndex)) {
+            throw new IllegalArgumentException("Invalid matrix column interval");
+        }
+        double[] result = new double[endIndex - startIndex + 1];
+        for (int i = 0; i < endIndex - startIndex + 1; i++) {
+            result[i] = data[startIndex + i][colIndex];
+        }
+        return result;
+    }
+
+    /**
+     * Adds another matrix to this matrix.
+     *
+     * @param other the matrix to add
+     * @throws IllegalArgumentException if other is null or has different
+     * dimensions
+     */
+    public void add(Matrix other) {
+        if (other == null) {
+            throw new IllegalArgumentException("Other matrix is null");
+        }
+        if (!isSameSize(other)) {
+            throw new IllegalArgumentException("Matrix sizes are not the same");
         }
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < cols; j++) {
@@ -98,9 +265,32 @@ public class Matrix {
         }
     }
 
-    public void minus(Matrix other) {
-        if (other == null || rows != other.rows || cols != other.cols) {
-            throw new IllegalArgumentException("Matrices must have the same dimensions");
+    /**
+     * Adds a scalar value to all elements of the matrix.
+     *
+     * @param scalar the value to add
+     */
+    public void add(double scalar) {
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++) {
+                data[i][j] += scalar;
+            }
+        }
+    }
+
+    /**
+     * Subtracts another matrix from this matrix.
+     *
+     * @param other the matrix to subtract
+     * @throws IllegalArgumentException if other is null or has different
+     * dimensions
+     */
+    public void subtract(Matrix other) {
+        if (other == null) {
+            throw new IllegalArgumentException("Other matrix is null");
+        }
+        if (!isSameSize(other)) {
+            throw new IllegalArgumentException("Matrix sizes are not the same");
         }
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < cols; j++) {
@@ -109,31 +299,57 @@ public class Matrix {
         }
     }
 
-    public void times(double scalar) {
+    /**
+     * Subtracts a scalar value from all elements of the matrix.
+     *
+     * @param scalar the value to subtract
+     */
+    public void subtract(double scalar) {
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < cols; j++) {
-                data[i][j] *= scalar;
+                data[i][j] -= scalar;
             }
         }
     }
 
-    public void times(Matrix other) {
-        if (other == null || cols != other.rows) {
-            throw new IllegalArgumentException("Matrices must be compatible for multiplication");
+    /**
+     * Multiplies this matrix by another matrix.
+     *
+     * @param other the matrix to multiply by
+     * @throws IllegalArgumentException if other is null or dimensions are
+     * incompatible
+     */
+    public void multiply(Matrix other) {
+        if (other == null) {
+            throw new IllegalArgumentException("Other matrix is null");
+        }
+        if (this.cols != other.rows) {
+            throw new IllegalArgumentException("Matrix sizes are not the same");
         }
         double[][] result = new double[rows][other.cols];
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < other.cols; j++) {
-                for (int k = 0; k < cols; k++) {
+                for (int k = 0; k < this.cols; k++) {
                     result[i][j] += data[i][k] * other.data[k][j];
                 }
             }
         }
+        this.data = result;
     }
 
-    public void cdotTimes(Matrix other) {
-        if (other == null || rows != other.rows || cols != other.cols) {
-            throw new IllegalArgumentException("Matrices must have the same dimensions");
+    /**
+     * Performs element-wise multiplication with another matrix.
+     *
+     * @param other the matrix to multiply with
+     * @throws IllegalArgumentException if other is null or has different
+     * dimensions
+     */
+    public void cdotMultiply(Matrix other) {
+        if (other == null) {
+            throw new IllegalArgumentException("Other matrix is null");
+        }
+        if (!isSameSize(other)) {
+            throw new IllegalArgumentException("Matrix sizes are not the same");
         }
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < cols; j++) {
@@ -142,23 +358,39 @@ public class Matrix {
         }
     }
 
-    public void cdotDivide(Matrix other) {
-        if (other == null || rows != other.rows || cols != other.cols) {
-            throw new IllegalArgumentException("Matrices must have the same dimensions");
-        }
-        Matrix temp = new Matrix(other.data);
-        try {
-            for (int i = 0; i < rows; i++) {
-                for (int j = 0; j < cols; j++) {
-                    temp.data[i][j] /= other.data[i][j];
-                }
+    /**
+     * Multiplies all elements of the matrix by a scalar value.
+     *
+     * @param scalar the value to multiply by
+     */
+    public void multiply(double scalar) {
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++) {
+                data[i][j] *= scalar;
             }
-        } catch (ArithmeticException e) {
-            System.out.println("Division by zero is not allowed.");
         }
-        this.data = temp.data;
     }
 
+    /**
+     * Divides all elements of the matrix by a scalar value.
+     *
+     * @param scalar the value to divide by
+     * @throws IllegalArgumentException if scalar is zero
+     */
+    public void divide(double scalar) {
+        if (scalar == 0) {
+            throw new IllegalArgumentException("Scalar is 0");
+        }
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++) {
+                data[i][j] /= scalar;
+            }
+        }
+    }
+
+    /**
+     * Transposes the matrix in place.
+     */
     public void transpose() {
         double[][] result = new double[cols][rows];
         for (int i = 0; i < rows; i++) {
@@ -166,44 +398,95 @@ public class Matrix {
                 result[j][i] = data[i][j];
             }
         }
-        data = result;
+        this.data = result;
     }
 
-    public Matrix diag(int index) {
-        if (index >= cols || index <= -rows) {
-            throw new IllegalArgumentException("Invalid value for index");
+    /**
+     * Checks if the matrix is square (number of rows equals number of columns).
+     *
+     * @return true if the matrix is square, false otherwise
+     */
+    public boolean isSquare() {
+        return rows == cols;
+    }
+
+    /**
+     * Checks if the matrix is symmetric.
+     *
+     * @return true if the matrix is symmetric, false otherwise
+     */
+    public boolean isSymmetric() {
+        if (!isSquare()) {
+            return false;
         }
-        int min = Math.min(rows, cols);
-        if (index >= 0) {
-            int height = min - index;
-            Matrix result = new Matrix(height, height);
-            for (int i = 0; i < height; i++) {
-                result.data[i][i] = data[i][i + index];
-            }
-            return result;
-        } else {
-            int height = min + index;
-            Matrix result = new Matrix(height, height);
-            for (int i = 0; i < height; i++) {
-                result.data[i][i] = data[i - index][i];
-            }
-            return result;
-        }
-    }
-
-    public Matrix diag() {
-        return diag(0);
-    }
-
-    public void show() {
-        System.out.printf("Matrix: rows = %d, cols = %d\n", rows, cols);
         for (int i = 0; i < rows; i++) {
-            System.out.printf("|\t");
             for (int j = 0; j < cols; j++) {
-                System.out.printf("%f\t", data[i][j]);
+                if (data[i][j] != data[j][i]) {
+                    return false;
+                }
             }
-            System.out.printf("|\t\n");
         }
-        System.out.println();
+        return true;
+    }
+
+    /**
+     * Checks if the matrix is diagonal.
+     *
+     * @return true if the matrix is diagonal, false otherwise
+     */
+    public boolean isDiagonal() {
+        if (!isSquare()) {
+            return false;
+        }
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++) {
+                if (i != j && data[i][j] != 0) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    /**
+     * Returns a string representation of the matrix.
+     *
+     * @return a string representation of the matrix
+     */
+    @Override
+    public String toString() {
+        return ArrayTools.arrayToString(data);
+    }
+
+    private boolean isRowAndColValid(int row, int col) {
+        return row > 0 && col > 0;
+    }
+
+    private boolean isRowIndexValid(int row) {
+        return row >= 0 && row < rows;
+    }
+
+    private boolean isColIndexValid(int col) {
+        return col >= 0 && col < cols;
+    }
+
+    private boolean isIntervalValid(int length, int start, int end) {
+        return start >= 0 && end < length && start <= end;
+    }
+
+    private boolean isRowAndColIndexValid(int row, int col) {
+        return row >= 0 && col >= 0 && row < rows && col < cols;
+    }
+
+    private boolean isDataAndElementNotNull(double[][] data) {
+        if (data == null) {
+            return false;
+        }
+        for (double[] row : data) {
+            if (row == null) {
+                return false;
+            }
+        }
+        return true;
     }
 }

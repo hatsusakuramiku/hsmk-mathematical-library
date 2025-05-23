@@ -25,28 +25,41 @@ import static java.lang.System.arraycopy;
 import java.util.StringJoiner;
 
 /**
- * A utility class that provides static methods for working with arrays.
+ * A utility class that provides static methods for working with arrays or 2D
+ * arrays.
  * <p>
  *
  * Such as
  * <p>
- * - Convert an array to a string
+ * - Convert an array or 2D array to a string
  * <p>
  * - Check if an array is sorted
  * <p>
  * - Reverse an array
  * <p>
- * - Converts an array of base types to an array of its wrapping classes
+ * - Converts an array or 2D array of base types to an array or 2D array of its
+ * wrapping classes
  * <p>
- * - Converts an array of wrapping classes to an array of its base types
+ * - Converts an array or 2D array of wrapping classes to an array or 2D array
+ * of its base types
+ * <p>
+ * - Concatenate two arrays or 2D arrays
+ * <p>
+ * - Copy an array or 2D array
  * <p>
  *
  */
 final public class ArrayTools {
 
-    private ArrayTools() {
+    /**
+     * Constant representing ascending order.
+     */
+    public static final int ASCENDING = 0;
 
-    }
+    /**
+     * Constant representing descending order.
+     */
+    public static final int DESCENDING = 1;
 
     /// Convert an array to a string
     /**
@@ -71,9 +84,11 @@ final public class ArrayTools {
             return null;
         }
         StringJoiner sj = new StringJoiner(delimiter, prefix, suffix);
+
         for (Object i : array) {
             sj.add(i.toString());
         }
+
         return sj.toString();
     }
 
@@ -89,6 +104,17 @@ final public class ArrayTools {
      */
     public static String arrayToString(Object[] array) {
         return arrayToString(array, ", ", "[", "]");
+    }
+
+    public static String arrayToString(Object[][] array) {
+        if (array == null) {
+            return "null";
+        }
+        StringJoiner sj = new StringJoiner(",\n", "[", "]");
+        for (Object[] row : array) {
+            sj.add(arrayToString(row));
+        }
+        return sj.toString();
     }
 
     /**
@@ -126,8 +152,8 @@ final public class ArrayTools {
             return null;
         }
         StringJoiner sj = new StringJoiner(delimiter, prefix, suffix);
-        for (Object i : array) {
-            sj.add(i.toString());
+        for (int i : array) {
+            sj.add(String.valueOf(i));
         }
         return sj.toString();
     }
@@ -233,8 +259,8 @@ final public class ArrayTools {
             return null;
         }
         StringJoiner sj = new StringJoiner(delimiter, prefix, suffix);
-        for (Object i : array) {
-            sj.add(i.toString());
+        for (double i : array) {
+            sj.add(String.valueOf(i));
         }
         return sj.toString();
     }
@@ -286,8 +312,8 @@ final public class ArrayTools {
             return null;
         }
         StringJoiner sj = new StringJoiner(delimiter, prefix, suffix);
-        for (Object i : array) {
-            sj.add(i.toString());
+        for (char i : array) {
+            sj.add(String.valueOf(i));
         }
         return sj.toString();
     }
@@ -340,8 +366,8 @@ final public class ArrayTools {
             return null;
         }
         StringJoiner sj = new StringJoiner(delimiter, prefix, suffix);
-        for (Object i : array) {
-            sj.add(i.toString());
+        for (float i : array) {
+            sj.add(String.valueOf(i));
         }
         return sj.toString();
     }
@@ -392,8 +418,8 @@ final public class ArrayTools {
             return null;
         }
         StringJoiner sj = new StringJoiner(delimiter, prefix, suffix);
-        for (Object i : array) {
-            sj.add(i.toString());
+        for (byte i : array) {
+            sj.add(String.valueOf(i));
         }
         return sj.toString();
     }
@@ -445,8 +471,8 @@ final public class ArrayTools {
             return null;
         }
         StringJoiner sj = new StringJoiner(delimiter, prefix, suffix);
-        for (Object i : array) {
-            sj.add(i.toString());
+        for (short i : array) {
+            sj.add(String.valueOf(i));
         }
         return sj.toString();
     }
@@ -464,6 +490,8 @@ final public class ArrayTools {
         return arrayToString(array, ", ", "[", "]");
     }
 
+    /// Check the array is sorted or not
+
     /**
      * Converts an array of short into a string with the elements separated by
      * the specified delimiter, enclosed in square brackets.
@@ -477,18 +505,6 @@ final public class ArrayTools {
     public static String arrayToString(short[] array, CharSequence delimiter) {
         return arrayToString(array, delimiter, "[", "]");
     }
-
-    /// Check the array is sorted or not
-
-    /**
-     * Constant representing ascending order.
-     */
-    public static final int ASCENDING = 0;
-
-    /**
-     * Constant representing descending order.
-     */
-    public static final int DESCENDING = 1;
 
     /**
      * Checks if the given array is sorted within the specified range and axis.
@@ -538,7 +554,6 @@ final public class ArrayTools {
         }
         return true;
     }
-
 
     /**
      * Checks if the given array is sorted in ascending order.
@@ -1019,8 +1034,6 @@ final public class ArrayTools {
         return isSorted(array, 0, array.length, ASCENDING);
     }
 
-    /// Array reversal
-
     /**
      * Reverses the elements of the given array in place.
      *
@@ -1041,6 +1054,8 @@ final public class ArrayTools {
             array[array.length - 1 - i] = temp;
         }
     }
+
+    /// Array reversal
 
     /**
      * Reverses the elements of the given short array in place.
@@ -1242,8 +1257,6 @@ final public class ArrayTools {
         }
     }
 
-    /// Converts an array of base types to an array of its wrapping classes
-
     /**
      * Converts an array of base types to an array of its wrapping classes.
      *
@@ -1265,6 +1278,8 @@ final public class ArrayTools {
         }
         return result;
     }
+
+    /// Converts an array of base types to an array of its wrapping classes
 
     /**
      * Converts an array of base types to an array of its wrapping classes.
@@ -1420,23 +1435,18 @@ final public class ArrayTools {
         return result;
     }
 
-    /// Converts an array of wrapping classes to an array of its base types
-
     /**
      * Converts an array of wrapping classes to an array of its base types.
      *
      * <p>
      * This method takes an array of Integer objects as input and returns a new
-     * array
-     * containing the equivalent primitive int values. It throws an
-     * IllegalArgumentException
-     * if the input array is null.
+     * array containing the equivalent primitive int values. It throws an
+     * IllegalArgumentException if the input array is null.
      *
      * @param array the Integer array to be converted
      * @return the primitive int array
      * @throws IllegalArgumentException if the array is null
      */
-
     public static int[] unpackageArray(Integer[] array) {
         if (array == null) {
             throw new IllegalArgumentException("Array cannot be null");
@@ -1447,6 +1457,8 @@ final public class ArrayTools {
         }
         return result;
     }
+
+    /// Converts an array of wrapping classes to an array of its base types
 
     /**
      * Converts an array of wrapping classes to an array of its base types.
@@ -2093,6 +2105,290 @@ final public class ArrayTools {
             result[i] = packageArray(array[i]);
 
         }
+        return result;
+    }
+
+    /**
+     * Creates a deep copy of a one-dimensional double array.
+     *
+     * @param array the array to be copied
+     * @return a new array containing the same values as the input array, or
+     * null if the input array is null
+     */
+    public static double[] copyArray(double[] array) {
+        if (array == null) {
+            return null;
+        }
+        double[] result = new double[array.length];
+        System.arraycopy(array, 0, result, 0, array.length);
+        return result;
+    }
+
+    /**
+     * Creates a deep copy of a two-dimensional double array.
+     *
+     * @param array the array to be copied
+     * @return a new array containing the same values as the input array, or
+     * null if the input array is null
+     */
+    public static double[][] copyArray(double[][] array) {
+        if (array == null) {
+            return null;
+        }
+        double[][] result = new double[array.length][array[0].length];
+        for (int i = 0; i < array.length; i++) {
+            System.arraycopy(array[i], 0, result[i], 0, array[i].length);
+        }
+        return result;
+    }
+
+    /**
+     * Creates a deep copy of a two-dimensional float array.
+     *
+     * @param array the array to be copied
+     * @return a new array containing the same values as the input array, or
+     * null if the input array is null
+     */
+    public static float[][] copyArray(float[][] array) {
+        if (array == null) {
+            return null;
+        }
+        float[][] result = new float[array.length][array[0].length];
+        for (int i = 0; i < array.length; i++) {
+            System.arraycopy(array[i], 0, result[i], 0, array[i].length);
+        }
+        return result;
+    }
+
+    /**
+     * Creates a deep copy of a two-dimensional int array.
+     *
+     * @param array the array to be copied
+     * @return a new array containing the same values as the input array, or
+     * null if the input array is null
+     */
+    public static int[][] copyArray(int[][] array) {
+        if (array == null) {
+            return null;
+        }
+        int[][] result = new int[array.length][array[0].length];
+        for (int i = 0; i < array.length; i++) {
+            System.arraycopy(array[i], 0, result[i], 0, array[i].length);
+        }
+        return result;
+    }
+
+    /**
+     * Creates a deep copy of a two-dimensional long array.
+     *
+     * @param array the array to be copied
+     * @return a new array containing the same values as the input array, or
+     * null if the input array is null
+     */
+    public static long[][] copyArray(long[][] array) {
+        if (array == null) {
+            return null;
+        }
+        long[][] result = new long[array.length][array[0].length];
+        for (int i = 0; i < array.length; i++) {
+            System.arraycopy(array[i], 0, result[i], 0, array[i].length);
+        }
+        return result;
+    }
+
+    /**
+     * Creates a deep copy of a two-dimensional char array.
+     *
+     * @param array the array to be copied
+     * @return a new array containing the same values as the input array, or
+     * null if the input array is null
+     */
+    public static char[][] copyArray(char[][] array) {
+        if (array == null) {
+            return null;
+        }
+        char[][] result = new char[array.length][array[0].length];
+        for (int i = 0; i < array.length; i++) {
+            System.arraycopy(array[i], 0, result[i], 0, array[i].length);
+        }
+        return result;
+    }
+
+    /**
+     * Creates a deep copy of a two-dimensional boolean array.
+     *
+     * @param array the array to be copied
+     * @return a new array containing the same values as the input array, or
+     * null if the input array is null
+     */
+    public static boolean[][] copyArray(boolean[][] array) {
+        if (array == null) {
+            return null;
+        }
+        boolean[][] result = new boolean[array.length][array[0].length];
+        for (int i = 0; i < array.length; i++) {
+            System.arraycopy(array[i], 0, result[i], 0, array[i].length);
+        }
+        return result;
+    }
+
+    /**
+     * Creates a deep copy of a two-dimensional byte array.
+     *
+     * @param array the array to be copied
+     * @return a new array containing the same values as the input array, or
+     * null if the input array is null
+     */
+    public static byte[][] copyArray(byte[][] array) {
+        if (array == null) {
+            return null;
+        }
+        byte[][] result = new byte[array.length][array[0].length];
+        for (int i = 0; i < array.length; i++) {
+            System.arraycopy(array[i], 0, result[i], 0, array[i].length);
+        }
+        return result;
+    }
+
+    /**
+     * Creates a deep copy of a two-dimensional Object array.
+     *
+     * @param array the array to be copied
+     * @return a new array containing the same values as the input array, or
+     * null if the input array is null
+     */
+    public static Object[][] copyArray(Object[][] array) {
+        if (array == null) {
+            return null;
+        }
+        Object[][] result = new Object[array.length][array[0].length];
+        for (int i = 0; i < array.length; i++) {
+            System.arraycopy(array[i], 0, result[i], 0, array[i].length);
+        }
+        return result;
+    }
+
+    /**
+     * Creates a deep copy of a two-dimensional short array.
+     *
+     * @param array the array to be copied
+     * @return a new array containing the same values as the input array, or
+     * null if the input array is null
+     */
+    public static short[][] copyArray(short[][] array) {
+        if (array == null) {
+            return null;
+        }
+        short[][] result = new short[array.length][array[0].length];
+        for (int i = 0; i < array.length; i++) {
+            System.arraycopy(array[i], 0, result[i], 0, array[i].length);
+        }
+        return result;
+    }
+
+    /**
+     * Creates a deep copy of a two-dimensional Double array.
+     *
+     * @param array the array to be copied
+     * @return a new array containing the same values as the input array, or
+     * null if the input array is null
+     */
+    public static Double[][] copyArray(Double[][] array) {
+        if (array == null) {
+            return null;
+        }
+        Double[][] result = new Double[array.length][array[0].length];
+        for (int i = 0; i < array.length; i++) {
+            result[i] = array[i].clone();
+        }
+        return result;
+    }
+
+    public static String arrayToString(double[][] array) {
+        if (array == null) {
+            return "null";
+        }
+        StringJoiner sj = new StringJoiner(",\n", "[", "]");
+        for (double[] row : array) {
+            sj.add(arrayToString(row));
+        }
+        return sj.toString();
+    }
+
+    private ArrayTools() {
+    }
+
+    /**
+     * Creates a one-dimensional array filled with a specified scalar value.
+     *
+     * @param size the size of the array
+     * @param scalar the value to fill the array with
+     * @return a new array filled with the specified scalar value
+     * @throws IllegalArgumentException if size is not positive
+     */
+    public static double[] ones1DArray(int size, int scalar) {
+        if (size <= 0) {
+            throw new IllegalArgumentException("Size must be positive");
+        }
+        double[] result = new double[size];
+        for (int i = 0; i < size; i++) {
+            result[i] = scalar;
+        }
+        return result;
+    }
+
+    /**
+     * Creates a two-dimensional array filled with ones.
+     *
+     * @param rows the number of rows
+     * @param cols the number of columns
+     * @return a new array filled with ones
+     * @throws IllegalArgumentException if rows or cols are not positive
+     */
+    public static double[][] onesArray(int rows, int cols) {
+        if (rows <= 0 || cols <= 0) {
+            throw new IllegalArgumentException("Rows and cols must be positive");
+        }
+        double[][] result = new double[rows][cols];
+        for (int i = 0; i < rows; i++) {
+            result[i] = ones1DArray(cols, 1);
+        }
+        return result;
+    }
+
+    /**
+     * Creates a two-dimensional array filled with a specified scalar value.
+     *
+     * @param rows the number of rows
+     * @param cols the number of columns
+     * @param scalar the value to fill the array with
+     * @return a new array filled with the specified scalar value
+     * @throws IllegalArgumentException if rows or cols are not positive
+     */
+    public static double[][] onesArray(int rows, int cols, int scalar) {
+        if (rows <= 0 || cols <= 0) {
+            throw new IllegalArgumentException("Rows and cols must be positive");
+        }
+        double[][] result = new double[rows][cols];
+        for (int i = 0; i < rows; i++) {
+            result[i] = ones1DArray(cols, scalar);
+        }
+        return result;
+    }
+
+    /**
+     * Creates a two-dimensional array filled with zeros.
+     *
+     * @param rows the number of rows
+     * @param cols the number of columns
+     * @return a new array filled with zeros
+     * @throws IllegalArgumentException if rows or cols are not positive
+     */
+    public static double[][] zerosArray(int rows, int cols) {
+        if (rows <= 0 || cols <= 0) {
+            throw new IllegalArgumentException("Rows and cols must be positive");
+        }
+        double[][] result = new double[rows][cols];
         return result;
     }
 }
