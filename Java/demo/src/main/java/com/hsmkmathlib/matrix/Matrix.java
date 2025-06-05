@@ -198,8 +198,8 @@ final public class Matrix {
         if (!isIntervalValid(this.cols, startIndex, endIndex)) {
             throw new IllegalArgumentException("Invalid matrix row interval");
         }
-        double[] result = new double[endIndex - startIndex + 1];
-        System.arraycopy(data[rowIndex], startIndex, result, 0, endIndex - startIndex + 1);
+        double[] result = new double[endIndex - startIndex];
+        System.arraycopy(data[rowIndex], startIndex, result, 0, endIndex - startIndex);
         return result;
     }
 
@@ -237,8 +237,8 @@ final public class Matrix {
         if (!isIntervalValid(this.rows, startIndex, endIndex)) {
             throw new IllegalArgumentException("Invalid matrix column interval");
         }
-        double[] result = new double[endIndex - startIndex + 1];
-        for (int i = 0; i < endIndex - startIndex + 1; i++) {
+        double[] result = new double[endIndex - startIndex];
+        for (int i = 0; i < endIndex - startIndex; i++) {
             result[i] = data[startIndex + i][colIndex];
         }
         return result;
@@ -471,7 +471,7 @@ final public class Matrix {
     }
 
     private boolean isIntervalValid(int length, int start, int end) {
-        return start >= 0 && end < length && start <= end;
+        return start >= 0 && end <= length && start <= end;
     }
 
     private boolean isRowAndColIndexValid(int row, int col) {
@@ -488,5 +488,108 @@ final public class Matrix {
             }
         }
         return true;
+    }
+
+    /**
+     * Performs an elementary row transformation on the matrix. This operation
+     * adds a multiple of one row to another row. The transformation is:
+     * targetRow = targetRow + scalar * selectRow
+     *
+     * @param selectRow the index of the source row to be multiplied by scalar
+     * @param targetRow the index of the target row to be modified
+     * @param scalar the multiplier for the source row
+     * @throws IllegalArgumentException if row indices are invalid or if
+     * selectRow equals targetRow
+     */
+    public void elementaryRowTransform(int selectRow, int targetRow, double scalar) {
+        if (!isRowIndexValid(selectRow)) {
+            throw new IllegalArgumentException("Invalid matrix row index");
+        }
+        if (!isRowIndexValid(targetRow)) {
+            throw new IllegalArgumentException("Invalid matrix row index");
+        }
+        if (selectRow == targetRow) {
+            throw new IllegalArgumentException("Select row and target row are the same");
+        }
+        for (int i = 0; i < cols; i++) {
+            data[targetRow][i] += data[selectRow][i] * scalar;
+        }
+    }
+
+    /**
+     * Performs an elementary column transformation on the matrix. This
+     * operation adds a multiple of one column to another column. The
+     * transformation is: targetCol = targetCol + scalar * selectCol
+     *
+     * @param selectCol the index of the source column to be multiplied by
+     * scalar
+     * @param targetCol the index of the target column to be modified
+     * @param scalar the multiplier for the source column
+     * @throws IllegalArgumentException if column indices are invalid or if
+     * selectCol equals targetCol
+     */
+    public void elementaryColTransform(int selectCol, int targetCol, double scalar) {
+        if (!isColIndexValid(selectCol)) {
+            throw new IllegalArgumentException("Invalid matrix column index");
+        }
+        if (!isColIndexValid(targetCol)) {
+            throw new IllegalArgumentException("Invalid matrix column index");
+        }
+        if (selectCol == targetCol) {
+            throw new IllegalArgumentException("Select column and target column are the same");
+        }
+        for (int i = 0; i < rows; i++) {
+            data[i][targetCol] += data[i][selectCol] * scalar;
+        }
+    }
+
+    /**
+     * Swaps two rows in the matrix. This operation exchanges the contents of
+     * row1 and row2.
+     *
+     * @param row1 the index of the first row to be swapped
+     * @param row2 the index of the second row to be swapped
+     * @throws IllegalArgumentException if row indices are invalid or if row1
+     * equals row2
+     */
+    public void swapRows(int row1, int row2) {
+        if (!isRowIndexValid(row1)) {
+            throw new IllegalArgumentException("Invalid matrix row index");
+        }
+        if (!isRowIndexValid(row2)) {
+            throw new IllegalArgumentException("Invalid matrix row index");
+        }
+        if (row1 == row2) {
+            throw new IllegalArgumentException("Row1 and row2 are the same");
+        }
+        double[] temp = data[row1];
+        data[row1] = data[row2];
+        data[row2] = temp;
+    }
+
+    /**
+     * Swaps two columns in the matrix. This operation exchanges the contents of
+     * col1 and col2.
+     *
+     * @param col1 the index of the first column to be swapped
+     * @param col2 the index of the second column to be swapped
+     * @throws IllegalArgumentException if column indices are invalid or if col1
+     * equals col2
+     */
+    public void swapCols(int col1, int col2) {
+        if (!isColIndexValid(col1)) {
+            throw new IllegalArgumentException("Invalid matrix column index");
+        }
+        if (!isColIndexValid(col2)) {
+            throw new IllegalArgumentException("Invalid matrix column index");
+        }
+        if (col1 == col2) {
+            throw new IllegalArgumentException("Col1 and col2 are the same");
+        }
+        for (int i = 0; i < rows; i++) {
+            double temp = data[i][col1];
+            data[i][col1] = data[i][col2];
+            data[i][col2] = temp;
+        }
     }
 }

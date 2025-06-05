@@ -2315,9 +2315,6 @@ final public class ArrayTools {
         return sj.toString();
     }
 
-    private ArrayTools() {
-    }
-
     /**
      * Creates a one-dimensional array filled with a specified scalar value.
      *
@@ -2390,5 +2387,8 @@ final public class ArrayTools {
         }
         double[][] result = new double[rows][cols];
         return result;
+    }
+
+    private ArrayTools() {
     }
 }

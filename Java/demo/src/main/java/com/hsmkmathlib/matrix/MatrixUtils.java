@@ -38,10 +38,6 @@ import com.hsmkmathlib.tools.ArrayTools;
  */
 final public class MatrixUtils {
 
-    private MatrixUtils() {
-        throw new IllegalStateException("Utility class");
-    }
-
     /**
      * Adds two matrices together.
      *
@@ -222,6 +218,18 @@ final public class MatrixUtils {
         Matrix result = copyMatrix(a);
         result.transpose();
         return result;
+    }
+
+    private MatrixUtils() {
+        throw new IllegalStateException("Utility class");
+    }
+
+
+    public static int rank(Matrix a) {
+        if (a == null) {
+            throw new IllegalArgumentException("Matrix is null");
+        }
+        return a.getRows();
     }
 
 }
