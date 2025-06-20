@@ -64,9 +64,10 @@ typedef int (*__matrix_find_cmp_func)(const void *, const void *);
 #define MATRIX_SIZE_ERROR_002 "@ERROR: The input matrix called \"%s\" must be a square matrix\n@File: %s\n@Function: %s\n@Line: %d\n"
 
 //
-enum ARRAY_CMP_TYPE {
- _INT_,
- _DOUBLE_
+enum ARRAY_CMP_TYPE
+{
+    _INT_,
+    _DOUBLE_
 };
 
 /// Matrix struct
@@ -77,24 +78,25 @@ enum ARRAY_CMP_TYPE {
  *
  * This struct contains the row and column indices, as well as the value of the element.
  */
-typedef struct _elem_pos {
- /**
-  * @var row
-  * @brief The row index of the element.
-  */
- unsigned int row;
+typedef struct _elem_pos
+{
+    /**
+     * @var row
+     * @brief The row index of the element.
+     */
+    unsigned int row;
 
- /**
-  * @var col
-  * @brief The column index of the element.
-  */
- unsigned int col;
+    /**
+     * @var col
+     * @brief The column index of the element.
+     */
+    unsigned int col;
 
- /**
-  * @var value
-  * @brief The value of the element.
-  */
- MATRIX_TYPE value;
+    /**
+     * @var value
+     * @brief The value of the element.
+     */
+    MATRIX_TYPE value;
 } elem_pos;
 
 /**
@@ -103,46 +105,48 @@ typedef struct _elem_pos {
  *
  * This struct contains a pointer to an array of elem_pos structs, as well as the size of the array.
  */
-typedef struct _elem_pos_array {
- /**
-  * @var elem_pos_arr
-  * @brief A pointer to an array of elem_pos structs.
-  */
- struct _elem_pos *elem_pos_arr;
+typedef struct _elem_pos_array
+{
+    /**
+     * @var elem_pos_arr
+     * @brief A pointer to an array of elem_pos structs.
+     */
+    struct _elem_pos *elem_pos_arr;
 
- /**
-  * @var size
-  * @brief The size of the array.
-  */
- unsigned int size;
+    /**
+     * @var size
+     * @brief The size of the array.
+     */
+    unsigned int size;
 } elem_pos_array;
 
 elem_pos new_elem_pos(const unsigned int row, const unsigned int col, MATRIX_TYPE value);
 
-static int array_cmp(const void *a, const void *b, enum ARRAY_CMP_TYPE type);
+static int array_cmp(const void *a, const void *b, enum ARRAY_CMP_TYPE type, size_t count);
 
 /**
  * @struct _Matrix
  * @brief Represents a matrix with rows, columns, and data.
  */
-typedef struct _Matrix {
- /**
-  * @var rows
-  * @brief The number of rows in the matrix.
-  */
- unsigned int rows;
+typedef struct _Matrix
+{
+    /**
+     * @var rows
+     * @brief The number of rows in the matrix.
+     */
+    unsigned int rows;
 
- /**
-  * @var cols
-  * @brief The number of columns in the matrix.
-  */
- unsigned int cols;
+    /**
+     * @var cols
+     * @brief The number of columns in the matrix.
+     */
+    unsigned int cols;
 
- /**
-  * @var data
-  * @brief A pointer to the matrix data, stored in a contiguous array.
-  */
- MATRIX_TYPE *data;
+    /**
+     * @var data
+     * @brief A pointer to the matrix data, stored in a contiguous array.
+     */
+    MATRIX_TYPE *data;
 } Matrix;
 
 /**
@@ -205,13 +209,13 @@ Matrix *matrix_gen(const unsigned int rows, const unsigned int cols, const MATRI
 Matrix *matrix_gen_r(const unsigned int rows, const unsigned int cols, const MATRIX_TYPE *data,
                      const unsigned int data_rows,
                      const unsigned int data_cols); // generate matrix
-Matrix *matrix_copy(const Matrix *_source_mat); // copy matrix
+Matrix *matrix_copy(const Matrix *_source_mat);     // copy matrix
 void matrix_copy_r(Matrix **dest, const Matrix *src);
 
 void matrix_copy_free(Matrix **dest, Matrix **src); // copy matrix
-void matrix_free(Matrix **mat); // free matrix
+void matrix_free(Matrix **mat);                     // free matrix
 
-void matrix_print(const Matrix *mat); // print matrix
+void matrix_print(const Matrix *mat);                                                               // print matrix
 void matrix_print_P(const Matrix *mat, const unsigned int rowsLimit, const unsigned int colsLimit); // print matrix
 static void print_matrix_without_omitting_elements(const Matrix *mat, int rows, int cols);
 
@@ -220,27 +224,27 @@ static void print_matrix_with_omitted_elements(const Matrix *mat, int rows, int 
 
 static void print_ellipsis_row(const Matrix *mat, int cols);
 
-Matrix *ones_matrix(const unsigned int rows, const unsigned int cols); // generate ones matrix
+Matrix *ones_matrix(const unsigned int rows, const unsigned int cols);  // generate ones matrix
 Matrix *zeros_matrix(const unsigned int rows, const unsigned int cols); // generate zeros matrix
-Matrix *eye_matrix(const unsigned int rows, const unsigned int cols); // generate eye matrix
+Matrix *eye_matrix(const unsigned int rows, const unsigned int cols);   // generate eye matrix
 Matrix *rand_matrix(const unsigned int rows, const unsigned int cols, MATRIX_TYPE min, MATRIX_TYPE max);
 
 // generate random matrix
 int matrix_eq(const Matrix *a, const Matrix *b); // matrix equal
-Matrix *matrix_mul(Matrix *a, Matrix *b); // matrix multiply
-Matrix *matrix_right_mul(Matrix *a, Matrix *b); // matrix right multiply
+Matrix *matrix_mul(Matrix *a, Matrix *b);        // matrix multiply
+Matrix *matrix_right_mul(Matrix *a, Matrix *b);  // matrix right multiply
 Matrix *matrix_mul_single(Matrix *a, const MATRIX_TYPE b);
 
-void matrix_mul_void(Matrix *a, Matrix *b); // matrix multiply
+void matrix_mul_void(Matrix *a, Matrix *b);       // matrix multiply
 void matrix_right_mul_void(Matrix *a, Matrix *b); // matrix right multiply
 void matrix_mul_single_void(Matrix *a, const MATRIX_TYPE b);
 
-Matrix *matrix_add(Matrix *a, Matrix *b); // matrix add
-Matrix *matrix_sub(Matrix *a, Matrix *b); // matrix su
-void matrix_add_void(Matrix *a, Matrix *b); // matrix add
-void matrix_sub_void(Matrix *a, Matrix *b); // matrix sub
-void matrix_transpose(Matrix *mat); // matrix transpose
-Matrix *matrix_transpose_r(const Matrix *mat); // matrix transpose
+Matrix *matrix_add(Matrix *a, Matrix *b);            // matrix add
+Matrix *matrix_sub(Matrix *a, Matrix *b);            // matrix su
+void matrix_add_void(Matrix *a, Matrix *b);          // matrix add
+void matrix_sub_void(Matrix *a, Matrix *b);          // matrix sub
+void matrix_transpose(Matrix *mat);                  // matrix transpose
+Matrix *matrix_transpose_r(const Matrix *mat);       // matrix transpose
 MATRIX_TYPE **matrix_to_2D_array(const Matrix *mat); // matrix to 2D array
 Matrix *matrix_from_2D_array(MATRIX_TYPE **array, const unsigned int rows, const unsigned int cols);
 
@@ -269,7 +273,7 @@ void matrix_sort_by_zeros_num(const Matrix *mat, const unsigned int aix);
 
 void matrix_gauss_elimination_(const Matrix *mat, const unsigned int select_index, const unsigned int aim_index,
                                const int
-                               begin_index,
+                                   begin_index,
                                const MATRIX_TYPE value);
 
 void matrix_gauss_elimination(const Matrix *mat);
@@ -337,33 +341,33 @@ Matrix *diagMatrix(MVector *vec);
 void matrix_sort_by_cols_values_s(Matrix *mat, unsigned int keyColIndex, unsigned int aix, unsigned int beginRowIndex,
                                   unsigned int endRowIndex);
 
-
 /**
  * @struct _PLUMatrix
  * @brief Represents a PLU decomposition of a matrix.
  *
  * This struct contains pointers to the source matrix and the decomposed L, U, and P matrices.
  */
-typedef struct _PLUMatrix {
- /**
-  * @brief The source matrix being decomposed.
-  */
- Matrix *srcMatrix; // 源矩阵
+typedef struct _PLUMatrix
+{
+    /**
+     * @brief The source matrix being decomposed.
+     */
+    Matrix *srcMatrix; // 源矩阵
 
- /**
-  * @brief The lower triangular matrix (L) resulting from the decomposition.
-  */
- Matrix *LMatrix; // L矩阵
+    /**
+     * @brief The lower triangular matrix (L) resulting from the decomposition.
+     */
+    Matrix *LMatrix; // L矩阵
 
- /**
-  * @brief The upper triangular matrix (U) resulting from the decomposition.
-  */
- Matrix *UMatrix; // U矩阵
+    /**
+     * @brief The upper triangular matrix (U) resulting from the decomposition.
+     */
+    Matrix *UMatrix; // U矩阵
 
- /**
-  * @brief The permutation matrix (P) resulting from the decomposition.
-  */
- Matrix *PMatrix; // P矩阵
+    /**
+     * @brief The permutation matrix (P) resulting from the decomposition.
+     */
+    Matrix *PMatrix; // P矩阵
 } PLUMatrix;
 
 PLUMatrix *matrixPLUDecDiagCard(Matrix *mat);

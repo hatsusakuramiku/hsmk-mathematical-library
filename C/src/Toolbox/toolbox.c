@@ -25,8 +25,8 @@
  */
 
 #include <stdlib.h>
-#include "stack.h"
-#include "toolbox.h"
+#include <Stack/stack.h>
+#include <Toolbox/toolbox.h>
 
 /**
  * Checks if an element is a member of a collection.

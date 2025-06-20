@@ -24,12 +24,15 @@
 #define _HSMK_MATH_LIB_RANDOM_H
 #include <stdbool.h>
 #include <time.h>
+#include <stdlib.h>
 #ifndef RAND_MAX
 #define RAND_MAX 0x71fff
-#endif// RAND_MAX
+#endif // RAND_MAX
 
 // get random number
 #define RAND(min, max, TYPE) ((TYPE)rand_double(min, max))
+
+static bool _is_init_rand = false;
 
 /**
  * Generates a random double-precision floating-point number within a specified range.
@@ -42,12 +45,14 @@
  * @param max The maximum value of the range (inclusive).
  * @return A random double-precision floating-point number within the specified range.
  */
-static inline double rand_double(const double min, const double max) {
+static inline double rand_double(const double min, const double max)
+{
     // Flag to track whether the random number generator has been seeded.
     static bool seeded = false;
 
     // Seed the random number generator if it hasn't been done already.
-    if (!seeded) {
+    if (!seeded)
+    {
         // Use the current time as a seed value to ensure randomness.
         srand(time(NULL));
         seeded = true;
@@ -55,7 +60,7 @@ static inline double rand_double(const double min, const double max) {
 
     // Calculate the random double-precision floating-point number.
     // The formula scales the random integer to fit within the specified range.
-    return min + (max - min) * ((double) rand()) / ((double) RAND_MAX + 1.0);
+    return min + (max - min) * ((double)rand()) / ((double)RAND_MAX + 1.0);
 }
 
 #endif //_HSMK_MATH_LIB_RANDOM_H

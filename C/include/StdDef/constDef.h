@@ -51,14 +51,14 @@
         }              \
     }
 // #define IS_STATIC_ARRAY(x) (void *)(&x) == (void *)(&x[0])
-#define IS_STATIC_ARRAY(x) ((void*)&(x) == (void*)&(x[0]))
+#define IS_STATIC_ARRAY(x) ((void *)&(x) == (void *)&(x[0]))
 #ifdef _WIN32
 #define VECTOR_LENGTH(vector) ((vector) == NULL ? 0 : IS_STATIC_ARRAY(vector) ? sizeof(vector) / sizeof(vector[0]) \
-                                                                                 : _msize((void*)vector) / sizeof(vector[0]))
+                                                                              : _msize((void *)vector) / sizeof(vector[0]))
 #elif defined __linux__
 #define uintptr_t unsigned int
 #define VECTOR_LENGTH(vector) ((vector) == NULL ? 0 : IS_STATIC_ARRAY(vector) ? sizeof(vector) / sizeof(vector[0]) \
-                                                                                 : malloc_usable_size((void*)vector) / sizeof(vector[0]))
+                                                                              : malloc_usable_size((void *)vector) / sizeof(vector[0]))
 #endif
 // get vector length
 

@@ -4,11 +4,8 @@ test_*.*
 *.exe
 .vscode/
 .idea/
-C/test.c
 cmake-build-windows/
 cmake-build-wsl/
-C/CMakeLists.txt
-C/temp/
 Java/HsmkMathLib/.idea/
 Java/HsmkMathLib/HsmkMathLib.iml
 Java/HsmkMathLib/out/
@@ -17,3 +14,4 @@ Java/out/
 .venv/
 img/
 temp/
+*/build/

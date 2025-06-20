@@ -20,29 +20,15 @@
  * SOFTWARE.
  */
 
-/**
- * @file stack.c
- */
+#ifndef _HSMK_MATH_LIB_WITH_EXCEPTION_STACK_H
+#define _HSMK_MATH_LIB_WITH_EXCEPTION_STACK_H
 
-#ifndef _HSMK_MATH_LIB_STACK_H
-#define _HSMK_MATH_LIB_STACK_H
-
-enum STACK_TYPE_SIZE
-{
-    STACK_TYPE_SIZE_INT = sizeof(int),
-    STACK_TYPE_SIZE_LONG = sizeof(long),
-    STACK_TYPE_SIZE_FLOAT = sizeof(float),
-    STACK_TYPE_SIZE_DOUBLE = sizeof(double),
-    STACK_TYPE_SIZE_CHAR = sizeof(char),
-    STACK_TYPE_SIZE_SHORT = sizeof(short),
-    STACK_TYPE_SIZE_LONG_LONG = sizeof(long long)
-};
-
-typedef void *stackElem;
+#include "../../../include/StdDef/exception.h"
+#include "../../../include/StdDef/result.h"
 
 typedef struct _StackNode
 {
-    stackElem data;
+    void *data;
     struct _StackNode *next;
     size_t elemSize;
 } StackNode;
@@ -50,46 +36,8 @@ typedef struct _StackNode
 typedef struct _Stack
 {
     StackNode *head;
+    size_t size;
     StackNode *tail;
-    int size;
 } Stack;
 
-typedef struct _stackElemWithSize
-{
-    stackElem data;
-    size_t elemSize;
-} stackElemWithSize;
-
-Stack *stackInit();
-
-void stackClear(Stack *stack);
-
-void stackDestroy(Stack **stack);
-
-void stackPush(Stack *stack, stackElem elem, size_t elemSize);
-
-stackElem stackPop(Stack *stack);
-
-stackElem stackBottom(Stack *stack);
-
-stackElem stackTop(Stack *stack);
-
-stackElemWithSize stackPopWithSize(Stack *stack);
-
-stackElemWithSize stackBottomWithSize(Stack *stack);
-
-stackElemWithSize stackTopWithSize(Stack *stack);
-
-int stackSize(Stack *stack);
-
-void stackSwap(Stack *stack);
-
-int isStackEmpty(Stack *stack);
-
-int isStackMember(Stack *stack, stackElemWithSize elem, int (*cmp)(const void *, const void *));
-
-void *stackToArray(Stack *stack);
-
-Stack *stackCopy(Stack *stack);
-
-#endif //_HSMK_MATH_LIB_STACK_H
+#endif
