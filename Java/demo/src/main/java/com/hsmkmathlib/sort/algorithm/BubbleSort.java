@@ -478,10 +478,9 @@ public final class BubbleSort implements SortAlgorithm {
             return;
         }
         boolean swapped;
-        int lastIndex;
+        int lastIndex = startIndex;
         do {
             swapped = false;
-            lastIndex = startIndex;
             for (int j = lastIndex; j < endIndex - 1; j++) {
                 if (aix == ASCENDING ? array[j].compareTo(array[j + 1]) > 0
                         : array[j].compareTo(array[j + 1]) < 0) {

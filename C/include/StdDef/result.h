@@ -35,34 +35,9 @@
  */
 typedef enum
 {
-    HSMK_MATH_LIB_RESULT_TYPE_SUCCESS, ///< Operation completed successfully
-    HSMK_MATH_LIB_RESULT_TYPE_ERROR    ///< Operation resulted in an error
-} HSMK_MATH_LIB_RESULT_TYPE;
-
-/**
- * @brief Enum representing the type of data stored in the result structure.
- *        Used to interpret the 'data' field in the result struct.
- */
-typedef enum
-{
-    HSMK_MATH_LIB_RESULT_DATA_TYPE_VOID,      ///< No data
-    HSMK_MATH_LIB_RESULT_DATA_TYPE_INT,       ///< Integer data
-    HSMK_MATH_LIB_RESULT_DATA_TYPE_LONG,      ///< Long integer data
-    HSMK_MATH_LIB_RESULT_DATA_TYPE_CHAR,      ///< Character data
-    HSMK_MATH_LIB_RESULT_DATA_TYPE_SHORT,     ///< Short integer data
-    HSMK_MATH_LIB_RESULT_DATA_TYPE_LONG_LONG, ///< Long long integer data
-    HSMK_MATH_LIB_RESULT_DATA_TYPE_FLOAT,     ///< Float data
-    HSMK_MATH_LIB_RESULT_DATA_TYPE_DOUBLE,    ///< Double data
-    HSMK_MATH_LIB_RESULT_DATA_TYPE_STRING,    ///< String data (char*)
-    HSMK_MATH_LIB_RESULT_DATA_TYPE_ARRAY,     ///< Array data
-    HSMK_MATH_LIB_RESULT_DATA_TYPE_STRUCT,    ///< Struct data
-    HSMK_MATH_LIB_RESULT_DATA_TYPE_FUNCTION,  ///< Function pointer
-    HSMK_MATH_LIB_RESULT_DATA_TYPE_POINTER,   ///< Generic pointer
-    HSMK_MATH_LIB_RESULT_DATA_TYPE_ENUM,      ///< Enum data
-    HSMK_MATH_LIB_RESULT_DATA_TYPE_UNION,     ///< Union data
-    HSMK_MATH_LIB_RESULT_DATA_TYPE_BITFIELD,  ///< Bitfield data
-    HSMK_MATH_LIB_RESULT_DATA_TYPE_TYPEDEF,   ///< Typedef data
-} HSMK_MATH_LIB_RESULT_DATA_TYPE;
+    HSMK_MATH_LIB_RESULT_STATUS_SUCCESS, ///< Operation completed successfully
+    HSMK_MATH_LIB_RESULT_STATUS_ERROR    ///< Operation resulted in an error
+} HSMK_MATH_LIB_RESULT_STATUS;
 
 /**
  * @brief Structure representing the result of a mathematical library operation.
@@ -73,11 +48,11 @@ typedef enum
  */
 typedef struct
 {
-    HSMK_MATH_LIB_RESULT_TYPE type;           ///< Result type: success or error
-    void *data;                               ///< Pointer to result data (type depends on data_type)
-    size_t size;                              ///< Size of the data in bytes
-    HSMK_MATH_LIB_RESULT_DATA_TYPE data_type; ///< Type of the data stored in 'data'
-    HSMK_MATH_LIB_EXCEPTION exception;        ///< Exception information if an error occurred
+    HSMK_MATH_LIB_RESULT_STATUS status; ///< Result type: success or error
+    void *data;                         ///< Pointer to result data (type depends on data_type)
+    size_t size;                        ///< Size of the data in bytes
+    const char *type_name;              ///< Type descriptor for the data
+    HSMK_MATH_LIB_EXCEPTION exception;  ///< Exception information if an error occurred
 } HSMK_MATH_LIB_RESULT;
 
 /**
@@ -93,12 +68,12 @@ typedef struct
  * @param data_type Type of the data
  * @param exception Exception information (NULL if no error)
  */
-#define HSMK_RESULT_CREATE(type, data, size, data_type, exception) \
-    ((HSMK_RESULT){                                                \
-        type,                                                      \
-        data,                                                      \
-        size,                                                      \
-        data_type,                                                 \
+#define HSMK_RESULT_CREATE(status, data, size, data_type, exception) \
+    ((HSMK_RESULT){                                                  \
+        status,                                                      \
+        data,                                                        \
+        size,                                                        \
+        data_type,                                                   \
         exception})
 
 /**
@@ -108,13 +83,20 @@ typedef struct
  * @param data_type Type of the data
  */
 #define HSMK_RESULT_CREATE_SUCCESS(data, size, data_type) \
-    HSMK_RESULT_CREATE(HSMK_MATH_LIB_RESULT_TYPE_SUCCESS, data, size, data_type, HSMK_MATH_LIB_NO_EXCEPTION)
+    HSMK_RESULT_CREATE(HSMK_MATH_LIB_RESULT_STATUS_SUCCESS, data, size, data_type, HSMK_MATH_LIB_NO_EXCEPTION)
 
 /**
  * @brief Macro to create an error result with exception information.
  * @param exceptionMessage Exception information
  */
 #define HSMK_RESULT_CREATE_ERROR(exceptionMessage) \
-    HSMK_RESULT_CREATE(HSMK_MATH_LIB_RESULT_TYPE_ERROR, NULL, 0, HSMK_MATH_LIB_RESULT_DATA_TYPE_VOID, HSMK_MATH_LIB_EXCEPTION_CREATE_ERROR(exceptionMessage))
+    HSMK_RESULT_CREATE(HSMK_MATH_LIB_RESULT_STATUS_ERROR, NULL, 0, "void", HSMK_MATH_LIB_EXCEPTION_CREATE_ERROR(exceptionMessage))
 
+typedef char *(*result_to_string)(HSMK_RESULT result);
+
+void print_hsmk_result(HSMK_RESULT result, result_to_string func)
+{
+
+    printf(func(result));
+}
 #endif

@@ -44,7 +44,7 @@ typedef struct
     HSMK_MATH_LIB_EXCEPTION_TYPE type; // Type of the exception (error, warning, none)
     const char *message;               // Exception message
     const char *file;                  // Source file where the exception occurred
-    int line;                          // Line number in the source file
+    unsigned int line;                 // Line number in the source file
     const char *function;              // Function name where the exception occurred
 } HSMK_MATH_LIB_EXCEPTION;
 

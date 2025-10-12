@@ -1,0 +1,42 @@
+# Delphi 编译中间文件
+*.dcu
+*.dpu
+*.dcpil
+*.drc
+*.rsm
+*.local
+*.identcache
+*.tvsconfig
+
+# 可执行文件和DLL
+*.exe
+*.dll
+*.so
+*.bpl
+
+# 备份文件
+*.~*
+*.*~
+*.bak
+
+# IDE配置
+*.dsk
+*.dproj.local
+*.dof
+*.cfg
+*.ddp
+*.dproj.*.user
+
+# 输出目录
+/Bin
+/Dcu
+/Backup
+
+# 第三方库文件（如果用Boss管理，通常不需要提交）
+/Packages
+/Libs
+/ThirdParty
+
+# 资源文件（视情况决定是否提交）
+/Resources/*.res
+/Resources/*.ico
