@@ -1,87 +1,57 @@
-﻿unit FunctionToolUnit;
+﻿{*******************************************************************************}
+{                       Copyright  2025 hatsusakuramiku                         }
+{                                                                               }
+{                              MIT LICENSE                                      }
+{  Permission is hereby granted, free of charge, to any person obtaining a copy }
+{  of this software and associated documentation files (the "Software"), to deal}
+{  in the Software without restriction, including without limitation the rights }
+{  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell    }
+{  copies of the Software, and to permit persons to whom the Software is        }
+{  furnished to do so, subject to the following conditions:                     }
+{                                                                               }
+{  The above copyright notice and this permission notice shall be included in   }
+{  all copies or substantial portions of the Software.                          }
+{                                                                               }
+{  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR   }
+{  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,     }
+{  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE  }
+{  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER       }
+{  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,}
+{  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE}
+{  SOFTWARE.                                                                    }
+{*******************************************************************************}
 
+{* Require Version >= Delphi XE4 *}
+
+{*这个单元提供一些通用的函数或过程，使用的所有非自定义单元都是Delphi提供的系统单元*}
+unit FuncToolPublicUnit;
 
 interface
 
 uses
+  {*Delphi系统单元*}
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants,
-  System.Classes, Vcl.Forms, GeneralTypeUnit, System.UITypes, System.Generics.Collections;
-
-{Message}
-function MessBox(AMsg: string; ACaption: string = '提示'; AFlags: LongInt = mb_OK or mb_IconHand): Integer;
-
-{Math}
-function MyAvg(const AExtendedArr: array of Extended): Extended;
-function MySum(const AExtendedArr: array of Extended): Extended;
-// Max 函数 - 按类型大小从小到大排序
-function Max(const AInt1, AInt2: Integer): Integer; overload;
-function Max(const AInt1, AInt2: UInt32): UInt32; overload;
-function Max(const AInt1, AInt2: NativeInt): NativeInt; overload;
-function Max(const AInt1, AInt2: Int64): Int64; overload;
-function Max(const AInt1, AInt2: UInt64): UInt64; overload;
-function Max(const AInt1, AInt2: NativeUInt): NativeUInt; overload;
-
-// Min 函数 - 按类型大小从小到大排序
-function Min(const AInt1, AInt2: Integer): Integer; overload;
-function Min(const AInt1, AInt2: UInt32): UInt32; overload;
-function Min(const AInt1, AInt2: NativeInt): NativeInt; overload;
-function Min(const AInt1, AInt2: Int64): Int64; overload;
-function Min(const AInt1, AInt2: UInt64): UInt64; overload;
-function Min(const AInt1, AInt2: NativeUInt): NativeUInt; overload;
+  System.Classes, System.UITypes, System.Generics.Collections, System.TypInfo,
+  {*自定义单元*}
+  GeneralTypeUnit;
 
 {Memory Function}
 function MemCompare(const APData1, APData2: Pointer; const ASize: TSize_T): Boolean;
-procedure MemSwap(const APData1, APData2: Pointer; const ASize: TSize_T); overload;
-procedure MemSwap(const AData1, AData2, ASwapBuffer: Pointer; ASize: TSize_T); overload;
+procedure MemSwap(const APData1, APData2: Pointer; const ASize: TSize_T); overload; inLine;
+procedure MemSwap(const AData1, AData2, ASwapBuffer: Pointer; ASize: TSize_T); overload; inLine;
 
-{String}
-// 非指针实现
-function ReverseString(const ABaseStr: string): string;
-function MyStringReplace(const ABaseStr, AOldPattern, ANewPattern: string; AFlags: TReplaceFlags): string;
-function MyStringSplit(const ABaseStr, ASplitter: string; AIsIgnoreCase: Boolean = False):TStringArray;
-function GetFirstItem(var ABaseStr: string; const ASplitter: string; AIsIgnoreCase: Boolean = False): string;
-function GetLastItem(const ABaseStr: string; const ASplitter: string; AIsIgnoreCase: Boolean = False): string;
 
-// 指针实现，注意，使用下面的函数时需要确保输入的所有string类型的参数都不能含有#0，否则可能出现非预期结果或未知异常
+{String Function}
+function StrIsEmpty(var Str: string): Boolean; overload;
+function StrIsEmpty(const Str: string; var TrimedStr: string): Boolean; overload;
+function StrTrimIsEmpty(const Str: string): Boolean;
+function PosIndex(const SubStr, Str: string; Index: Integer; AIsOverlap: Boolean = False): Integer;
 function ReverseStringP(const ABaseStr: string): string;
-function MemcmpStrChars(const APStr1, APStr2: Pointer; const ACharCount: TSize_T): Boolean;
-function MemcmpTextChars(const APStr1, APStr2: Pointer; const ACharCount: TSize_T): Boolean;
-function MySameStr(const APStr1, APStr2: Pointer; const ASize: TSize_T): Boolean;
-function MySameText(const APStr1, APStr2: Pointer; const ASize: TSize_T): Boolean;
-function GetStrFirstItem(var ABaseStr: string; ASplitter: string): string;
-function GetTextFirstItem(var ABaseStr: string; ASplitter: string): string;
-function GetFirstItemP(var ABaseStr: string; ASplitter: string; AIsIgnoreCase: Boolean = False): string;
-function MyStrSplit(const ABaseStr, ASplitter: string): TStringArray;
-function MyTextSplit(const ABaseStr, ASplitter: string): TStringArray;
-function MyStringSplitP(const ABaseStr, ASplitter: string; AIsIgnoreCase: Boolean = False):TStringArray;
-function MyStringReplaceP_Faster(const ABaseStr, AOldPattern, ANewPattern: string; AFlags: TReplaceFlags = []): string;
-function MyStringReplaceP(const ABaseStr, AOldPattern, ANewPattern: string; AFlags: TReplaceFlags = []): string;
-
-{Array Function}
-function GenerateRandomIntegerArray(const ANum: Integer; const AMin: Integer = 0; const AMax: Integer = 100): TIntegerArray;
-function GenerateRandomExtendedArray(const ANum: Integer; const AMin: Extended = 0.0; const AMax: Extended = 100.0): TExtendedArray;
-
-type
-  TGetterFunc<T> = reference to function(Index: Integer; AArray: array of T): string;
-
-type
-  TArrayUtils = class
-  private
-    class function BuildString<T>(AGetter: TGetterFunc<T>; AArray: array of T; const ASplitter: string; const APrefix: string; const ASuffix: string): string; static;
-    class procedure CopyAndMove(var Result: string; var iResultLen, iCurrentPos: Integer; var pStr: PChar; const ASourceStr: string); static;
-    class procedure EnsureCapacity(var Result: string; var iResultLen, iCurrentPos: Integer; ANeededLen: Integer; var pStr: PChar); static;
-  public
-    class function IntArrayToString(AIntArr: array of Integer; const ASplitter: string = ','; const APrefix: string = '['; const ASuffix: string = ']'): string; static;
-    class function IntArrayToStringF(const AFormat: string; AIntArr: array of Integer; const ASplitter: string = ','; const APrefix: string = '['; const ASuffix: string = ']'): string; static;
-    class function FloatArrayToString(AFloatArr: array of Extended; const ASplitter: string = ','; const APrefix: string = '['; const ASuffix: string = ']'): string; static;
-    class function FloatArrayToStringF(const AFormat: string; AFloatArr: array of Extended; const ASplitter: string = ','; const APrefix: string = '['; const ASuffix: string = ']'): string; static;
-    class function StringListToString(AStrList: array of string; const ASplitter: string = ','; const APrefix: string = '['; const ASuffix: string = ']'): string; static;
-    class function ObjectListToString(AObjList: array of TObject; const ASplitter: string = ','; const APrefix: string = '['; const ASuffix: string = ']'): string; static;
-  end;
-
-
 function LeftCut(const ASourceStr: string; const ALen: Integer): string;
+function LeftCutBySplitter(const ASourceStr, ASplitter: string): string;
 function RightCut(const ASourceStr: string; const ALen: Integer): string;
+function RightCutBySplitter(const ASourceStr, ASplitter: string): string;
+function QuotedStrSQL(const S: string): string;
 
 type
   TCheckFunction = reference to function(const APCheckedData, AContext: Pointer): Boolean;
@@ -109,10 +79,11 @@ const MINSUBARRLEN: TSize_T = 8; //最小子数组长度，在下面较复杂的
 // 辅助函数，在此处列出可供外部调用的辅助函数
 // 为性能与效率考虑，多个函数或过程中都频繁使用的辅助函数不会对输入参数进行校验
 // 无参数校验
-function GetPtr(const ApBase: Pointer; const AOffset: TSize_T): Pointer;
-function LeftMovePtr(const ApBase: Pointer; const AOffset: TSize_T): Pointer;
-function RightMovePtr(const ApBase: Pointer; const AOffset: TSize_T): Pointer;
+function LeftMovePtr(const ApBase: Pointer; const AOffset: TSize_T): Pointer; inLine;
+function RightMovePtr(const ApBase: Pointer; const AOffset: TSize_T): Pointer; inLine;
+function MovePtr(const APBase: Pointer; const AOffset: NativeInt): Pointer; inLine;
 
+// 为方便调用，提供部分类型的比较函数
 type
   TRealType = (rtInt, rtInt64, rtUInt64, rtSingle, rtDouble, rtExtedent);
 // 整型
@@ -135,7 +106,6 @@ function DoubleCompareDesc(APData1, APData2, APContext: Pointer): Integer;
 function IsSorted(const APBase: Pointer; AElemNum, AElemSize: TSize_T; APContext: Pointer; ACompareFunc: TCompareFunction): Boolean;
 procedure ReverseArray(const APBase: Pointer; AElemNum, AElemSize: TSize_T);
 function IsReverseSorted(const APBase: Pointer; AElemNum, AElemSize: TSize_T; APContext: Pointer; ACompareFunc: TCompareFunction): Boolean;
-procedure OptimizedSort(ASortFunc: TSortFunction; const APBase: Pointer; AElemNum, AElemSize: TSize_T; APContext: Pointer; ACompareFunc: TCompareFunction);
 
 // 排序函数
 procedure BubbleSort(const APBase: Pointer; AElemNum, AElemSize: TSize_T; APContext: Pointer; ACompareFunc: TCompareFunction);
@@ -148,17 +118,107 @@ procedure HybridSort(const APBase: Pointer; AElemNum, AElemSize: TSize_T; APCont
 procedure QuickSort(const APBase: Pointer; AElemNum, AElemSize: TSize_T; APContext: Pointer; ACompareFunc: TCompareFunction);
 procedure IntroSort(const APBase: Pointer; AElemNum, AElemSize: TSize_T; APContext: Pointer; ACompareFunc: TCompareFunction);
 
+procedure OptimizedSort(ASortFunc: TSortFunction; const APBase: Pointer; AElemNum, AElemSize: TSize_T; APContext: Pointer; ACompareFunc: TCompareFunction);
+
+{TCompareFuncs}
+type
+  TCompareFuncs = class
+  public
+    class function CompareInteger(AFirst, ASecond: Integer): Integer; static; inline;
+    class function CompareInt64(AFirst, ASecond: Int64): Integer; static; inline;
+    class function CompareUInt64(AFirst, ASecond: UInt64): Integer; static; inline;
+    class function CompareUInteger(AFirst, ASecond: Cardinal): Integer; static; inline;
+    class function CompareSingle(AFirst, ASecond: Single): Integer; static; inline;
+    class function CompareDouble(AFirst, ASecond: Double): Integer; static; inline;
+    class function CompareExtended(AFirst, ASecond: Extended): Integer; static; inline;
+  end;
+
+{TArraySortUtils<T>}
+type
+  TGenericCompareFunc<T> = reference to function(AP1, AP2: T): Integer;
+  // 对泛型数组进行排序的方法类
+  TArraySortUtils<T> = class
+  private
+    FGenericCompareFunc: TGenericCompareFunc<T>;
+    FCompareFunc: TCompareFunction;
+    FTypeInfo: PTypeInfo;
+    FReverseSort: Boolean;
+    function GetTypeInfo: PTypeInfo;
+    function GetCompareFunc: TCompareFunction;
+    procedure SetFGenericCompareFunc(ACmpFunc: TGenericCompareFunc<T>);
+    function GetFGenericCompareFunc: TGenericCompareFunc<T>;
+    function AdjustRound(var ALeftEndPoint, ARightEndPoint: Integer; const AArray: array of T): Integer;
+    function GetReverseSort: Boolean;
+    procedure SetReverseSort(AFlag: Boolean);
+  public
+    property CompareFunc: TGenericCompareFunc<T> read GetFGenericCompareFunc write SetFGenericCompareFunc;
+    property ReverseSort: Boolean read GetReverseSort write SetReverseSort;
+
+    constructor Create(ACmpFunc: TGenericCompareFunc<T>); overload;
+    constructor Create(); overload;
+    destructor Destroy; override;
+
+    procedure Sort(var AArray: array of T; AStartIndex, AEndIndex: Integer; ASortFunc: TSortFunction); overload;
+    procedure Sort(var AArray: array of T; AStartIndex: Integer; ASortFunc: TSortFunction); overload;
+    procedure Sort(var AArray: array of T; ASortFunc: TSortFunction); overload;
+    procedure Sort(var AArray: array of T; AStartIndex, AEndIndex: Integer); overload;
+    procedure Sort(var AArray: array of T; AStartIndex: Integer); overload;
+    procedure Sort(var AArray: array of T); overload;
+  end;
+
+function GenerateRandomIntegerArray(const ANum: Integer; const AMin: Integer = 0; const AMax: Integer = 100): TIntegerArray;
+function GenerateRandomExtendedArray(const ANum: Integer; const AMin: Extended = 0.0; const AMax: Extended = 100.0): TExtendedArray;
+
+{Array Function}
+type
+  TElemToStringFunc<T> = reference to function(AElem: T): string;
+  TElemGenerator<T> = reference to function: T;
+  TEachItemFunc<T> = reference to procedure(var AItem: T);
+
+  TArrayUtils = class
+  private
+    // 因为在测试以确定MAXVALIDARRAYLEN的值时，只运行了BuildString这一个函数 ，
+    // 所以这个值应该是个相当乐观的估计。实际调用时有可能出现数组长度小于MAXVALIDARRAYLEN
+    // 仍出现栈溢出现象，因此建议仅在数组长度较小（5000以内）时使用此类提供的数组
+    // 转字符串的方法
+    {$IFDEF CPUX86}
+    const MAXVALIDARRAYLEN: Integer = $03D090;
+    {$ELSEIF DEFINED(CPUX64)}
+    const MAXVALIDARRAYLEN: Integer = $07A120;
+    {$ELSE}
+    const MAXVALIDARRAYLEN: Integer = $03D090;
+    {$ENDIF}
+  public
+    // Array to string
+    class function GetMaxVaildArrayLen: Integer; static;
+    class function BuildString<T>(AElemToStringFunc: TElemToStringFunc<T>; const AArray: array of T; const ASplitter: string; const APrefix: string; const ASuffix: string): string; static;
+    class function IntArrayToString(AIntArr: array of Integer; const ASplitter: string = ','; const APrefix: string = '['; const ASuffix: string = ']'): string; static;
+    class function IntArrayToStringF(const AFormat: string; AIntArr: array of Integer; const ASplitter: string = ','; const APrefix: string = '['; const ASuffix: string = ']'): string; static;
+    class function FloatArrayToString(AFloatArr: array of Extended; const ASplitter: string = ','; const APrefix: string = '['; const ASuffix: string = ']'): string; static;
+    class function FloatArrayToStringF(const AFormat: string; AFloatArr: array of Extended; const ASplitter: string = ','; const APrefix: string = '['; const ASuffix: string = ']'): string; static;
+    class function StringArrayToString(AStrArray: array of string; const ASplitter: string = ','; const APrefix: string = '['; const ASuffix: string = ']'): string; static;
+    class function ObjectListToString(AObjList: array of TObject; const ASplitter: string = ','; const APrefix: string = '['; const ASuffix: string = ']'): string; static;
+    // Generate Array
+    class function GenerateArray<T>(const ALen: Integer; GetElemFunc: TElemGenerator<T>): TArray<T>; static;
+    class function SplitStrToArray(const SrcStr, Splitter: string): TStringArray; static;
+    // Convert
+    class function ListToArray<T>(AList: TList<T>): TArray<T>; static;
+    class function ArrayToList<T>(AArray: array of T): TList<T>; static;
+    // Other
+    class procedure ReverseAeery<T>(var AArray: array of T); static;
+    class function IsMember<T>(AItem: T; AArray: array of T): Boolean; overload; static;
+    class function IsMember<T>(AItem: T; AArray: array of T; CompareFunc: TGenericCompareFunc<T>): Boolean; overload; static;
+
+    class Procedure ForEach<T>(var AArray: array of T; AEachFunc: TEachItemFunc<T>); overload;
+  end;
+
 {类三元运算}
 // 实现类似C/C++的三元运算符的功能，如果ACondition为True就返回ATrueValue，否则返回AFalseValue
-function IfThen(ACondition: Boolean; ATrueValue, AFalseValue: Integer): Integer; overload;
+// 部分重载已在System.Math中实现，为避免冲突，在此处实现其余重载
 function IfThen(ACondition: Boolean; ATrueValue, AFalseValue: string): string; overload;
-function IfThen(ACondition: Boolean; ATrueValue, AFalseValue: Extended): Extended; overload;
 function IfThen(ACondition: Boolean; ATrueValue, AFalseValue: Pointer): Pointer; overload;
 function IfThen(ACondition: Boolean; ATrueValue, AFalseValue: TObject): TObject; overload;
-function IfThen(ACondition: Boolean; ATrueValue, AFalseValue: Boolean): Boolean; overload;
 function IfThen(ACondition: Boolean; ATrueValue, AFalseValue: Char): Char; overload;
-function IfThen(ACondition: Boolean; ATrueValue, AFalseValue: Int64): Int64; overload;
-function IfThen(ACondition: Boolean; ATrueValue, AFalseValue: Double): Double; overload;
 function IfThen(ACondition: Boolean; ATrueValue, AFalseValue: AnsiString): AnsiString; overload;
 function IfThen(ACondition: Boolean; ATrueValue, AFalseValue: TDateTime): TDateTime; overload;
 
@@ -168,12 +228,12 @@ procedure IfThen(var AResult: string; ACondition: Boolean; ATrueValue, AFalseVal
 procedure IfThen(var AResult: Extended; ACondition: Boolean; ATrueValue, AFalseValue: Extended); overload;
 procedure IfThen(var AResult: Pointer; ACondition: Boolean; ATrueValue, AFalseValue: Pointer); overload;
 procedure IfThen(var AResult: TObject; ACondition: Boolean; ATrueValue, AFalseValue: TObject); overload;
-procedure IfThen(var AResult: Boolean; ACondition: Boolean; ATrueValue, AFalseValue: Boolean); overload;
 procedure IfThen(var AResult: Char; ACondition: Boolean; ATrueValue, AFalseValue: Char); overload;
 procedure IfThen(var AResult: Int64; ACondition: Boolean; ATrueValue, AFalseValue: Int64); overload;
 procedure IfThen(var AResult: Double; ACondition: Boolean; ATrueValue, AFalseValue: Double); overload;
 procedure IfThen(var AResult: AnsiString; ACondition: Boolean; ATrueValue, AFalseValue: AnsiString); overload;
 procedure IfThen(var AResult: TDateTime; ACondition: Boolean; ATrueValue, AFalseValue: TDateTime); overload;
+
 
 {Search Function}
 type
@@ -212,214 +272,33 @@ function SequentialSearch(const APBase: Pointer; AElemNum, AElemSize: TSize_T; c
 function SequentialSearchEx(const APBase: Pointer; AElemNum, AElemSize: TSize_T; const APContext, ASearchedElem: Pointer; ACompareFunc: TCompareFunction; AOffset: Cardinal = 0): Integer;
 function SequentialSearchs(const APBase: Pointer; AElemNum, AElemSize: TSize_T; const APContext, ASearchedElem: Pointer; ACompareFunc: TCompareFunction): TIntegerArray;
 
-{Other Function}
-procedure CompareAndSwap(const APSmallerData, APBiggerData, APContext: Pointer; const ACompareFunc: TCompareFunction; const ASize: TSize_T);
+{Color Function}
+
 function ColorToRRGGBBStr(AColor: TColor): string;
-function RRGGBBStrToColor(AStr: string): TColor;
+function RRGGBBStrToColor(AStr: string; ADefaultColor: LongWord = $00FFFFFF): TColor;
+
+{Other Function}
+// 检查输入的值是否在范围内，如果在就返回原始值，如果不在就返回设定的默认值
+function CheckInRange(AInput, AMin, AMax: Integer; ADefaultValue: Integer = -1): Integer; overload;
+function CheckInRange(AInput, AMin, AMax: Int64; ADefaultValue: Int64 = -1): Int64; overload;
+function CheckInRange(AInput, AMin, AMax: Single; ADefaultValue: Single = -1): Single; overload;
+function CheckInRange(AInput, AMin, AMax: Double; ADefaultValue: Double = -1): Double; overload;
+function CheckInRange(AInput, AMin, AMax: Extended; ADefaultValue: Extended = -1): Extended; overload;
+function CheckInRange(AInput, AMin, AMax: NativeInt; ADefaultValue: NativeInt = 0): NativeInt; overload;
+function CheckInRange(AInput, AMin, AMax: NativeUInt; ADefaultValue: NativeUInt = 0): NativeUInt; overload;
+function CheckInRange(AInput, AMin, AMax: UInt64; ADefaultValue: UInt64 = 0): UInt64; overload;
+function CheckInRange(AInput, AMin, AMax: Char; ADefaultValue: Char = #0): Char; overload;
+function CheckInRange(AInput, AMin, AMax: Cardinal; ADefaultValue: Cardinal = 0): Cardinal; overload;
+function CheckInRange(AInput, AMin, AMax: Byte; ADefaultValue: Byte = 0): Byte; overload;
+function CheckInRange(AInput, AMin, AMax: Word; ADefaultValue: Word = 0): Word; overload;
+
+procedure AdjustRange(var ALeftpoint: Integer; var ARightPoint: Integer; LegalLeftPoint, LegalRightPoint: Integer);
+procedure CompareAndSwap(const APSmallerData, APBiggerData, APContext: Pointer; const ACompareFunc: TCompareFunction; const ASize: TSize_T);
+
 implementation
 
 uses
-  System.Math;
-
-{Message}
-// 功能：显示消息对话框，提供统一的消息提示接口
-// 参数：
-//   - AMsg: string      要显示的消息内容
-//   - ACaption: string  对话框标题（默认为"提示"）
-//   - AFlags: LongInt   对话框样式标志（默认为确定按钮+错误图标）
-// 返回值：无
-function MessBox(AMsg: string; ACaption: string = '提示'; AFlags: LongInt = mb_OK or mb_IconHand): Integer;
-begin
-  Result := Application.MessageBox(PChar(AMsg), PChar(ACaption), AFlags);
-end;
-
-
-{Math}
-// 功能：计算浮点数数组的平均值
-// 参数：
-//   - const AExtendedArr: array of Extended  待计算的浮点数数组
-// 返回值：Extended  数组的平均值，空数组返回0.0
-function MyAvg(const AExtendedArr: array of Extended): Extended;
-begin
-  Result := 0.0;
-  if Length(AExtendedArr) <> 0 then
-  begin
-    Result := MySum(AExtendedArr) / Length(AExtendedArr);
-  end;
-end;
-
-// 功能：计算浮点数数组的总和
-// 参数：
-//   - const AExtendedArr: array of Extended  待求和的浮点数数组
-// 返回值：Extended  数组元素的总和，空数组返回0.0
-function MySum(const AExtendedArr: array of Extended): Extended;
-var
-  i: Integer;
-begin
-  Result := 0.0;
-  if Length(AExtendedArr) <> 0 then
-  begin
-    for i := Low(AExtendedArr) to High(AExtendedArr) do
-      Result := Result + AExtendedArr[i];
-  end;
-end;
-
-// ==================== Max/Min 函数实现 - 按类型大小从小到大排序 ====================
-// 这些函数实现了高效的Max和Min操作，使用位运算避免条件分支，提高性能
-// 特点：
-// 1. 无分支实现：使用位运算替代if-else判断，避免分支预测失误
-// 2. 类型安全：为不同整数类型提供重载版本
-// 3. 跨平台：NativeInt/NativeUInt根据CPU架构自动选择32位或64位实现
-// 4. 高性能：位运算比条件判断更快，特别是在现代CPU上
-
-// 获取两个Integer类型数值中的最大值（无分支实现）
-// 参数：
-//   AInt1 - 第一个整数
-//   AInt2 - 第二个整数
-// 返回值：两个整数中的较大值
-// 实现原理：使用位运算避免条件分支，提高性能
-function Max(const AInt1, AInt2: Integer): Integer; overload;
-begin
-  Result := (AInt1 and (not ((AInt1 - AInt2) shr 31))) or (AInt2 and (((AInt1 - AInt2) shr 31)));
-end;
-
-// 获取两个UInt32类型数值中的最大值（无分支实现）
-// 参数：
-//   AInt1 - 第一个无符号32位整数
-//   AInt2 - 第二个无符号32位整数
-// 返回值：两个无符号整数中的较大值
-// 实现原理：使用位运算避免条件分支，提高性能
-function Max(const AInt1, AInt2: UInt32): UInt32; overload;
-begin
-  Result := AInt1 - ((AInt1 - AInt2) and ((AInt1 - AInt2) shr 31));
-end;
-
-// 获取两个NativeInt类型数值中的最大值（无分支实现）
-// 参数：
-//   AInt1 - 第一个原生整数（32位或64位）
-//   AInt2 - 第二个原生整数（32位或64位）
-// 返回值：两个原生整数中的较大值
-// 实现原理：根据CPU架构自动选择32位或64位位运算，避免条件分支
-function Max(const AInt1, AInt2: NativeInt): NativeInt; overload;
-begin
-{$IFDEF CPUX64}
-  Result := (AInt1 and (not ((AInt1 - AInt2) shr 63))) or (AInt2 and (((AInt1 - AInt2) shr 63)));
-{$ELSE}
-  Result := (AInt1 and (not ((AInt1 - AInt2) shr 31))) or (AInt2 and (((AInt1 - AInt2) shr 31)));
-{$ENDIF}
-end;
-
-// 获取两个Int64类型数值中的最大值（无分支实现）
-// 参数：
-//   AInt1 - 第一个64位有符号整数
-//   AInt2 - 第二个64位有符号整数
-// 返回值：两个64位整数中的较大值
-// 实现原理：使用64位位运算避免条件分支，提高性能
-function Max(const AInt1, AInt2: Int64): Int64; overload;
-begin
-  Result := (AInt1 and (not ((AInt1 - AInt2) shr 63))) or (AInt2 and (((AInt1 - AInt2) shr 63)));
-end;
-
-// 获取两个UInt64类型数值中的最大值（无分支实现）
-// 参数：
-//   AInt1 - 第一个64位无符号整数
-//   AInt2 - 第二个64位无符号整数
-// 返回值：两个64位无符号整数中的较大值
-// 实现原理：使用64位位运算避免条件分支，提高性能
-function Max(const AInt1, AInt2: UInt64): UInt64; overload;
-begin
-  Result := AInt1 - ((AInt1 - AInt2) and ((AInt1 - AInt2) shr 63));
-end;
-
-// 获取两个NativeUInt类型数值中的最大值（无分支实现）
-// 参数：
-//   AInt1 - 第一个原生无符号整数（32位或64位）
-//   AInt2 - 第二个原生无符号整数（32位或64位）
-// 返回值：两个原生无符号整数中的较大值
-// 实现原理：根据CPU架构自动选择32位或64位位运算，避免条件分支
-function Max(const AInt1, AInt2: NativeUInt): NativeUInt; overload;
-begin
-{$IFDEF CPUX64}
-  Result := AInt1 - ((AInt1 - AInt2) and ((AInt1 - AInt2) shr 63));
-{$ELSE}
-  Result := AInt1 - ((AInt1 - AInt2) and ((AInt1 - AInt2) shr 31));
-{$ENDIF}
-end;
-
-
-// 获取两个Integer类型数值中的最小值（无分支实现）
-// 参数：
-//   AInt1 - 第一个整数
-//   AInt2 - 第二个整数
-// 返回值：两个整数中的较小值
-// 实现原理：使用位运算避免条件分支，提高性能
-function Min(const AInt1, AInt2: Integer): Integer; overload;
-begin
-  Result := (AInt2 and (((AInt1 - AInt2) shr 31))) or (AInt1 and (not ((AInt1 - AInt2) shr 31)));
-end;
-
-// 获取两个UInt32类型数值中的最小值（无分支实现）
-// 参数：
-//   AInt1 - 第一个无符号32位整数
-//   AInt2 - 第二个无符号32位整数
-// 返回值：两个无符号整数中的较小值
-// 实现原理：使用位运算避免条件分支，提高性能
-function Min(const AInt1, AInt2: UInt32): UInt32; overload;
-begin
-  Result := AInt2 + ((AInt1 - AInt2) and ((AInt1 - AInt2) shr 31));
-end;
-
-// 获取两个NativeInt类型数值中的最小值（无分支实现）
-// 参数：
-//   AInt1 - 第一个原生整数（32位或64位）
-//   AInt2 - 第二个原生整数（32位或64位）
-// 返回值：两个原生整数中的较小值
-// 实现原理：根据CPU架构自动选择32位或64位位运算，避免条件分支
-function Min(const AInt1, AInt2: NativeInt): NativeInt; overload;
-begin
-{$IFDEF CPUX64}
-  Result := (AInt2 and (((AInt1 - AInt2) shr 63))) or (AInt1 and (not ((AInt1 - AInt2) shr 63)));
-{$ELSE}
-  Result := (AInt2 and (((AInt1 - AInt2) shr 31))) or (AInt1 and (not ((AInt1 - AInt2) shr 31)));
-{$ENDIF}
-end;
-
-// 获取两个Int64类型数值中的最小值（无分支实现）
-// 参数：
-//   AInt1 - 第一个64位有符号整数
-//   AInt2 - 第二个64位有符号整数
-// 返回值：两个64位整数中的较小值
-// 实现原理：使用64位位运算避免条件分支，提高性能
-function Min(const AInt1, AInt2: Int64): Int64; overload;
-begin
-  Result := (AInt2 and (((AInt1 - AInt2) shr 63))) or (AInt1 and (not ((AInt1 - AInt2) shr 63)));
-end;
-
-// 获取两个UInt64类型数值中的最小值（无分支实现）
-// 参数：
-//   AInt1 - 第一个64位无符号整数
-//   AInt2 - 第二个64位无符号整数
-// 返回值：两个64位无符号整数中的较小值
-// 实现原理：使用64位位运算避免条件分支，提高性能
-function Min(const AInt1, AInt2: UInt64): UInt64; overload;
-begin
-  Result := AInt2 + ((AInt1 - AInt2) and ((AInt1 - AInt2) shr 63));
-end;
-
-// 获取两个NativeUInt类型数值中的最小值（无分支实现）
-// 参数：
-//   AInt1 - 第一个原生无符号整数（32位或64位）
-//   AInt2 - 第二个原生无符号整数（32位或64位）
-// 返回值：两个原生无符号整数中的较小值
-// 实现原理：根据CPU架构自动选择32位或64位位运算，避免条件分支
-function Min(const AInt1, AInt2: NativeUInt): NativeUInt; overload;
-begin
-{$IFDEF CPUX64}
-  Result := AInt2 + ((AInt1 - AInt2) and ((AInt1 - AInt2) shr 63));
-{$ELSE}
-  Result := AInt2 + ((AInt1 - AInt2) and ((AInt1 - AInt2) shr 31));
-{$ENDIF}
-end;
+  System.Math, System.Generics.Defaults, System.Rtti, System.RTLConsts, ExceptionStrConstsUnit;
 
 
 {Memory Function}
@@ -430,70 +309,12 @@ end;
 //   - const ASize: TSize_T    要比较的字节数
 // 返回值：Boolean  True表示两块内存完全相同，False表示存在差异
 function MemCompare(const APData1, APData2: Pointer; const ASize: TSize_T): Boolean;
-{$IF defined(POSIX)}
 begin
-  Result := memcmp(APData1, APData2, ASize) = 0;
+  Result := CompareMem(APData1, APData2, ASize);
 end;
-{$ELSE}
-var
-  iCurrentOffSet, NativeUIntSize: TSize_T;
-  Source1Ptr, Source2Ptr: PByte;
-begin
-  if (APData1 = nil) or (APData2 = nil)then
-  begin
-    raise Exception.Create('APStr1 与 APStr2不能为nil');
-  end;
 
-  if (APData1 = APData2) or (ASize = 0) then
-  begin
-    Result := True;
-    Exit;
-  end;
 
-  NativeUIntSize := SizeOf(TSize_T);
-{$POINTERMATH ON}
-  Source1Ptr := PByte(APData1);
-  Source2Ptr := PByte(APData2);
-  if ASize <= NativeUIntSize then
-  begin
-    case ASize of
-      1: Result := PByte(Source1Ptr)[0] = PByte(Source2Ptr)[0];
-      2: Result := PWord(Source1Ptr)[0] = PWord(Source2Ptr)[0];
-      3: Result := (PWord(Source1Ptr)[0] = PWord(Source2Ptr)[0])
-        and (PByte(Source1Ptr)[2] = PByte(Source2Ptr)[2]);
-      4: Result := (PInteger(Source1Ptr)[0] = PInteger(Source2Ptr)[0]);
-      5: Result := (PInteger(Source1Ptr)[0] = PInteger(Source2Ptr)[0])
-        and (PByte(Source1Ptr)[4] = PByte(Source2Ptr)[4]);
-      6: Result := (PInteger(Source1Ptr)[0] = PInteger(Source2Ptr)[0])
-        and (PWord(Source1Ptr)[2] = PWord(Source2Ptr)[2]);
-      7: Result := (PInteger(Source1Ptr)[0] = PInteger(Source2Ptr)[0])
-        and (PWord(Source1Ptr)[2] = PWord(Source2Ptr)[2])
-        and (PByte(Source1Ptr)[6] = PByte(Source2Ptr)[6]);
-      8: Result := PNativeUInt(Source1Ptr)[0] = PNativeUInt(Source2Ptr)[0];
-    end;
-  end
-  else
-  begin
-    iCurrentOffSet := 0;
-    Result := True;
-    while iCurrentOffSet + NativeUIntSize <= ASize do
-    begin
-      if PNativeUInt(Source1Ptr + iCurrentOffSet)^ <> PNativeUInt(Source2Ptr + iCurrentOffSet)^ then
-      begin
-        Result := False;
-        Exit;
-      end;
-      Inc(iCurrentOffSet, NativeUIntSize);
-    end;
-
-    if iCurrentOffSet < ASize then
-      Result := MemCompare(Source1Ptr + iCurrentOffSet, Source2Ptr + iCurrentOffSet, ASize - iCurrentOffSet);
-  end;
-{$POINTERMATH OFF}
-end;
-{$ENDIF}
-
-// 功能：交换两个指针指向的内存区域的内容，以字节为单位b进行交换
+// 功能：交换两个指针指向的内存区域的内容，以字节为单位进行交换
 // 参数：
 //   - const APStr1: Pointer  指向第一块内存区域的指针
 //   - const APStr2: Pointer  指向第二块内存区域的指针
@@ -510,7 +331,6 @@ begin
     MemSwap(APData1, APData2, pTemp, ASize);
   finally
     FreeMem(pTemp);
-//    Move
   end;
 end;
 
@@ -562,11 +382,11 @@ begin
            PWord(SwapBufferPtr)[0] := PWord(Source1Ptr)[0];
            PWord(Source1Ptr)[0] := PWord(Source2Ptr)[0];
            PWord(Source2Ptr)[0] := PWord(SwapBufferPtr)[0];
-           
+
            SwapBufferPtr[0] := Source1Ptr[2];
            Source1Ptr[2] := Source2Ptr[2];
-           Source2Ptr[2] := SwapBufferPtr[0];           
-         end; 
+           Source2Ptr[2] := SwapBufferPtr[0];
+         end;
       4: begin
            PInteger(SwapBufferPtr)[0] := PInteger(Source1Ptr)[0];
            PInteger(Source1Ptr)[0] := PInteger(Source2Ptr)[0];
@@ -576,33 +396,33 @@ begin
            PInteger(SwapBufferPtr)[0] := PInteger(Source1Ptr)[0];
            PInteger(Source1Ptr)[0] := PInteger(Source2Ptr)[0];
            PInteger(Source2Ptr)[0] := PInteger(SwapBufferPtr)[0];
-           
+
            SwapBufferPtr[0] := Source1Ptr[4];
            Source1Ptr[4] := Source2Ptr[4];
-           Source2Ptr[4] := SwapBufferPtr[0];           
-         end; 
+           Source2Ptr[4] := SwapBufferPtr[0];
+         end;
       6: begin
            PInteger(SwapBufferPtr)[0] := PInteger(Source1Ptr)[0];
            PInteger(Source1Ptr)[0] := PInteger(Source2Ptr)[0];
            PInteger(Source2Ptr)[0] := PInteger(SwapBufferPtr)[0];
-           
+
            PWord(SwapBufferPtr)[0] := PWord(Source1Ptr)[2];
            PWord(Source1Ptr)[2] := PWord(Source2Ptr)[2];
-           PWord(Source2Ptr)[2] := PWord(SwapBufferPtr)[0];          
-         end; 
+           PWord(Source2Ptr)[2] := PWord(SwapBufferPtr)[0];
+         end;
       7: begin
            PInteger(SwapBufferPtr)[0] := PInteger(Source1Ptr)[0];
            PInteger(Source1Ptr)[0] := PInteger(Source2Ptr)[0];
            PInteger(Source2Ptr)[0] := PInteger(SwapBufferPtr)[0];
-           
+
            PWord(SwapBufferPtr)[0] := PWord(Source1Ptr)[2];
            PWord(Source1Ptr)[2] := PWord(Source2Ptr)[2];
-           PWord(Source2Ptr)[2] := PWord(SwapBufferPtr)[0];   
-           
+           PWord(Source2Ptr)[2] := PWord(SwapBufferPtr)[0];
+
            SwapBufferPtr[0] := Source1Ptr[6];
            Source1Ptr[6] := Source2Ptr[6];
-           Source2Ptr[6] := SwapBufferPtr[0];           
-         end; 
+           Source2Ptr[6] := SwapBufferPtr[0];
+         end;
       8: begin
            PInt64(SwapBufferPtr)[0] := PInt64(Source1Ptr)[0];
            PInt64(Source1Ptr)[0] := PInt64(Source2Ptr)[0];
@@ -652,630 +472,348 @@ end;
 
 
 {String}
-
-// 功能：翻转输入的字符串，如abc->cba
-// 参数：const ABaseStr: string 需要被翻转的字符串
-// 返回值类型：string 翻转后的字符串
-function ReverseString(const ABaseStr: string): string;
-var
-  i, j: Integer;
-  Temp: Char;
-  ResultStr: string;
+// 功能：判断输入的Str是否为空
+// 参数：var Str: string  输入的字符串，其值为执行Trim后的值
+// 返回值：True - 输入的Str为空；False - 输入的不为空
+function StrIsEmpty(var Str: string): Boolean;
 begin
-  ResultStr := ABaseStr; // 复制输入字符串
-  i := Low(ResultStr);
-  j := High(ResultStr);
-
-  while i < j do
-  begin
-    Temp := ResultStr[i];
-    ResultStr[i] := ResultStr[j];
-    ResultStr[j] := Temp;
-    Inc(i);
-    Dec(j);
-  end;
-
-  Result := ResultStr;
+  Str := Trim(Str);
+  Result := Str = '';
 end;
 
-// 功能：字符串替换，兼容StringReplace
+// 功能：判断输入的Str是否为空，如果不为空就将其值赋给TrimedStr
 // 参数：
-//  - const ABaseStr: string    源字符串
-//  - const AOldPattern: string 旧子串
-//  - const ANewPattern: string 新子串
-//  - AFlags: TReplaceFlags = [] 与StringReplace兼容的参数，rfReplaceAll：全部替换,
-//                               rfIgnoreCase：忽略大小写
-// 返回值类型：string：替换后的字符串
-function MyStringReplace(const ABaseStr, AOldPattern, ANewPattern: string; AFlags: TReplaceFlags): string;
+//    - const Str: string     输入的字符串
+//    - var TrimedStr: string 接收结果返回，如果Str为空则不会改变其值
+// 返回值：True - 输入的Str为空；False - 输入的不为空
+function StrIsEmpty(const Str: string; var TrimedStr: string): Boolean;
 var
-  sTempStr: string;
-  iPosSplitter: Integer;
-  bIsIgnoreCase, bIsReplaceall: Boolean;
+  temp: string;
 begin
-  if (Length(ABaseStr) < 1) or (Length(AOldPattern) < 1)then
-    Exit('');
+  temp := Str;
+  Result := StrIsEmpty(temp);
+  if not Result then
+    TrimedStr := temp;
+end;
 
-  Result := '';
-  sTempStr := ABaseStr;
-  bIsIgnoreCase := rfIgnoreCase in AFlags;
-  bIsReplaceAll := rfReplaceAll in AFlags;
+// 功能：判断输入的Str是否为空
+// 参数：const Str: string  输入的字符串
+// 返回值：True - 输入的Str为空；False - 输入的不为空
+function StrTrimIsEmpty(const Str: string): Boolean;
+begin
+  Result := Trim(Str) = '';
+end;
 
-  if bIsIgnoreCase and SameText(AOldPattern, ANewPattern) then
-    Exit(ABaseStr)
-  else
-  if SameStr(AOldPattern, ANewPattern) then
-    Exit(ABaseStr);
+// 功能：在字符串 Str 中查找子字符串 SubStr，从指定的 Index 位置开始，并考虑是否允许重叠。
+// 参数：
+//   - SubStr: string          要查找的子字符串
+//   - Str: string              要在其中查找的源字符串
+//   - Index: Integer           查找的起始“计数”，表示要找到第几个匹配项。
+//                              例如：Index = 1 表示查找第一个匹配项，Index = 2 表示查找第二个匹配项，以此类推。
+//   - AIsOverlap: Boolean = False  是否允许子字符串重叠。
+//                                  如果为 True，则每次查找都从上一次匹配位置的下一个字符开始。
+//                                  如果为 False，则每次查找都从上一次匹配的结束位置的下一个字符开始。
+// 返回值：
+//   - Integer：找到的子字符串 SubStr 在源字符串 Str 中的起始位置（从 1 开始计数）。
+//              如果找不到，或者参数无效，则返回 0。
+function PosIndex(const SubStr, Str: string; Index: Integer; AIsOverlap: Boolean = False): Integer;
+var
+  iPos, iSubStrLen, iStrLen, iSplitLen: Integer;
+begin
+  Result := 0;
+  iSubStrLen := Length(SubStr);
+  iStrLen := Length(Str);
 
-  while sTempStr <> '' do
+  if (iSubStrLen = 0) or (iStrLen = 0) or (Index < 1) or (Index > iStrLen) then
+    Exit;
+
+  iPos := 0;
+  iSplitLen := IfThen(AIsOverlap, 1, iSubStrLen);
+
+  while Index > 0 do
   begin
-    if bIsIgnoreCase then
-      iPosSplitter := Pos(LowerCase(AOldPattern), LowerCase(sTempStr))
+    iPos := Pos(SubStr, Str, iPos + iSplitLen);
+
+    if iPos > 0 then
+      Dec(Index)
     else
-      iPosSplitter := Pos(AOldPattern, sTempStr);
-
-    if iPosSplitter > 0 then
-    begin
-      // 如果找到了分隔符：
-      // 1. 将分隔符之前的部分作为和ANewPattern添加到结果
-      Result := Result + Copy(sTempStr, 1, iPosSplitter - 1) + ANewPattern;
-
-      // 2. 修改 ABaseStr，移除已提取的部分（包括分隔符本身）
-      sTempStr := Copy(sTempStr, iPosSplitter + Length(AOldPattern), Length(sTempStr) - iPosSplitter - Length(AOldPattern) + 1);
-    end
-    else
-    begin
-      // 如果没有找到分隔符：则将剩余的sTempStr加到结果上
-      Result := Result + sTempStr;
-      sTempStr := '';
-    end;
-
-    if not bIsReplaceAll then
-    begin
-      Result := Result + sTempStr;
       Break;
-    end;
   end;
 
-end;
-
-
-// 功能：将字符串通过分隔符进行分割
-// 参数：
-//  - var ABaseStr: string    传入的源字符串
-//  - ASplitter: string       分隔符
-//  - AIsIgnoreCase: Boolean = False 是否区分分隔符大小写，True：不区分，False：区分
-// 返回值类型：TStringArray 依次序分割出的项目的数组
-function MyStringSplit(const ABaseStr, ASplitter: string; AIsIgnoreCase: Boolean = False): TStringArray;
-var
-  sTempStr: string; // 用于复制ABaseStr
-  sTemp: string; // 用于存储从 ABaseStr 中提取出的第一个项目
-begin
-  SetLength(Result, 0);
-
-  // 如果源字符串为空，直接返回空数组
-  if Length(ABaseStr) < 1 then
-    Exit;
-
-  // 如果分隔符为空，则整个源字符串被视为一个单独的项
-  if Length(ASplitter) < 1 then
-  begin
-    SetLength(Result, 1);
-    Result[0] := ABaseStr; // 将源字符串添加到结果数组
-    Exit;
-  end;
-
-  sTempStr := ABaseStr; // 复制一份源字符串，因为 GetFirstItem 会修改它
-
-  // 循环查找并提取分隔符前的部分
-  while sTempStr <> '' do
-  begin
-    sTemp := GetFirstItem(sTempStr, ASplitter, AIsIgnoreCase); // 提取第一个项目
-    if sTemp <> '' then
-    begin
-      SetLength(Result, Length(result) + 1);
-      Result[High(Result) + 1] :=  sTemp;
-    end;
-  end;
-end;
-
-// 功能：从一个字符串中提取第一个由指定分隔符分隔出的项目。
-//       同时，它会修改传入的 ABaseStr，移除已提取的部分。
-// 参数：
-//  - var ABaseStr: string    传入的源字符串
-//  - ASplitter: string       分隔符
-//  - AIsIgnoreCase: Boolean = False  是否区分大小写，True：不区分，False：区分
-// 返回值类型：string 第一个由指定分隔符分隔出的项目
-function GetFirstItem(var ABaseStr: string; const ASplitter: string; AIsIgnoreCase: Boolean = False): string;
-var
-  iPosSplitter: Integer; // 记录分隔符在 ABaseStr 中的位置
-begin
-  Result := ''; // 初始化结果为空
-
-  // 如果源字符串或分隔符为空，则无法进行有效分割，直接返回
-  if Length(ABaseStr) < 1 then
-    Exit;
-
-  // 查找 ASplitter 在 ABaseStr 中第一次出现的位置
-  if AIsIgnoreCase then
-    iPosSplitter := Pos(LowerCase(ASplitter), LowerCase(ABaseStr))
-  else
-    iPosSplitter := Pos(ASplitter, ABaseStr);
-
-  if iPosSplitter > 0 then
-  begin
-    // 如果找到了分隔符：
-    // 1. 提取分隔符之前的部分作为结果
-    Result := Copy(ABaseStr, 1, iPosSplitter - 1);
-
-    // 2. 修改 ABaseStr，移除已提取的部分（包括分隔符本身）
-    ABaseStr := Copy(ABaseStr, iPosSplitter + Length(ASplitter), Length(ABaseStr) - iPosSplitter - Length(ASplitter) + 1);
-  end
-  else
-  begin
-    // 如果没有找到分隔符：
-    Result := ABaseStr;
-    ABaseStr := '';
-  end;
-  end;
-
-// 功能：从一个字符串中提取由最后一个指定分隔符分隔出的后面的项目。
-//       同时，它会修改传入的 ABaseStr，移除已提取的部分。
-// 参数：
-//  - var ABaseStr: string    传入的源字符串
-//  - ASplitter: string       分隔符
-//  - AIsIgnoreCase: Boolean = False  是否区分大小写，True：不区分，False：区分
-// 返回值类型：string 第一个由指定分隔符分隔出的项目
-function GetLastItem(const ABaseStr: string; const ASplitter: string; AIsIgnoreCase: Boolean = False): string;
-var
-  sTemp: string;
-begin
-  sTemp := ReverseString(ABaseStr);
-  Result := ReverseString(GetFirstItem(sTemp, ReverseString(ASplitter), AIsIgnoreCase));
+  if Index = 0 then
+    Result := iPos;
 end;
 
 // 功能：使用指针实现的翻转字符串
 // 参数：const ABaseStr: string  待翻转的字符串
 // 返回值类型：string 翻转后的字符串
 function ReverseStringP(const ABaseStr: string): string;
-//var
-//  pLeftPtr, pRightPtr: PChar;
-//  iLen: TSize_T;
-//begin
-//  iLen := Length(ABaseStr);
-//  if iLen < 2 then
-//    Exit(ABaseStr);
-//
-//  //防止控制台程序在某些情况出现修改Result时同步修改了ABaseStr
-//  SetLength(Result, iLen);
-//  Result := Copy(ABaseStr, 1, iLen);
-//
-//  pLeftPtr := PChar(Result);
-//  pRightPtr := GetPtr(pLeftPtr, (iLen - 1) * SizeOf(Char));
-//
-//  while pLeftPtr < pRightPtr do
-//  begin
-//    MemSwap(pLeftPtr, pRightPtr, SizeOf(Char));
-//    Inc(pLeftPtr);
-//    Dec(pRightPtr);
-//  end;
-//end;
 begin
-  Result := ReverseArray(PChar(ABaseStr), Length(ABaseStr), SIZEOFCHAR);
-end;
-
-// 功能：逐字符比较两个字符串是否相等，区分大小写。
-//       这个函数时作为辅助函数使用的，因此不会对输入的参数进行校验，要实现相同
-//       的功能请使用MySameStr
-// 参数：
-//  - const APStr1: Pointer    指向第一个被比较的字符串的指针
-//  - const APStr2: Pointer    指向第二个被比较的字符串的指针
-//  - const CharCount: TSize_T 需要比较的字符的个数
-// 返回值类型：Boolean True：两个字符相等，False：两个字符串不等
-function MemcmpStrChars(const APStr1, APStr2: Pointer; const ACharCount: TSize_T): Boolean;
-var
-  i: TSize_T;
-  p1, p2: PChar;
-begin
-  Result := True;
-  p1 := PChar(APStr1);
-  p2 := PChar(APStr2);
-
-  for i := 0 to ACharCount - 1 do
-  begin
-    if p1[i] <> p2[i] then
-    begin
-      Result := False;
-      Break;
-    end;
-  end;
-end;
-
-// 功能：逐字符比较两个字符串是否相等，不区分大小写
-//       这个函数时作为辅助函数使用的，因此不会对输入的参数进行校验，要实现相同
-//       的功能请使用MySameText
-// 参数：
-//  - const APStr1: Pointer    指向第一个被比较的字符串的指针
-//  - const APStr2: Pointer    指向第二个被比较的字符串的指针
-//  - const CharCount: TSize_T 需要比较的字符的个数
-// 返回值类型：Boolean True：两个字符相等，False：两个字符串不等
-function MemcmpTextChars(const APStr1, APStr2: Pointer; const ACharCount: TSize_T): Boolean;
-var
-  i: TSize_T;
-  p1, p2: PChar;
-begin
-  Result := True;
-  p1 := PChar(APStr1);
-  p2 := PChar(APStr2);
-
-  for i := 0 to ACharCount - 1 do
-  begin
-    if CompareText(p1[i], p2[i]) <> 0 then
-    begin
-      Result := False;
-      Exit;
-    end;
-  end;
-end;
-
-// 功能：判断两个 Pointer 指向的字符串（长度为 Size）是否完全相同（区分大小写）。
-// 参数：
-//  - const APStr1: Pointer    指向第一个被比较的字符串的指针
-//  - const APStr2: Pointer    指向第二个被比较的字符串的指针
-//  - const ASize: TSize_T 需要比较的字符的个数
-// 返回值类型：Boolean True：两个字符相等，False：两个字符串不等
-function MySameStr(const APStr1, APStr2: Pointer; const ASize: TSize_T): Boolean;
-begin
-  Result := True;
-  if (APStr1 = APStr2) or (ASize = 0) then
-    Exit;
-
-  if (APStr1 = nil) or (APStr2 = nil) then
-  begin
-    Result := False;
-    Exit;
-  end;
-
-  Result := MemcmpStrChars(APStr1, APStr2, ASize);
-end;
-
-// 功能：判断两个 Pointer 指向的字符串（长度为 Size）是否相同（不区分大小写）。
-// 参数：
-//  - const APStr1: Pointer    指向第一个被比较的字符串的指针
-//  - const APStr2: Pointer    指向第二个被比较的字符串的指针
-//  - const ACharCount: TSize_T 需要比较的字符的个数
-// 返回值类型：Boolean True：两个字符相等，False：两个字符串不等
-function MySameText(const APStr1, APStr2: Pointer; const ASize: TSize_T): Boolean;
-begin
-  Result := True;
-  if (APStr1 = APStr2) or (ASize = 0) then
-    Exit;
-
-  if (APStr1 = nil) or (APStr2 = nil) then
-  begin
-    Result := False;
-    Exit;
-  end;
-
-  Result := MemcmpTextChars(APStr1, APStr2, ASize);
-end;
-
-
-// 功能：从一个字符串中提取第一个由指定分隔符分隔出的项目。
-//       同时，它会修改传入的 ABaseStr，移除已提取的部分。(区分分隔符大小写)
-// 参数：
-//  - var ABaseStr: string    传入的源字符串
-//  - ASplitter: string       分隔符
-// 返回值类型：string 第一个由指定分隔符分隔出的项目
-function GetStrFirstItem(var ABaseStr: string; ASplitter: string): string;
-var
-  pPtrBase, pPtrSplitter: PChar;
-  i, iBaseStrLen, iSplitterLen: Integer;
-begin
-  Result := '';
-  if Length(ABaseStr) = 0 then
-    Exit
-  else if Length(ASplitter) = 0 then
-  begin
-    Result := ABaseStr;
-    Exit;
-  end;
-
-  pPtrBase := PChar(ABaseStr);
-  pPtrSplitter := PChar(ASplitter);
-  iBaseStrLen := Length(ABaseStr);
-  iSplitterLen := Length(ASplitter);
-  i := 0;
-  while iSplitterLen + i <= iBaseStrLen do
-  begin
-    if MySameStr(pPtrBase, pPtrSplitter, iSplitterLen) then
-    begin
-      if i <> 0 then
-      begin
-        SetLength(Result, i);
-        Move(ABaseStr[1], Result[1], i * SizeOf(Char));
-        Inc(pPtrBase, iSplitterLen);
-        ABaseStr := pPtrBase;
-        Exit;
-      end;
-
-    end;
-    Inc(pPtrBase);
-    Inc(i);
-  end;
-
   Result := ABaseStr;
-  ABaseStr := '';
+  ReverseArray(PChar(Result), Length(ABaseStr), SIZEOFCHAR);
 end;
 
-// 功能：从一个字符串中提取第一个由指定分隔符分隔出的项目。
-//       同时，它会修改传入的 ABaseStr，移除已提取的部分。(不区分分隔符大小写)
-// 参数：
-//  - var ABaseStr: string    传入的源字符串
-//  - ASplitter: string       分隔符
-// 返回值类型：string 第一个由指定分隔符分隔出的项目
-function GetTextFirstItem(var ABaseStr: string; ASplitter: string): string;
-var
-  pPtrBase, pPtrSplitter: PChar;
-  i, iBaseStrLen, iSplitterLen: Integer;
-begin
-  Result := '';
-  if Length(ABaseStr) = 0 then
-    Exit
-  else if Length(ASplitter) = 0 then
-  begin
-    Result := ABaseStr;
-    Exit;
-  end;
+{TArraySortUtils<T>}
 
-  pPtrBase := PChar(ABaseStr);
-  pPtrSplitter := PChar(ASplitter);
-  iBaseStrLen := Length(ABaseStr);
-  iSplitterLen := Length(ASplitter);
-  i := 0;
-  while iSplitterLen + i <= iBaseStrLen do
+// 功能：调整排序的左右端点，确保它们在数组的有效范围内。
+// 参数：
+//   - var ALeftEndPoint: Integer  排序范围的左端点（会被修改）
+//   - var ARightEndPoint: Integer  排序范围的右端点（会被修改）
+//   - const AArray: array of T    待排序的数组
+// 返回值类型：Integer  调整后的有效排序元素个数
+function TArraySortUtils<T>.AdjustRound(var ALeftEndPoint, ARightEndPoint: Integer; const AArray: array of T): Integer;
+begin
+  if ALeftEndPoint > ARightEndPoint then
+    MemSwap(@ALeftEndPoint, @ARightEndPoint, SIZEOFINTEGER);
+
+  if ALeftEndPoint > High(AArray) then
+    raise ERangeError.CreateFmt(sArgumentOutOfRange_Index, [ALeftEndPoint, High(AArray)]);
+
+  ALeftEndPoint := Max(ALeftEndPoint, Low(AArray));
+  ARightEndPoint := Min(ARightEndPoint, High(AArray));
+
+  Result := ARightEndPoint - ALeftEndPoint + 1;
+end;
+
+class function TCompareFuncs.CompareDouble(AFirst,
+  ASecond: Double): Integer;
+begin
+  Result := CompareValue(AFirst, ASecond);
+end;
+
+class function TCompareFuncs.CompareInt64(AFirst, ASecond: Int64): Integer;
+begin
+  Result := CompareValue(AFirst, ASecond);
+end;
+
+class function TCompareFuncs.CompareInteger(AFirst,
+  ASecond: Integer): Integer;
+begin
+  Result := CompareValue(AFirst, ASecond);
+end;
+
+class function TCompareFuncs.CompareSingle(AFirst,
+  ASecond: Single): Integer;
+begin
+  Result := CompareValue(AFirst, ASecond);
+end;
+
+class function TCompareFuncs.CompareUInt64(AFirst,
+  ASecond: UInt64): Integer;
+begin
+  Result := CompareValue(AFirst, ASecond);
+end;
+
+class function TCompareFuncs.CompareUInteger(AFirst,
+  ASecond: Cardinal): Integer;
+begin
+  Result := CompareInteger(AFirst, ASecond);
+end;
+
+class function TCompareFuncs.CompareExtended(AFirst, ASecond: Extended): Integer;
+begin
+  Result := CompareValue(AFirst, ASecond);
+end;
+
+
+// 构造函数（无参数）
+// 初始化 TArraySortUtils<T> 对象。
+constructor TArraySortUtils<T>.Create;
+begin
+  inherited Create(); // 调用父类的构造函数
+  // FReverseSort := False; // 默认不进行反向排序（升序）
+  SetReverseSort(False); // 使用 Setter 方法设置反向排序标志
+end;
+
+// 构造函数（带比较函数参数）
+// 初始化 TArraySortUtils<T> 对象，并设置自定义的泛型比较函数。
+// 参数：
+//   - ACmpFunc: TGenericCompareFunc<T>  自定义的泛型比较函数
+constructor TArraySortUtils<T>.Create(ACmpFunc: TGenericCompareFunc<T>);
+begin
+  inherited Create();
+  FGenericCompareFunc := ACmpFunc;
+  // FReverseSort := False;
+  SetReverseSort(False);
+end;
+
+// 析构函数
+// 清理 TArraySortUtils<T> 对象占用的资源。
+destructor TArraySortUtils<T>.Destroy;
+begin
+  FTypeInfo := nil;
+  FGenericCompareFunc := nil;
+  FCompareFunc := nil;
+  inherited Destroy; // 调用父类的析构函数
+end;
+
+// 功能：获取用于排序的通用比较函数指针
+// 如果 FGenericCompareFunc 已赋值，则根据 FReverseSort 标志生成一个
+// TCompareFunction 类型的函数指针。
+// 返回值类型：TCompareFunction  通用的比较函数指针
+function TArraySortUtils<T>.GetCompareFunc: TCompareFunction;
+begin
+  if not Assigned(FCompareFunc) then
   begin
-    if MySameText(pPtrBase, pPtrSplitter, iSplitterLen) then
+    if FReverseSort then
     begin
-      if i <> 0 then
-      begin
-        SetLength(Result, i);
-        Move(ABaseStr[1], Result[1], i * SizeOf(Char));
-        Inc(pPtrBase, iSplitterLen);
-        ABaseStr := pPtrBase;
-        Exit;
-      end;
-
-    end;
-    Inc(pPtrBase);
-    Inc(i);
-  end;
-
-  Result := ABaseStr;
-  ABaseStr := '';
-end;
-
-// 功能：从一个字符串中提取第一个由指定分隔符分隔出的项目。
-//       同时，它会修改传入的 ABaseStr，移除已提取的部分。
-// 参数：
-//  - var ABaseStr: string    传入的源字符串
-//  - ASplitter: string       分隔符
-//  - AIsIgnoreCase: Boolean = False  是否区分大小写，True：不区分，False：区分
-// 返回值类型：string 第一个由指定分隔符分隔出的项目
-function GetFirstItemP(var ABaseStr: string; ASplitter: string; AIsIgnoreCase: Boolean = False): string;
-begin
-  if AIsIgnoreCase then
-    Result := GetTextFirstItem(ABaseStr, ASplitter)
-  else
-    Result := GetStrFirstItem(ABaseStr, ASplitter);
-end;
-
-
-// 将字符串通过分隔符进行分割，区分大小写
-// 参数：
-//  - var ABaseStr: string    传入的源字符串
-//  - ASplitter: string       分隔符
-// 返回值类型：TStringArray 依次序分割出的项目的数组
-function MyStrSplit(const ABaseStr, ASplitter: string): TStringArray;
-var
-  sTemp, sTempSplited: string;
-  iTempLen: Integer;
-begin
-  iTempLen := Length(ABaseStr);
-  if iTempLen = 0 then
-  begin
-    SetLength(Result, 0);
-    Exit;
-  end
-  else if Length(ASplitter) = 0 then
-  begin
-    SetLength(Result, 1);
-    Result[0] := ABaseStr;
-    Exit;
-  end;
-  sTemp := ABaseStr;
-  while sTemp <> '' do
-  begin
-    sTempSplited := GetStrFirstItem(sTemp, ASplitter);
-    if sTempSplited <> '' then
-    begin
-      SetLength(Result, Length(Result) + 1);
-      Result[High(Result)] := sTempSplited;
-    end;
-  end;
-
-end;
-
-// 功能：使用纯指针实现字符串替换，兼容StringReplace，不过会额外申请一部分BUffer，
-//       建议在字符串长度不少于十万时使用
-// 参数：
-//  - const ABaseStr: string     原字符串
-//  - const AOldPattern: string  旧的子串
-//  - const ANewPattern: string  新的子串
-//  - AFlags: TReplaceFlags = [] 与StringReplace兼容的参数，rfReplaceAll：全部替换,
-//                               rfIgnoreCase：忽略大小写
-// 返回值类型：string 替换后的字符串
-function MyStringReplaceP_Faster(const ABaseStr, AOldPattern, ANewPattern: string; AFlags: TReplaceFlags = []): string;
-var
-  pBase, pOld: PChar;
-  iBaseLen, iOldLen, iNewLen, iRemainLen, iResultLen, i: Integer;
-  bIgnoreCase, bReplaceAll: Boolean;
-begin
-  iBaseLen := Length(ABaseStr);
-  iOldLen := Length(AOldPattern);
-  iNewLen := Length(ANewPattern);
-  bIgnoreCase := rfIgnoreCase in AFlags;
-  bReplaceAll := rfReplaceAll in AFlags;
-
-  if bIgnoreCase and SameText(AOldPattern, ANewPattern) then
-    Exit(ABaseStr)
-  else
-  if SameStr(AOldPattern, ANewPattern) then
-    Exit(ABaseStr);
-
-  if (iBaseLen = 0) or (iOldLen = 0) then
-    Exit(ABaseStr);
-
-  // 预估最大长度（最坏情况：每个字符都被替换）
-  SetLength(Result, iBaseLen * (iNewLen div iOldLen + 1));
-  pBase := PChar(ABaseStr);
-  pOld := PChar(AOldPattern);
-  i := 1;
-  iResultLen := 0;
-
-  while (pBase^ <> #0) do
-  begin
-    // 判断当前位置是否匹配
-    if ((not bIgnoreCase and MySameStr(pBase, pOld, iOldLen)) or (bIgnoreCase and MySameText(pBase, pOld, iOldLen))) then
-    begin
-      // 写入新串
-      Move(PChar(ANewPattern)^, Result[i], iNewLen * SizeOf(Char));
-      Inc(i, iNewLen);
-      Inc(iResultLen, iNewLen);
-      Inc(pBase, iOldLen);
-
-      if not bReplaceAll then
-      begin
-        // 只替换一次，剩下的直接拷贝
-        iRemainLen := StrLen(pBase);
-        if iRemainLen > 0 then
-        begin
-          Move(pBase^, Result[i], iRemainLen * SizeOf(Char));
-        end;
-        Break;
-      end;
+      FCompareFunc := function(AFirst, ASecond, AContext: Pointer): Integer
+                      var
+                        FirstValue, SecondValue: TValue;
+                        PTypeInfoForT: PTypeInfo;
+                      begin
+                        PTypeInfoForT := GetTypeInfo;
+                        TValue.Make(AFirst, PTypeInfoForT, FirstValue);
+                        TValue.Make(ASecond, PTypeInfoForT, SecondValue);
+                        Result := TGenericCompareFunc<T>(AContext)(SecondValue.AsType<T>, FirstValue.AsType<T>);
+                      end;
     end
     else
     begin
-      Result[i] := pBase^;
-      Inc(i);
-      Inc(pBase);
-      Inc(iResultLen);
+      FCompareFunc := function(AFirst, ASecond, AContext: Pointer): Integer
+                      var
+                        FirstValue, SecondValue: TValue;
+                        PTypeInfoForT: PTypeInfo;
+                      begin
+                        PTypeInfoForT := GetTypeInfo;
+                        TValue.Make(AFirst, PTypeInfoForT, FirstValue);
+                        TValue.Make(ASecond, PTypeInfoForT, SecondValue);
+                        Result := TGenericCompareFunc<T>(AContext)(FirstValue.AsType<T>, SecondValue.AsType<T>);
+                      end;
     end;
   end;
 
-  SetLength(Result, iResultLen);
+  Result := FCompareFunc;
 end;
 
-// 功能：字符串替换，兼容StringReplace，在字符串长度不少于十万时调用MyStringReplaceP_Faster
-// 参数：
-//  - const ABaseStr: string     原字符串
-//  - const AOldPattern: string  旧的子串
-//  - const ANewPattern: string  新的子串
-//  - AFlags: TReplaceFlags = [] 与StringReplace兼容的参数，rfReplaceAll：全部替换,
-//                               rfIgnoreCase：忽略大小写
-// 返回值类型：string 替换后的字符串
-function MyStringReplaceP(const ABaseStr, AOldPattern, ANewPattern: string; AFlags: TReplaceFlags = []): string;
-var
-  sTemp, sTemp2: string;
-  bIsIgnoreCase, bIsReplaceAll: Boolean;
+// 功能：获取自定义的泛型比较函数
+// 返回值类型：TGenericCompareFunc<T>  自定义的泛型比较函数指针
+function TArraySortUtils<T>.GetFGenericCompareFunc: TGenericCompareFunc<T>;
 begin
-  if (Length(ABaseStr) < 1) or (Length(AOldPattern) < 1) then
-    Exit;
-  if Length(ABaseStr) > 100000 then
-    Exit(MyStringReplaceP_Faster(ABaseStr, AOldPattern, ANewPattern, AFlags));
-
-  Result := '';
-  sTemp := ABaseStr;
-  bIsIgnoreCase := rfIgnoreCase in AFlags;
-  bIsReplaceAll := rfReplaceAll in AFlags;
-
-  if bIsIgnoreCase and SameText(AOldPattern, ANewPattern) then
-    Exit(ABaseStr)
-  else
-  if SameStr(AOldPattern, ANewPattern) then
-    Exit(ABaseStr);
-
-  while sTemp <> '' do
+  // 如果没有提供自定义的泛型比较函数，则使用TComparer<T>提供的默认比较函数
+  if not Assigned(FGenericCompareFunc) then
   begin
-    if bIsIgnoreCase then
-      sTemp2 := GetTextFirstItem(sTemp, AOldPattern)
-    else
-      sTemp2 := GetStrFirstItem(sTemp, AOldPattern);
-
-    if sTemp <> '' then
-      Result := Result + sTemp2 + ANewPattern
-    else
-      Result := Result + sTemp2;
-
-    if not bIsReplaceAll then
-    begin
-      Result := Result + sTemp;
-      Break;
-    end;
-
-  end;
-
-end;
-
-
-// 功能：将字符串通过分隔符进行分割，不区分大小写
-// 参数：
-//  - var ABaseStr: string    传入的源字符串
-//  - ASplitter: string       分隔符
-// 返回值类型：TStringArray 依次序分割出的项目的数组
-function MyTextSplit(const ABaseStr, ASplitter: string): TStringArray;
-var
-  sTemp, sTempSplited: string;
-  iTempLen: Integer;
-begin
-  iTempLen := Length(ABaseStr);
-  if iTempLen = 0 then
-  begin
-    SetLength(Result, 0);
-    Exit;
+    Result := function(AP1, AP2: T): Integer
+              begin
+                Result := TComparer<T>.Default.Compare(AP1, AP2);
+              end;
   end
-  else if Length(ASplitter) = 0 then
+  else
   begin
-    SetLength(Result, 1);
-    Result[0] := ABaseStr;
-    Exit;
+    Result := FGenericCompareFunc;
   end;
-  sTemp := ABaseStr;
-  while sTemp <> '' do
-  begin
-    sTempSplited := GetTextFirstItem(sTemp, ASplitter);
-    if sTempSplited <> '' then
-    begin
-      SetLength(Result, Length(Result) + 1);
-      Result[High(Result)] := sTempSplited;
-    end;
-  end;
-
 end;
 
-// 功能：使用指针实现的字符串分解
-// 参数：
-//  - var ABaseStr: string    传入的源字符串
-//  - ASplitter: string       分隔符
-//  - AIsIgnoreCase: Boolean = False  是否区分大小写，True：不区分，False：区分
-// 返回值类型：TStringArray 依次序分割出的项目的数组
-function MyStringSplitP(const ABaseStr, ASplitter: string; AIsIgnoreCase: Boolean = False):TStringArray;
+// 功能：获取反向排序标志
+// 返回值类型：Boolean  True 表示反向排序（降序），False 表示正向排序（升序）
+function TArraySortUtils<T>.GetReverseSort: Boolean;
 begin
-  if AIsIgnoreCase then
-    Result := MyTextSplit(ABaseStr, ASplitter)
-  else
-    Result := MyStrSplit(ABaseStr, ASplitter);
+  Result := FReverseSort;
+end;
 
+// 功能：获取 T 类型的类型信息指针
+// 如果 FTypeInfo 为空，则会自动获取 T 的类型信息并缓存。
+// 返回值类型：PTypeInfo  指向 T 类型的类型信息
+function TArraySortUtils<T>.GetTypeInfo: PTypeInfo;
+begin
+  if not Assigned(FTypeInfo) then
+    FTypeInfo := TypeInfo(T);
+  Result := FTypeInfo;
+end;
+
+// 功能：设置自定义的泛型比较函数
+// 参数：
+//   - ACmpFunc: TGenericCompareFunc<T>  要设置的自定义泛型比较函数
+procedure TArraySortUtils<T>.SetFGenericCompareFunc(
+  ACmpFunc: TGenericCompareFunc<T>);
+begin
+  FGenericCompareFunc := ACmpFunc; // 保存传入的比较函数
+end;
+
+// 功能：设置反向排序标志
+// 参数：
+//   - AFlag: Boolean  True 表示启用反向排序（降序），False 表示禁用（升序）
+procedure TArraySortUtils<T>.SetReverseSort(AFlag: Boolean);
+begin
+  FReverseSort := AFlag; // 更新反向排序标志
+  // 如果已经生成了通用的比较函数，需要重新生成，所以将其释放
+  if Assigned(FCompareFunc) then
+    FCompareFunc := nil;
+end;
+
+
+// 功能：对数组进行排序
+// 参数：
+//   - var AArray: array of T  要排序的数组
+//   - AStartIndex: Integer    排序的起始索引
+//   - ASortFunc: TSortFunction  用于排序的算法函数（例如 IntroSort, QuickSort 等）
+procedure TArraySortUtils<T>.Sort(var AArray: array of T; AStartIndex: Integer;
+  ASortFunc: TSortFunction);
+begin
+  Sort(AArray, AStartIndex, High(AArray), ASortFunc);
+end;
+
+// 功能：对数组进行排序（指定整个范围）
+// 参数：
+//   - var AArray: array of T  要排序的数组
+//   - ASortFunc: TSortFunction  用于排序的算法函数
+procedure TArraySortUtils<T>.Sort(var AArray: array of T;
+  ASortFunc: TSortFunction);
+begin
+  Sort(AArray, Low(AArray), High(AArray), ASortFunc);
+end;
+
+// 功能：对数组进行排序（使用默认的 QuickSort 算法，指定起始索引）
+// 参数：
+//   - var AArray: array of T  要排序的数组
+//   - AStartIndex: Integer    排序的起始索引
+procedure TArraySortUtils<T>.Sort(var AArray: array of T; AStartIndex: Integer);
+begin
+  Sort(AArray, AStartIndex, High(AArray));
+end;
+
+// 功能：对数组进行排序（使用默认的 QuickSort 算法，指定整个范围）
+// 参数：
+//   - var AArray: array of T  要排序的数组
+procedure TArraySortUtils<T>.Sort(var AArray: array of T);
+begin
+  Sort(AArray, Low(AArray), High(AArray));
+end;
+
+// 功能：对数组进行排序（使用默认的 QuickSort 算法，指定起始和结束索引）
+// 参数：
+//   - var AArray: array of T  要排序的数组
+//   - AStartIndex: Integer    排序的起始索引
+//   - AEndIndex: Integer      排序的结束索引
+procedure TArraySortUtils<T>.Sort(var AArray: array of T; AStartIndex,
+  AEndIndex: Integer);
+begin
+  Sort(AArray, AStartIndex, AEndIndex, QuickSort);
+end;
+
+// 功能：对数组进行排序（核心排序方法）
+// 参数：
+//   - var AArray: array of T  要排序的数组
+//   - AStartIndex: Integer    排序的起始索引
+//   - AEndIndex: Integer      排序的结束索引
+//   - ASortFunc: TSortFunction  用于排序的算法函数（例如 IntroSort）
+procedure TArraySortUtils<T>.Sort(var AArray: array of T; AStartIndex,
+  AEndIndex: Integer; ASortFunc: TSortFunction);
+var
+  iLen: Integer;
+begin
+  if Length(AArray) < 2 then
+    Exit;
+  if not Assigned(ASortFunc) then
+    raise EArgumentNilException.CreateResFmt(@SParamIsNil, ['ASortFunc']); // "ASortFunc 不能为空"
+
+  iLen := AdjustRound(AStartIndex, AEndIndex, AArray);
+
+  OptimizedSort(ASortFunc, @AArray[AStartIndex], iLen, SizeOf(T), Pointer(GetFGenericCompareFunc()), GetCompareFunc());
+  {$IFDEF DEBUG}
+  Writeln(Format('排序是否成功？：%s', [IfThen(IsSorted(@AArray[AStartIndex], iLen, SizeOf(T), Pointer(GetFGenericCompareFunc()), GetCompareFunc()),
+    '成功', '失败')]));
+  {$ENDIF}
 end;
 
 {Array Function}
@@ -1289,8 +827,12 @@ function GenerateRandomIntegerArray(const ANum: Integer; const AMin: Integer = 0
 var
   i: Integer;
 begin
-  if (ANum < 0) or (AMin > AMax) then
-    raise Exception.Create('ANum必须是一个非负整数，并且AMax不能小于AMin！');
+  if ANum < 0 then
+    raise EInvalidArgument.CreateResFmt(@SParamIsNegative, ['ANum']);
+
+  if AMin > AMax then
+    raise EInvalidArgument.CreateResFmt(@sParamGreaterEqual, ['AMax', 'AMin']);
+
 
   SetLength(Result, ANum);
   for i := Low(Result) to High(Result) do
@@ -1312,8 +854,11 @@ function GenerateRandomExtendedArray(const ANum: Integer; const AMin: Extended =
 var
   i: Integer;
 begin
-  if (ANum < 0) or (AMin > AMax) then
-    raise Exception.Create('ANum必须是一个非负整数，并且AMax不能小于AMin！');
+  if ANum < 0 then
+    raise EInvalidArgument.CreateResFmt(@SParamIsNegative, ['ANum']);
+
+  if AMin > AMax then
+    raise EInvalidArgument.CreateResFmt(@sParamGreaterEqual, ['AMax', 'AMin']); ;
 
   SetLength(Result, ANum);
   for i := Low(Result) to High(Result) do
@@ -1323,88 +868,80 @@ begin
   end;
 end;
 
-// 功能：BuildString的辅助函数，用于为结果字符串动态扩容
-class procedure TArrayUtils.EnsureCapacity(var Result: string; var iResultLen, iCurrentPos: Integer; ANeededLen: Integer; var pStr: PChar);
+class function TArrayUtils.ArrayToList<T>(AArray: array of T): TList<T>;
 var
-  iOldPos: Integer;
+  i: Integer;
 begin
-  if ANeededLen > iResultLen then
-  begin
-    iOldPos := pStr - PChar(Result); // 保存当前位置偏移
-    iResultLen := Max(ANeededLen, iResultLen * 2); // 扩容策略
-    SetLength(Result, iResultLen);
-    pStr := PChar(Result) + iOldPos; // 重新计算指针位置
-  end;
+  Result := TList<T>.Create;
+  for i := Low(AArray) to High(AArray) do
+    Result.Add(AArray[i]);
 end;
 
-// 功能：BuildString的辅助函数，用于将由动态数组元素转成的字符串写入结果字符串
-class procedure TArrayUtils.CopyAndMove(var Result: string; var iResultLen, iCurrentPos: Integer; var pStr: PChar; const ASourceStr: string);
+// class function BuildString<T>: 将动态数组按指定方式拼接成字符串
+// 参数:
+//   - AElemToStringFunc: TElemToStringFunc<T> - 将动态数组元素转换为字符串的函数委托
+//   - const AArray: array of T                - 输入的动态数组
+//   - const ASplitter: string                 - 元素之间的分隔符，默认为 ','
+//   - const APrefix: string                   - 结果字符串的前缀，默认为 '['
+//   - const ASuffix: string                   - 结果字符串的后缀，默认为 ']'
+// 返回值: string - 拼接后的字符串
+// 异常:
+//   - Exception: 如果数组长度超过 GetMaxVaildArrayLen 定义的最大值，则抛出异常，防止栈溢出风险。
+// 备注:
+//   - 使用 TStringBuilder 来高效构建字符串，避免多次内存分配。
+//   - 适用于将任何类型的数组（通过 AElemToStringFunc 转换）拼接成一个格式化的字符串。
+// 示例:
+//   var
+//     sStr: string;
+//   begin
+//     sStr := TArrayUtils.BuildString<Integer>(
+//                           function(AElem: Integer): string
+//                           begin
+//                             Result := '>' + IntToStr(AElem) + '<';
+//                           end,
+//                           [1, 2, 3, 4], ', ', '[', ']');
+//   end;
+//   // sStr 结果: '[>1<, >2<, >3<, >4<]'
+class function TArrayUtils.BuildString<T>(AElemToStringFunc: TElemToStringFunc<T>; const AArray: array of T; const ASplitter: string; const APrefix: string; const ASuffix: string): string;
 var
-  iLen: Integer;
+  StringBuilder: TStringBuilder;
+  i, Count, LowIndex, HighIndex: Integer;
+  ElemStr: string;
 begin
-  iLen := Length(ASourceStr);
-  if iLen > 0 then
-  begin
-    EnsureCapacity(Result, iResultLen, iCurrentPos, iCurrentPos + iLen, pStr);
-    Move(PChar(ASourceStr)^, pStr^, iLen * SizeOf(Char));
-    Inc(pStr, iLen);
-    Inc(iCurrentPos, iLen);
-  end;
-end;
+  Count := Length(AArray);
+  if Count > GetMaxVaildArrayLen then
+    raise EArgumentOutOfRangeException.CreateFmt('数组长度(%d)超过最大可允许长度(%d)，可能造成栈溢出风险，请选用其他方法或自行实现！', [Count, GetMaxVaildArrayLen]);
 
-// 功能：输入的动态数组按指定方式拼接成字符串，可自定义前后缀和分隔符
-// 参数：
-//  - AGetter: TGetterFunc<T>       将动态数组中的元素转成字符串的函数，须自行定义
-//  - AIntArr: array of T           输入的动态数组
-//  - const ASplitter: string = ',' 分隔符
-//  - const APrefix: Char = '['     前缀
-//  - const ASuffix: Char = ']'     后缀
-// 返回值类型：string 转成的字符串
-// 示例：
-//  var
-//    sStr: string;
-//  begin
-//  sStr := TArrayUtils.BuildString<Integer>(
-//                        function(Index: Integer; AArray: array of Integer): string
-//                        begin
-//                          Result := IntToStr(AArray[Index]);
-//                        end,
-//                        [1, 2, 3, 4], ', ', '[', ']');
-//  end;
-//  sStr -> '[1, 2, 3, 4]'
-class function TArrayUtils.BuildString<T>(AGetter: TGetterFunc<T>; AArray: array of T; const ASplitter: string; const APrefix: string; const ASuffix: string): string;
-var
-  i, iCurrentPos, iResultLen, iSpLen, iPreLen, iSuLen, ACount: Integer;
-  pStr: PChar;
-begin
-  ACount := Length(AArray);
-  if ACount = 0 then
-  begin
-    Result := APrefix + ASuffix;
-    Exit;
+  StringBuilder := TStringBuilder.Create;
+  try
+    StringBuilder.Append(APrefix);
+
+    if Count = 0 then
+    begin
+      StringBuilder.Append(ASuffix);
+    end
+    else
+    begin
+      LowIndex := Low(AArray);
+      HighIndex := High(AArray);
+
+      for i := LowIndex to HighIndex do
+      begin
+        // 在此处需要频繁调用AElemToStringFunc，数组长度过大时可能造成栈溢出
+        ElemStr := AElemToStringFunc(AArray[i]);
+        StringBuilder.Append(ElemStr);
+
+        if i < HighIndex then
+          StringBuilder.Append(ASplitter);
+      end;
+
+      StringBuilder.Append(ASuffix);
+    end;
+
+    Result := StringBuilder.ToString;
+  finally
+    StringBuilder.Free;
   end;
-  iSpLen := Length(ASplitter);
-  iPreLen := Length(APrefix);
-  iSuLen := Length(ASuffix);
-  // 初始容量估算：每个字符串假设平均20个字符
-  iResultLen := ACount * (20 + iSpLen) + iPreLen + iSuLen;
-  SetLength(Result, iResultLen);
-  pStr := PChar(Result);
-  iCurrentPos := 0;
-  // 添加前缀
-  CopyAndMove(Result, iResultLen, iCurrentPos, pStr, APrefix);
-  // 处理元素
-  for i := 0 to ACount - 1 do
-  begin
-    CopyAndMove(Result, iResultLen, iCurrentPos, pStr, AGetter(i, AArray));
-    // 不是最后一个元素才添加分隔符
-    if i < ACount - 1 then
-      CopyAndMove(Result, iResultLen, iCurrentPos, pStr, ASplitter);
-  end;
-  // 添加后缀
-  CopyAndMove(Result, iResultLen, iCurrentPos, pStr, ASuffix);
-  // 调整最终长度
-  SetLength(Result, iCurrentPos);
 end;
 
 
@@ -1419,9 +956,9 @@ end;
 class function TArrayUtils.IntArrayToString(AIntArr: array of Integer; const ASplitter: string = ','; const APrefix: string = '['; const ASuffix: string = ']'): string;
 begin
   Result := BuildString<Integer>(
-              function(Index: Integer; AArray: array of Integer): string
+              function(AElem: Integer): string
               begin
-                Result := IntToStr(AArray[Index]);
+                Result := IntToStr(AElem);
               end,
               AIntArr, ASplitter, APrefix, ASuffix);
 end;
@@ -1438,11 +975,87 @@ end;
 class function TArrayUtils.IntArrayToStringF(const AFormat: string; AIntArr: array of Integer; const ASplitter: string = ','; const APrefix: string = '['; const ASuffix: string = ']'): string;
 begin
   Result := BuildString<Integer>(
-              function(Index: Integer; AArray: array of Integer): string
+              function(AElem: Integer): string
               begin
-                Result := FormatFloat(AFormat, AArray[Index]);
+                Result := FormatFloat(AFormat, AElem);
               end,
               AIntArr, ASplitter, APrefix, ASuffix);
+end;
+
+// 功能：判断一个元素是否存在于一个动态数组中。
+// 参数：
+//   AItem: T - 要查找的元素。
+//   AArray: array of T - 要在其中查找元素的动态数组。
+//   CompareFunc: TGenericCompareFunc<T> - 用于比较两个元素的泛型比较函数。
+//                当两个元素相等时，该函数应返回 0。
+// 返回值：Boolean - 如果元素存在于数组中，则返回 True；否则返回 False。
+class function TArrayUtils.IsMember<T>(AItem: T; AArray: array of T;
+  CompareFunc: TGenericCompareFunc<T>): Boolean;
+var
+  i: Integer;
+begin
+  Result := False;
+  if not (Assigned(CompareFunc) and (Length(AArray) > 0)) then
+    Exit;
+
+  for i := Low(AArray) to High(AArray) do
+  begin
+    if CompareFunc(AItem, AArray[i]) = 0 then
+    begin
+      Result := True;
+      Exit;
+    end;
+  end;
+end;
+
+// 功能：判断一个元素是否是泛型数组的成员。
+// 参数：
+//   - AItem: T                  要查找的元素。
+//   - AArray: array of T        要搜索的泛型数组。
+// 返回值类型：Boolean          如果元素是数组的成员，则返回 True；否则返回 False。
+// 示例：
+//   var
+//     myArray: array of Integer;
+//     isMember: Boolean;
+//   begin
+//     SetLength(myArray, 3);
+//     myArray[0] := 1;
+//     myArray[1] := 2;
+//     myArray[2] := 3;
+//     isMember := TArrayUtils.IsMember<Integer>(2, myArray); // isMember 将会是 True
+//   end;
+class function TArrayUtils.IsMember<T>(AItem: T; AArray: array of T): Boolean;
+var
+  i: Integer;
+begin
+  // 初始化结果为 False，假设元素不在数组中。
+  Result := False;
+  if Length(AArray) = 0 then
+    Exit;
+
+  // 循环遍历数组中的每一个元素。
+  for i := Low(AArray) to High(AArray) do
+  begin
+    // 使用 TComparer<T>.Default.Compare 进行比较。
+    // TComparer<T>.Default  提供了默认的比较器，它会根据 T 的类型使用合适的比较方法。
+    // 对于基本类型，例如 Integer, String, Boolean，它使用 = 运算符。
+    // 对于类，它使用 Equals 方法（如果已定义），或者比较引用。
+    // Compare 方法返回 0 表示相等，负数表示 AItem 小于 AArray[i]，正数表示大于。
+    if TComparer<T>.Default.Compare(AItem, AArray[i]) = 0 then
+    begin
+      Result := True;
+      Exit;
+    end;
+  end;
+end;
+
+class function TArrayUtils.ListToArray<T>(AList: TList<T>): TArray<T>;
+var
+  i: Integer;
+begin
+  SetLength(Result, AList.Count);
+  for i := 0 to AList.Count - 1 do
+    Result[i] := AList[i];
 end;
 
 // 功能：TObject数组拼接字符串，可自定义前后缀和分隔符
@@ -1457,11 +1070,19 @@ class function TArrayUtils.ObjectListToString(AObjList: array of TObject;
   const ASplitter, APrefix, ASuffix: string): string;
 begin
   Result := BuildString<TObject>(
-              function(Index: Integer; AArray: array of TObject): string
+              function(AElem: TObject): string
               begin
-                Result := AArray[Index].ToString;
+                Result := AElem.ToString;
               end,
               AObjList, ASplitter, APrefix, ASuffix);
+end;
+
+// 功能：反转数组
+// 参数：
+//   - var AArray: array of T 待反转的数组
+class procedure TArrayUtils.ReverseAeery<T>(var AArray: array of T);
+begin
+  ReverseArray(@AArray[Low(AArray)], Length(AArray), SizeOf(T));
 end;
 
 // 功能：将浮点数数组转换成字符串，可自定义前后缀和分隔符
@@ -1475,9 +1096,9 @@ end;
 class function TArrayUtils.FloatArrayToString(AFloatArr: array of Extended; const ASplitter: string = ','; const APrefix: string = '['; const ASuffix: string = ']'): string;
 begin
   Result := BuildString<Extended>(
-              function(Index: Integer; AArray: array of Extended): string
+              function(AElem: Extended): string
               begin
-                Result := FloatToStr(AArray[Index]);
+                Result := FloatToStr(AElem);
               end,
               AFloatArr, ASplitter, APrefix, ASuffix);
 end;
@@ -1496,30 +1117,163 @@ class function TArrayUtils.FloatArrayToStringF(const AFormat: string; AFloatArr:
   const ASplitter: string = ','; const APrefix: string = '['; const ASuffix: string = ']'): string;
 begin
   Result := BuildString<Extended>(
-              function(Index: Integer; AArray: array of Extended): string
+              function(AElem: Extended): string
               begin
-                Result := FormatFloat(AFormat, AArray[Index]);
+                Result := FormatFloat(AFormat, AElem);
               end,
               AFloatArr, ASplitter, APrefix, ASuffix);
 end;
 
 
+class procedure TArrayUtils.ForEach<T>(var AArray: array of T;
+  AEachFunc: TEachItemFunc<T>);
+var
+  i: Integer;
+begin
+  if not Assigned(AEachFunc) then
+  begin
+    raise EArgumentNilException.CreateResFmt(@SParamIsNil, ['AEachFunc'])
+  end;
+
+  for i := Low(AArray) to High(AArray) do
+  begin
+    AEachFunc(AArray[i]);
+  end;
+end;
+
+
+//class function TArrayUtils.GetArraySortUtilsObject<T>(
+//  ACompareFunc: TCompareFunction): TArraySortUtils<T>;
+//begin
+//  Result := TArraySortUtils<T>.Create(ACompareFunc);
+//end;
+
+// 功能：获取能支持的将数组转化成字符串的最大长度
+class function TArrayUtils.GetMaxVaildArrayLen: Integer;
+begin
+  Result := TArrayUtils.MAXVALIDARRAYLEN;
+end;
+
+// 功能：将一个字符串按照指定的分割符分割成一个字符串数组。
+// 参数：
+//   - SrcStr: string      要分割的字符串。
+//   - Splitter: string    分割符。
+// 返回值类型：TStringArray (TArray<string>)  分割后的字符串数组。
+// 示例：
+//   var
+//     myString: string;
+//     myArray: TStringArray;
+//     i: Integer;
+//   begin
+//     myString := 'apple,banana,cherry';
+//     myArray := TArrayUtils.SplitStrToArray(myString, ',');
+//     for i := 0 to High(myArray) do
+//       ShowMessage(myArray[i]); // 显示 "apple", "banana", "cherry"
+//   end;
+class function TArrayUtils.SplitStrToArray(const SrcStr,
+  Splitter: string): TStringArray;
+var
+  EndIndex, StartIndex: Integer;
+  ResultList: TList<string>;
+  SrcStrLen: Integer;
+begin
+  ResultList := TList<string>.Create;
+  try
+    SrcStrLen := Length(SrcStr);
+    StartIndex := 1;
+
+    while StartIndex <= SrcStrLen do
+    begin
+      EndIndex := Pos(Splitter, SrcStr, StartIndex);
+      if EndIndex = 0 then
+      begin
+        if StartIndex <= SrcStrLen then
+        begin
+          ResultList.Add(Copy(SrcStr, StartIndex, SrcStrLen - StartIndex + 1));
+        end;
+        Break;
+      end;
+
+      ResultList.Add(Copy(SrcStr, StartIndex, EndIndex - StartIndex));
+
+      StartIndex := EndIndex + Length(Splitter);
+    end;
+
+    Result := ListToArray<string>(ResultList);
+
+  finally
+    ResultList.Free;
+  end;
+end;
+
+
 // 功能: 将字符串的数组拼接成一个字符串,可自行指定前缀、后缀、中间分隔符
 // 参数：
-//  - AStrList: array of string   输入的字符串数组
+//  - AStrArray: array of string   输入的字符串数组
 //  - const ASplitter: string = ',' 分隔符
 //  - const APrefix: string = '['   前缀
 //  - const ASuffix: string = ']'   后缀
 // 返回值类型：string 转成的字符串
-// 示例：TArrayUtils.StringListToString(['1.0', '2.0', '3.0', '4.0'], ', ', '[', ']') -> '[1, 2, 3, 4]'
-class function TArrayUtils.StringListToString(AStrList: array of string; const ASplitter: string = ','; const APrefix: string = '['; const ASuffix: string = ']'): string;
+// 示例：TArrayUtils.StringArrayToString(['1.0', '2.0', '3.0', '4.0'], ', ', '[', ']') -> '[1, 2, 3, 4]'
+class function TArrayUtils.StringArrayToString(AStrArray: array of string; const ASplitter: string = ','; const APrefix: string = '['; const ASuffix: string = ']'): string;
+var
+  StringBuilder: TStringBuilder;
+  i, Count, LowIndex, HighIndex: Integer;
 begin
-  Result := BuildString<string>(
-              function(Index: Integer; AArray: array of string): string
-              begin
-                Result := AArray[Index];
-              end,
-              AStrList, ASplitter, APrefix, ASuffix);
+  Count := Length(AStrArray);
+  if Count > GetMaxVaildArrayLen then
+    raise Exception.Create('数组长度超过最大可允许长度，可能造成栈溢出风险，请选用其他方法或自行实现！');
+
+  StringBuilder := TStringBuilder.Create;
+  try
+    StringBuilder.Append(APrefix);
+
+    if Count = 0 then
+    begin
+      StringBuilder.Append(ASuffix);
+    end
+    else
+    begin
+      LowIndex := Low(AStrArray);
+      HighIndex := High(AStrArray);
+
+      for i := LowIndex to HighIndex - 1 do
+      begin
+        StringBuilder.Append(AStrArray[i]);
+        StringBuilder.Append(ASplitter);
+      end;
+
+      StringBuilder.Append(AStrArray[HighIndex]);
+
+      StringBuilder.Append(ASuffix);
+    end;
+
+    Result := StringBuilder.ToString;
+  finally
+    StringBuilder.Free;
+  end;
+end;
+
+// 功能: 使用传入的元素生成函数，生成指定长度的数组
+// 参数：
+//  - const ALen: Integer             要生成的数组长度
+//  - GetElemFunc: TElemGenerator<T>  生成数组元素的函数
+// 返回值类型：TArray<T> 生成的数组
+class function TArrayUtils.GenerateArray<T>(const ALen: Integer; GetElemFunc: TElemGenerator<T>): TArray<T>;
+var
+  i: Integer;
+begin
+  if ALen < 1 then
+    Exit;
+
+  if ALen > GetMaxVaildArrayLen then
+    raise Exception.Create('数组长度超过最大可允许长度，可能造成栈溢出风险，请选用其他方法或自行实现！');
+
+  SetLength(Result, ALen);
+  for i := 0 to ALen - 1 do
+  begin
+    Result[i] := GetElemFunc;
+  end;
 end;
 
 
@@ -1555,6 +1309,87 @@ begin
   Result := Copy(ASourceStr, Max(1, Length(ASourceStr) - ALen + 1), Min(Length(ASourceStr), ALen));
 end;
 
+// 功能：从字符串的第一个指定分隔符处开始，返回该分隔符之后的部分。
+//       如果源字符串中不存在指定的分隔符，或者分隔符在字符串的开头，
+//       则返回空字符串或剩余部分。
+// 参数：
+//   - const ASourceStr: string 源字符串；需要被处理的原始字符串。
+//   - const ASplitter: string  分隔符。用于在源字符串中查找的分割字符串。
+// 返回值：
+//   - string：截取后的字符串，即第一个分隔符之后的部分。
+//             如果源字符串为空、分隔符为空、分隔符比源字符串长，或者找不到分隔符，
+//             则直接返回源字符串
+function RightCutBySplitter(const ASourceStr, ASplitter: string): string;
+var
+  iStrLen, iSplitterLen, iPosIndex: Integer;
+begin
+  iStrLen := Length(ASourceStr);
+  iSplitterLen := Length(ASplitter);
+  Result := ASourceStr;
+
+  if (iStrLen = 0) or (iSplitterLen = 0) or (iSplitterLen > iStrLen) then
+  begin
+    Exit;
+  end;
+  iPosIndex := Pos(ASplitter, ASourceStr);
+  if iPosIndex <= 0 then
+    Exit;
+
+  Result := RightCut(ASourceStr, iStrLen - iPosIndex - iSplitterLen + 1);
+end;
+
+// 功能：对字符串进行 SQL 安全的引号包裹处理，确保字符串可以在 SQL 语句中安全地使用。
+//       特别是处理了方括号 '[' 和 ']'，将它们转义并用方括号包裹。仅适用于SQL Server
+// 参数：
+//   - S: const string  待处理的原始字符串。
+// 返回值：
+//   - string           经过 SQL 安全处理后的字符串，前后会被加上方括号 '[' 和 ']'，
+//                      并且原字符串中的 '[' 和 ']' 会被转义（再次插入一个 '[' 或 ']'）。
+function QuotedStrSQL(const S: string): string;
+var
+  I: Integer;
+begin
+  Result := S;
+
+  for I := Result.Length - 1 downto 0 do
+    if Result.Chars[I] = '[' then
+      Result := Result.Insert(I, '[');
+
+  for I := Result.Length - 1 downto 0 do
+    if Result.Chars[I] = ']' then
+      Result := Result.Insert(I, ']');
+
+  Result := '[' + Result + ']';
+end;
+
+// 功能：从字符串的第一个指定分隔符处开始，返回该分隔符之前的部分。
+//       如果源字符串中不存在指定的分隔符，或者分隔符在字符串的末尾，
+//       则返回空字符串或剩余部分。
+// 参数：
+//   - const ASourceStr: string 源字符串；需要被处理的原始字符串。
+//   - const ASplitter: string  分隔符。用于在源字符串中查找的分割字符串。
+// 返回值：
+//   - string：截取后的字符串，即第一个分隔符之后的部分。
+//             如果源字符串为空、分隔符为空、分隔符比源字符串长，或者找不到分隔符，
+//             则直接返回源字符串
+function LeftCutBySplitter(const ASourceStr, ASplitter: string): string;
+var
+  iStrLen, iSplitterLen, iPosIndex: Integer;
+begin
+  iStrLen := Length(ASourceStr);
+  iSplitterLen := Length(ASplitter);
+  Result := ASourceStr;
+
+  if (iStrLen = 0) or (iSplitterLen = 0) or (iSplitterLen > iStrLen) then
+  begin
+    Exit;
+  end;
+  iPosIndex := Pos(ASplitter, ASourceStr);
+  if iPosIndex <= 0 then
+    Exit;
+
+  Result := LeftCut(ASourceStr, iPosIndex - 1);
+end;
 
 // 功能：检查数组中是否所有元素都满足特定条件
 // 参数：
@@ -1577,7 +1412,7 @@ begin
 
   for i := 0 to AElemNum - 1 do
   begin
-    if not ACheckFunc(GetPtr(APBase, i * AElemSize), AContext) then
+    if not ACheckFunc(LeftMovePtr(APBase, i * AElemSize), AContext) then
       Exit;
   end;
 
@@ -1624,21 +1459,27 @@ end;
 var
   MemSwapBufferSize: TSize_T;
   MemSwapBuffer: Pointer;
-  
-// 创建一个指定大小的Buffer
-procedure CreateMemSwapBuffer(ABufferSize: TSize_T);
-begin
-  MemSwapBufferSize := ABufferSize;
-  MemSwapBuffer := AllocMem(MemSwapBufferSize);
-end;
 
 // 释放申请的Buffer空间
 procedure DestoryMemSwapBuffer;
 begin
-  FreeMem(MemSwapBuffer, MemSwapBufferSize);
+  if Assigned(MemSwapBuffer) then
+  begin
+    FreeMem(MemSwapBuffer, MemSwapBufferSize);
+  end;
+
   MemSwapBuffer := nil;
   MemSwapBufferSize := 0;
 end;
+
+// 创建一个指定大小的Buffer
+procedure CreateMemSwapBuffer(ABufferSize: TSize_T);
+begin
+  DestoryMemSwapBuffer;
+  MemSwapBufferSize := ABufferSize;
+  MemSwapBuffer := AllocMem(MemSwapBufferSize);
+end;
+
 
 // 使用固定的Buffer而不需每次交换都申请/释放Buffer
 procedure MemSwapFaster(const APData1, APData2: Pointer);
@@ -1651,20 +1492,11 @@ end;
 //  - ApBase: Pointer 原指针
 //  - AOffset: TSize_T 右移的偏移量大小
 // 返回值类型：Pointer 移动后的指针
-function GetPtr(const ApBase: Pointer; const AOffset: TSize_T): Pointer;
-begin
-  Result := Pointer(TSize_T(ApBase) + AOffset);
-end;
-
-// 功能：将指针向左移动指定个字节
-// 参数：
-//  - ApBase: Pointer 原指针
-//  - AOffset: TSize_T 右移的偏移量大小
-// 返回值类型：Pointer 移动后的指针
 function LeftMovePtr(const ApBase: Pointer; const AOffset: TSize_T): Pointer;
 begin
   Result := Pointer(TSize_T(ApBase) - AOffset);
 end;
+
 
 // 功能：将指针向右移动指定个字节
 // 参数：
@@ -1673,7 +1505,17 @@ end;
 // 返回值类型：Pointer 移动后的指针
 function RightMovePtr(const ApBase: Pointer; const AOffset: TSize_T): Pointer;
 begin
-  Result := GetPtr(ApBase, AOffset);
+  Result := Pointer(TSize_T(ApBase) + AOffset);
+end;
+
+// 功能：将指针向左/向右移动指定个字节
+// 参数：
+//  - ApBase: Pointer 原指针
+//  - AOffset: TSize_T 移动的偏移量大小，>0向右，小于零向左
+// 返回值类型：Pointer 移动后的指针
+function MovePtr(const APBase: Pointer; const AOffset: NativeInt): Pointer; inLine;
+begin
+  Result := Pointer(NativeInt(APBase) + AOffset);
 end;
 
 // 功能：实数比较函数
@@ -1688,14 +1530,13 @@ end;
 function RealCmpBase(APData1, APData2: Pointer; ARealType: TRealType = TRealType.rtInt): Integer;
 begin
   case ARealType of
-    TRealType.rtInt: Result := CompareValue(PInteger(APData1)^, PInteger(APData2)^);
     TRealType.rtInt64: Result := CompareValue(PInt64(APData1)^, PInt64(APData2)^);
     TRealType.rtUInt64: Result := CompareValue(PUInt64(APData1)^, PUInt64(APData2)^);
     TRealType.rtSingle: Result := CompareValue(PSingle(APData1)^, PSingle(APData2)^);
     TRealType.rtDouble: Result := CompareValue(PDouble(APData1)^, PDouble(APData2)^);
     TRealType.rtExtedent: Result := CompareValue(PExtended(APData1)^, PExtended(APData2)^);
   else
-    raise Exception.Create('Error Message');
+    Result := CompareValue(PInteger(APData1)^, PInteger(APData2)^);
   end;
 end;
 
@@ -1778,7 +1619,7 @@ end;
 //    - -1  APData1 > APData2
 //    - 0   APData1 = APData2
 //    - 1   APData1 < APData2
-function UnInt64CompareDesc(APData1, APData2, APContext: Pointer): Integer;
+function UInt64CompareDesc(APData1, APData2, APContext: Pointer): Integer;
 begin
   Result := RealCmpBase(APData2, APData1, TRealType.rtUInt64);
 end;
@@ -1878,12 +1719,12 @@ var
   i: TSize_T;
 begin
   // 参数有效性检查
-  if (APBase = nil) or (AElemNum <= 1) or (AElemSize = 0) then
+  if (APBase = nil) or (AElemNum < 2) or (AElemSize = 0) then
     Exit;
 
   // 设置左右指针
   pLeft := APBase;
-  pRight := GetPtr(APBase, (AElemNum - 1) * AElemSize);
+  pRight := RightMovePtr(APBase, (AElemNum - 1) * AElemSize);
 
   // 从两端向中间交换元素
   CreateMemSwapBuffer(AElemSize);
@@ -1891,8 +1732,8 @@ begin
     for i := 0 to (AElemNum div 2) - 1 do
     begin
       MemSwapFaster(pLeft, pRight);
-      pLeft := GetPtr(pLeft, AElemSize);     // 左指针右移
-      pRight := LeftMovePtr(pRight, AElemSize);  // 右指针左移（注意负偏移）
+      pLeft := RightMovePtr(pLeft, AElemSize);
+      pRight := LeftMovePtr(pRight, AElemSize);
     end;
   finally
     DestoryMemSwapBuffer;
@@ -1921,7 +1762,7 @@ begin
   // 检查每相邻两个元素是否都是逆序的
   for i := 0 to AElemNum - 2 do
   begin
-    if ACompareFunc(GetPtr(APBase, i * AElemSize), GetPtr(APBase, (i + 1) * AElemSize), APContext) > 0 then
+    if ACompareFunc(RightMovePtr(APBase, i * AElemSize), RightMovePtr(APBase, (i + 1) * AElemSize), APContext) > 0 then
     begin
       Result := False;
       Break;
@@ -1977,7 +1818,7 @@ begin
 
   for i := 0 to AElemNum - 2 do
   begin
-    if ACompareFunc(GetPtr(APBase, i * AElemSize), GetPtr(APBase, (i + 1) * AElemSize), APContext) > 0 then
+    if ACompareFunc(RightMovePtr(APBase, i * AElemSize), RightMovePtr(APBase, (i + 1) * AElemSize), APContext) > 0 then
       Exit(False);
   end;
 
@@ -2011,7 +1852,7 @@ end;
 procedure BubbleSort(const APBase: Pointer; AElemNum, AElemSize: TSize_T; APContext: Pointer; ACompareFunc: TCompareFunction);
 var
   bFlag: Boolean;
-  i, j: Integer;
+  i, j: TSize_T;
   PData1, PData2: Pointer;
 begin
   if (not Assigned(APBase)) or (AElemNum = 0) or (AElemSize = 0) or (not Assigned(ACompareFunc)) then
@@ -2025,12 +1866,11 @@ begin
 
       for j := 0 to AElemNum - 2 - i do
       begin
-        PData1 := GetPtr(APBase, j * AElemSize);
-        PData2 := GetPtr(APBase, (j + 1) * AElemSize);
+        PData1 := RightMovePtr(APBase, j * AElemSize);
+        PData2 := RightMovePtr(APBase, (j + 1) * AElemSize);
         if ACompareFunc(PData1, PData2, APContext) > 0 then
         begin
           MemSwapFaster(PData1, PData2);
-//          MemSwap(PData1, PData2, AElemSize);
           bFlag := True;
         end;
       end;
@@ -2079,16 +1919,16 @@ begin
   try
     for i := 1 to AElemNum - 1 do
     begin
-      Move(GetPtr(APBase, i * AElemSize)^, pKey^, AElemSize);
+      Move(RightMovePtr(APBase, i * AElemSize)^, pKey^, AElemSize);
       j := i;
 
-      while (j >= 1) and (ACompareFunc(pKey, GetPtr(APBase, (j - 1) * AElemSize), APContext) < 0) do
+      while (j >= 1) and (ACompareFunc(pKey, RightMovePtr(APBase, (j - 1) * AElemSize), APContext) < 0) do
       begin
-        Move(GetPtr(APBase, (j - 1) * AElemSize)^, GetPtr(APBase, j * AElemSize)^, AElemSize);
+        Move(RightMovePtr(APBase, (j - 1) * AElemSize)^, RightMovePtr(APBase, j * AElemSize)^, AElemSize);
         Dec(j);
       end;
 
-      Move(pKey^, GetPtr(APBase, j * AElemSize)^, AElemSize)
+      Move(pKey^, RightMovePtr(APBase, j * AElemSize)^, AElemSize)
 
     end;
   finally
@@ -2135,12 +1975,12 @@ begin
 
       for j := i + 1 to AElemNum - 1 do
       begin
-        if ACompareFunc(GetPtr(APBase, j * AElemSize), GetPtr(APBase, iMinIndex * AElemSize), APContext) < 0 then
+        if ACompareFunc(RightMovePtr(APBase, j * AElemSize), RightMovePtr(APBase, iMinIndex * AElemSize), APContext) < 0 then
           iMinIndex := j;
       end;
 
       if iMinIndex <> i then
-        MemSwapFaster(GetPtr(APBase, i * AElemSize), GetPtr(APBase, iMinIndex * AElemSize));
+        MemSwapFaster(RightMovePtr(APBase, i * AElemSize), RightMovePtr(APBase, iMinIndex * AElemSize));
     end;
   finally
     DestoryMemSwapBuffer;
@@ -2204,16 +2044,16 @@ begin
     begin
       for i := aHibbardStepArr[k] to AElemNum - 1 do
       begin
-        Move(GetPtr(APBase, i * AElemSize)^, pKey^, AElemSize);
+        Move(RightMovePtr(APBase, i * AElemSize)^, pKey^, AElemSize);
         j := i;
 
-        while (j >= 1) and (ACompareFunc(pKey, GetPtr(APBase, (j - 1) * AElemSize), APContext) < 0) do
+        while (j >= 1) and (ACompareFunc(pKey, RightMovePtr(APBase, (j - 1) * AElemSize), APContext) < 0) do
         begin
-          Move(GetPtr(APBase, (j - 1) * AElemSize)^, GetPtr(APBase, j * AElemSize)^, AElemSize);
+          Move(RightMovePtr(APBase, (j - 1) * AElemSize)^, RightMovePtr(APBase, j * AElemSize)^, AElemSize);
           Dec(j);
         end;
 
-        Move(pKey^, GetPtr(APBase, j * AElemSize)^, AElemSize)
+        Move(pKey^, RightMovePtr(APBase, j * AElemSize)^, AElemSize)
 
       end;
     end;
@@ -2252,8 +2092,8 @@ begin
 
     if (LeftChildIndex < AElemNum) then
     begin
-      LeftChildPtr := GetPtr(APBase, LeftChildIndex * AElemSize);
-      CurrentNodePtr := GetPtr(APBase, LargestIndex * AElemSize);
+      LeftChildPtr := RightMovePtr(APBase, LeftChildIndex * AElemSize);
+      CurrentNodePtr := RightMovePtr(APBase, LargestIndex * AElemSize);
       if ACompareFunc(LeftChildPtr, CurrentNodePtr, APContext) > 0 then
       begin
         LargestIndex := LeftChildIndex;
@@ -2263,8 +2103,8 @@ begin
     // 检查右子节点是否存在且是否比当前最大节点大
     if (RightChildIndex < AElemNum) then
     begin
-      RightChildPtr := GetPtr(APBase, RightChildIndex * AElemSize);
-      CurrentNodePtr := GetPtr(APBase, LargestIndex * AElemSize); // 重新获取当前最大节点指针
+      RightChildPtr := RightMovePtr(APBase, RightChildIndex * AElemSize);
+      CurrentNodePtr := RightMovePtr(APBase, LargestIndex * AElemSize); // 重新获取当前最大节点指针
       if ACompareFunc(RightChildPtr, CurrentNodePtr, APContext) > 0 then
       begin
         LargestIndex := RightChildIndex;
@@ -2274,8 +2114,8 @@ begin
     // 如果最大节点不是当前节点，则交换它们
     if LargestIndex <> CurrentIndex then
     begin
-      CurrentNodePtr := GetPtr(APBase, CurrentIndex * AElemSize);
-      LargestNodePtr := GetPtr(APBase, LargestIndex * AElemSize);
+      CurrentNodePtr := RightMovePtr(APBase, CurrentIndex * AElemSize);
+      LargestNodePtr := RightMovePtr(APBase, LargestIndex * AElemSize);
 //      MemSwap(CurrentNodePtr, LargestNodePtr, AElemSize);
       MemSwapFaster(CurrentNodePtr, LargestNodePtr);
       // 将当前索引更新为最大节点的索引，继续向下调整
@@ -2330,7 +2170,7 @@ begin
     for i := AElemNum - 1 downto 1 do
     begin
       RootNodePtr := APBase;
-      LastNodePtr := GetPtr(APBase, i * AElemSize);
+      LastNodePtr := RightMovePtr(APBase, i * AElemSize);
       MemSwapFaster(RootNodePtr, LastNodePtr);
 
       Heapify(APBase, i, 0, AElemSize, APContext, ACompareFunc);
@@ -2364,14 +2204,14 @@ begin
 
   while (iLeftIndex <= AMid) and (iRightIndex <= AEnd) do
   begin
-    pLeftPtr := GetPtr(APBase, iLeftIndex * AElemSize);
-    pRightPtr := GetPtr(APBase, iRightIndex * AElemSize);
-    pTempCurrent := GetPtr(ATemp, iTempIndex * AElemSize);
+    pLeftPtr := RightMovePtr(APBase, iLeftIndex * AElemSize);
+    pRightPtr := RightMovePtr(APBase, iRightIndex * AElemSize);
+    pTempCurrent := RightMovePtr(ATemp, iTempIndex * AElemSize);
 
     if ACompareFunc(pLeftPtr, pRightPtr, APContext) < 0 then
     begin
       Move(pLeftPtr^, pTempCurrent^, AElemSize);
-      Inc(iLeftIndex); 
+      Inc(iLeftIndex);
     end
     else
     begin
@@ -2384,22 +2224,22 @@ begin
 
   while iLeftIndex <= AMid do
   begin
-    pTempCurrent := GetPtr(ATemp, iTempIndex * AElemSize);
-    Move(GetPtr(APBase, iLeftIndex * AElemSize)^, pTempCurrent^, AElemSize);
+    pTempCurrent := RightMovePtr(ATemp, iTempIndex * AElemSize);
+    Move(RightMovePtr(APBase, iLeftIndex * AElemSize)^, pTempCurrent^, AElemSize);
     Inc(iLeftIndex);
     Inc(iTempIndex);
   end;
 
   while iRightIndex <= AEnd do
   begin
-    pTempCurrent := GetPtr(ATemp, iTempIndex * AElemSize);
-    Move(GetPtr(APBase, iRightIndex * AElemSize)^, pTempCurrent^, AElemSize);
+    pTempCurrent := RightMovePtr(ATemp, iTempIndex * AElemSize);
+    Move(RightMovePtr(APBase, iRightIndex * AElemSize)^, pTempCurrent^, AElemSize);
     Inc(iRightIndex);
     Inc(iTempIndex);
   end;
 
   // 将临时数组的内容复制回原数组
-  Move(ATemp^, GetPtr(APBase, AStart * AElemSize)^, iTempIndex * AElemSize);
+  Move(ATemp^, RightMovePtr(APBase, AStart * AElemSize)^, iTempIndex * AElemSize);
 end;
 
 // 功能：归并排序的主要辅助函数，完成主要排序操作
@@ -2421,8 +2261,8 @@ begin
   while i < AElemNum do
   begin
     irRight := Min(i + MINSUBARRLEN - 1, AElemNum - 1);
-    InsertionSort(GetPtr(APBase, i * AElemSize), irRight - i + 1, AElemSize, APContext, ACompareFunc);
-//  SelectionSort(GetPtr(APBase, i * AElemSize), irRight - i + 1, AElemSize, APContext, ACompareFunc);
+    InsertionSort(RightMovePtr(APBase, i * AElemSize), irRight - i + 1, AElemSize, APContext, ACompareFunc);
+//  SelectionSort(RightMovePtr(APBase, i * AElemSize), irRight - i + 1, AElemSize, APContext, ACompareFunc);
     i := i + MINSUBARRLEN;
   end;
 
@@ -2512,14 +2352,14 @@ var
 begin
   if (APBase = nil) or (AElemNum = 0) or (AElemSize = 0) or (not Assigned(ACompareFunc)) then
     Exit;
-  
+
   if AElemNum <= MINSUBARRLEN then
   begin
     InsertionSort(APBase, AElemNum, AElemSize, APContext, ACompareFunc);
     Exit;
   end;
 
-  try 
+  try
     pTemp := AllocMem(AElemNum * AElemSize);
     try
       MergeSortBaseWithTemp(APBase, AElemNum, AElemSize, APContext, pTemp, ACompareFunc);
@@ -2532,7 +2372,7 @@ begin
   end;
 end;
 
-// 功能：未经优化的快速排序，使用数组中间的元素作为初始支点
+// 功能：快速排序，使用数组中间的元素作为初始支点
 // 参数：
 //   - const APBase: Pointer           指向待排序的数组的指针
 //   - AElemNum: TSize_T                需要排序的元素个数
@@ -2556,62 +2396,69 @@ end;
 //  PrintIntegerArray(aIntegerArr);
 //  end;
 procedure QuickSort(const APBase: Pointer; AElemNum, AElemSize: TSize_T; APContext: Pointer; ACompareFunc: TCompareFunction);
-var
-  L, R: TSize_T;
   // 参考 System.Generics.Collections.TArray.Sort<T>实现
   procedure InternalQuickSort(const ABase: Pointer; const AElemNum, AElemSize: TSize_T; const APContext: Pointer; const ACompareFunc: TCompareFunction; const AL, AR: TSize_T);
   var
     I, J: TSize_T;
-    pivotPtr, tempPtr: Pointer;
+    pivotIndex: TSize_T;
+    pivotValPtr: Pointer;
   begin
-    if (AR - AL) <= 0 then
-      Exit;  // 子数组长度为1或0，退出
+    if (AR <= AL) then
+      Exit;
 
-    I := AL;
+    pivotIndex := AL + ((AR - AL) shr 1);
+    pivotValPtr := RightMovePtr(ABase, pivotIndex * AElemSize);
+    MemSwapFaster(RightMovePtr(ABase, AL * AElemSize), pivotValPtr);
+
+    pivotValPtr := RightMovePtr(ABase, AL * AElemSize);
+
+    I := AL + 1;
     J := AR;
-    // 选择pivot：中间元素
-    pivotPtr := RightMovePtr(ABase, ((AL + AR) shr 1) * AElemSize);
 
     repeat
-      // 找到左边第一个 >= pivot 的元素
-      while (I <= J) and (ACompareFunc(RightMovePtr(ABase, I * AElemSize), pivotPtr, APContext) < 0) do
+      while (I <= J) and (ACompareFunc(RightMovePtr(ABase, I * AElemSize), pivotValPtr, APContext) < 0) do
         Inc(I);
 
-      // 找到右边第一个 <= pivot 的元素
-      while (I <= J) and (ACompareFunc(RightMovePtr(ABase, J * AElemSize), pivotPtr, APContext) > 0) do
-        if J <> 0 then
-          Dec(J);
+      while (I <= J) and (ACompareFunc(RightMovePtr(ABase, J * AElemSize), pivotValPtr, APContext) > 0) do
+      begin
+        if J = AL then
+           Break;
+        Dec(J);
+      end;
 
       if I <= J then
       begin
         if I <> J then
-        begin
-          // 交换元素
-          MemSwap(RightMovePtr(ABase, I * AElemSize), RightMovePtr(ABase, J * AElemSize), AElemSize);
-        end;
+          MemSwapFaster(RightMovePtr(ABase, I * AElemSize), RightMovePtr(ABase, J * AElemSize));
+
         Inc(I);
-        if J <> 0 then
-          Dec(J);
+        if J > AL then
+          Dec(J)
+        else
+          Break;
       end;
     until I > J;
 
-    // 递归排序左子数组
-    if AL < J then
-      InternalQuickSort(ABase, AElemNum, AElemSize, APContext, ACompareFunc, AL, J);
+    MemSwapFaster(RightMovePtr(ABase, AL * AElemSize), RightMovePtr(ABase, J * AElemSize));
 
-    // 递归排序右子数组
+    if AL < J then
+      InternalQuickSort(ABase, AElemNum, AElemSize, APContext, ACompareFunc, AL, J - 1);
+
     if I < AR then
       InternalQuickSort(ABase, AElemNum, AElemSize, APContext, ACompareFunc, I, AR);
   end;
 begin
-  if (APBase = nil) or (AElemNum = 0) or (AElemSize = 0) or (not Assigned(ACompareFunc)) then
+  if (APBase = nil) or (AElemNum < 2) or (AElemSize = 0) or (not Assigned(ACompareFunc)) then
     Exit;
-
-  // 调用内部递归函数，初始L=0, R=AElemNum-1
-  InternalQuickSort(APBase, AElemNum, AElemSize, APContext, ACompareFunc, 0, AElemNum - 1);
+  CreateMemSwapBuffer(AElemSize);
+  try
+    InternalQuickSort(APBase, AElemNum, AElemSize, APContext, ACompareFunc, 0, AElemNum - 1);
+  finally
+    DestoryMemSwapBuffer;
+  end;
 end;
 
-// 功能：优化的快速排序，使用数组中间的元素作为初始支点
+// 功能：排序使用数组中间的元素作为初始支点
 // 参数：
 //   - const APBase: Pointer           指向待排序的数组的指针
 //   - AElemNum: TSize_T                需要排序的元素个数
@@ -2621,7 +2468,7 @@ end;
 //                                     排序依据，若第一个参数大于第二个参数时返回
 //                                     正数则为升序，否则为降序，须调用者自行实现
 // 说明：基于内省排序修改 ，当分区元素不大于MINSUBARRLEN时使用插入排序完成。如果递归深度超过阈值则会使用HybridSort代替完成排序
-//      经过简单测试，当数组长度不超过1E7时不会超过递归深度阈值。相较于QuickSort要快大约10%
+//      经过简单测试，当数组长度不超过1E7时不会超过递归深度阈值。
 // 使用示例：
 //  var
 //    aIntegerArr: TIntegerArray;
@@ -2638,59 +2485,93 @@ end;
 //  end;
 procedure IntroSort(const APBase: Pointer; AElemNum, AElemSize: TSize_T; APContext: Pointer; ACompareFunc: TCompareFunction);
 var
-  L, R: Integer;
-  maxDepth: Integer;  // 最大递归深度阈值
-
-  procedure InternalIntrosort(const ABase: Pointer; const AElemNum, AElemSize: TSize_T;
-    const APContext: Pointer; const ACompareFunc: TCompareFunction; const AL, AR: Integer; const ADepth: Integer);
+  maxDepth: Integer;
+  procedure InternalIntrosort(const ABase: Pointer; const ACurrentElemNum, AElemSize: NativeInt; // ACurrentElemNum 指的是当前处理的子数组元素个数
+    const APContext: Pointer; const ACompareFunc: TCompareFunction; const AL, AR: NativeInt; const ADepth: Integer);
   var
-    I, J: Integer;
-    pivotPtr, leftPtr, rightPtr: Pointer;
+    I, J: NativeInt;
+    pivotIndex: NativeInt;
+    pivotValPtr: Pointer;
+    SubArrayBasePtr: Pointer;
+    SubArrayElemNum: NativeInt;
   begin
-    if AL >= AR then
+
+    if (AR <= AL) then
       Exit;
 
-    if AR - AL + 1 <= MINSUBARRLEN then
+    SubArrayElemNum := AR - AL + 1;
+    SubArrayBasePtr := RightMovePtr(APBase, AL * AElemSize);
+
+    if SubArrayElemNum <= MINSUBARRLEN then
     begin
-      InsertionSort(ABase, AR - AL + 1, AElemSize, APContext, ACompareFunc);
+      InsertionSort(SubArrayBasePtr, SubArrayElemNum, AElemSize, APContext, ACompareFunc);
       Exit;
     end;
 
     if ADepth > maxDepth then
     begin
-      HybridSort(ABase, AElemNum, AElemSize, APContext, ACompareFunc);  // 切换到混合排序
+      HybridSort(APBase, AElemNum, AElemSize, APContext, ACompareFunc);
       Exit;
     end;
 
-    I := AL;
+    pivotIndex := AL + ((AR - AL) shr 1);
+    pivotValPtr := RightMovePtr(SubArrayBasePtr, pivotIndex * AElemSize);
+    MemSwapFaster(SubArrayBasePtr, pivotValPtr);
+    pivotValPtr := SubArrayBasePtr;
+
+    I := AL + 1;
     J := AR;
-    pivotPtr := RightMovePtr(ABase, ((AL + AR) shr 1) * AElemSize);
+
     repeat
-      while (I <= J) and (ACompareFunc(RightMovePtr(ABase, I * AElemSize), pivotPtr, APContext) < 0) do Inc(I);
-      while (I <= J) and (ACompareFunc(RightMovePtr(ABase, J * AElemSize), pivotPtr, APContext) > 0) do Dec(J);
+      while (I <= J) and (ACompareFunc(RightMovePtr(APBase, I * AElemSize), pivotValPtr, APContext) < 0) do
+        Inc(I);
+
+      while (I <= J) and (ACompareFunc(RightMovePtr(APBase, J * AElemSize), pivotValPtr, APContext) > 0) do
+      begin
+        if J = AL then
+           Break;
+
+        Dec(J);
+      end;
+
       if I <= J then
       begin
         if I <> J then
-          MemSwap(RightMovePtr(ABase, I * AElemSize), RightMovePtr(ABase, J * AElemSize), AElemSize);
+          MemSwapFaster(RightMovePtr(APBase, I * AElemSize), RightMovePtr(APBase, J * AElemSize));
+
         Inc(I);
-        Dec(J);
+        if J > AL then
+          Dec(J)
+        else
+          Break;
       end;
     until I > J;
+    MemSwapFaster(RightMovePtr(APBase, AL * AElemSize), RightMovePtr(APBase, J * AElemSize));
 
-    // 递归左边
-    InternalIntrosort(ABase, AElemNum, AElemSize, APContext, ACompareFunc, AL, J, ADepth + 1);
-    // 递归右边
-    InternalIntrosort(ABase, AElemNum, AElemSize, APContext, ACompareFunc, I, AR, ADepth + 1);
+    if AL < J then
+      InternalIntrosort(APBase, AElemNum, AElemSize, APContext, ACompareFunc, AL, J - 1, ADepth + 1);
+
+    if I < AR then
+      InternalIntrosort(APBase, AElemNum, AElemSize, APContext, ACompareFunc, I, AR, ADepth + 1);
   end;
 begin
-  if (APBase = nil) or (AElemNum = 0) or (AElemSize = 0) or (not Assigned(ACompareFunc)) then
-    Exit;
+  if (APBase = nil) or (AElemNum < 2) or (AElemSize = 0) or (not Assigned(ACompareFunc)) then
+    Exit; // 元素少于2个，无需排序
 
-  // 计算最大深度：通常2 * log2(AElemNum)
-  maxDepth := 2 * Trunc(Log2(AElemNum));
+  // 计算最大递归深度（2*log2(n)，至少为1）
+  if AElemNum = 0 then
+    maxDepth := 0
+  else
+    maxDepth := 2 * Trunc(Log2(AElemNum)) + 1;
 
-  InternalIntrosort(APBase, AElemNum, AElemSize, APContext, ACompareFunc, 0, Integer(AElemNum) - 1, 0);
+  CreateMemSwapBuffer(AElemSize);
+  try
+    InternalIntrosort(APBase, AElemNum, AElemSize, APContext, ACompareFunc, 0, AElemNum - 1, 0);
+  finally
+    DestoryMemSwapBuffer;
+  end;
 end;
+
 
 {类三元运算}
 // 功能：实现类似C/C++的三元运算符的功能，如果ACondition为True就返回ATrueValue，否则返回AFalseValue
@@ -2698,13 +2579,13 @@ end;
 //   - ACondition: Boolean  判断条件
 //   - ATrueValue: Integer  条件为True时的返回值
 //   - AFalseValue: Integer 条件为False时的返回值
-function IfThen(ACondition: Boolean; ATrueValue, AFalseValue: Integer): Integer; overload;
-begin
-  if ACondition then
-    Result := ATrueValue
-  else
-    Result := AFalseValue;
-end;
+//function IfThen(ACondition: Boolean; ATrueValue, AFalseValue: Integer): Integer; overload;
+//begin
+//  if ACondition then
+//    Result := ATrueValue
+//  else
+//    Result := AFalseValue;
+//end;
 
 // 功能：实现类似C/C++的三元运算符的功能，如果ACondition为True就返回ATrueValue，否则返回AFalseValue
 // 参数：
@@ -2724,13 +2605,13 @@ end;
 //   - ACondition: Boolean    判断条件
 //   - ATrueValue: Extended  条件为True时的返回值
 //   - AFalseValue: Extended 条件为False时的返回值
-function IfThen(ACondition: Boolean; ATrueValue, AFalseValue: Extended): Extended; overload;
-begin
-  if ACondition then
-    Result := ATrueValue
-  else
-    Result := AFalseValue;
-end;
+//function IfThen(ACondition: Boolean; ATrueValue, AFalseValue: Extended): Extended; overload;
+//begin
+//  if ACondition then
+//    Result := ATrueValue
+//  else
+//    Result := AFalseValue;
+//end;
 
 // 功能：实现类似C/C++的三元运算符的功能，如果ACondition为True就返回ATrueValue，否则返回AFalseValue
 // 参数：
@@ -2763,13 +2644,13 @@ end;
 //   - ACondition: Boolean  判断条件
 //   - ATrueValue: Boolean  条件为True时的返回值
 //   - AFalseValue: Boolean 条件为False时的返回值
-function IfThen(ACondition: Boolean; ATrueValue, AFalseValue: Boolean): Boolean; overload;
-begin
-  if ACondition then
-    Result := ATrueValue
-  else
-    Result := AFalseValue;
-end;
+//function IfThen(ACondition: Boolean; ATrueValue, AFalseValue: Boolean): Boolean; overload;
+//begin
+//  if ACondition then
+//    Result := ATrueValue
+//  else
+//    Result := AFalseValue;
+//end;
 
 // 功能：实现类似C/C++的三元运算符的功能，如果ACondition为True就返回ATrueValue，否则返回AFalseValue
 // 参数：
@@ -2777,32 +2658,6 @@ end;
 //   - ATrueValue: Char     条件为True时的返回值
 //   - AFalseValue: Char    条件为False时的返回值
 function IfThen(ACondition: Boolean; ATrueValue, AFalseValue: Char): Char; overload;
-begin
-  if ACondition then
-    Result := ATrueValue
-  else
-    Result := AFalseValue;
-end;
-
-// 功能：实现类似C/C++的三元运算符的功能，如果ACondition为True就返回ATrueValue，否则返回AFalseValue
-// 参数：
-//   - ACondition: Boolean  判断条件
-//   - ATrueValue: Int64    条件为True时的返回值
-//   - AFalseValue: Int64   条件为False时的返回值
-function IfThen(ACondition: Boolean; ATrueValue, AFalseValue: Int64): Int64; overload;
-begin
-  if ACondition then
-    Result := ATrueValue
-  else
-    Result := AFalseValue;
-end;
-
-// 功能：实现类似C/C++的三元运算符的功能，如果ACondition为True就返回ATrueValue，否则返回AFalseValue
-// 参数：
-//   - ACondition: Boolean  判断条件
-//   - ATrueValue: Double   条件为True时的返回值
-//   - AFalseValue: Double  条件为False时的返回值
-function IfThen(ACondition: Boolean; ATrueValue, AFalseValue: Double): Double; overload;
 begin
   if ACondition then
     Result := ATrueValue
@@ -2906,19 +2761,6 @@ begin
     AResult := AFalseValue;
 end;
 
-// 功能：实现类似C/C++的三元运算符的功能，如果ACondition为True就置AResult的值为ATrueValue，否则为AFalseValue
-// 参数：
-//   - var AResult: Boolean   需要赋值的变量
-//   - ACondition: Boolean    判断条件
-//   - ATrueValue: Boolean    条件为True时的返回值
-//   - AFalseValue: Boolean   条件为False时的返回值
-procedure IfThen(var AResult: Boolean; ACondition: Boolean; ATrueValue, AFalseValue: Boolean); overload;
-begin
-  if ACondition then
-    AResult := ATrueValue
-  else
-    AResult := AFalseValue;
-end;
 
 // 功能：实现类似C/C++的三元运算符的功能，如果ACondition为True就置AResult的值为ATrueValue，否则为AFalseValue
 // 参数：
@@ -3016,13 +2858,13 @@ begin
     Exit(-1);
 
   if (ACompareFunc(ASearchedElem, APBase, APContext) < 0) or
-    (ACompareFunc(ASearchedElem, GetPtr(APBase, (AElemNum - 1) * AElemSize), APContext) > 0) then
+    (ACompareFunc(ASearchedElem, RightMovePtr(APBase, (AElemNum - 1) * AElemSize), APContext) > 0) then
     Exit(-1);
 
   if ACompareFunc(ASearchedElem, APBase, APContext) = 0 then
     Exit(0)
   else
-  if ACompareFunc(ASearchedElem, GetPtr(APBase, (AElemNum - 1) * AElemSize), APContext) = 0 then
+  if ACompareFunc(ASearchedElem, RightMovePtr(APBase, (AElemNum - 1) * AElemSize), APContext) = 0 then
   Exit(AElemNum - 1);
 
   iA := 0;
@@ -3030,12 +2872,12 @@ begin
   iMiddle := GetHalf(iA + iB);
   while (iMiddle > iA) and (iMiddle < iB) do
   begin
-    if ACompareFunc(ASearchedElem, GetPtr(APBase, iMiddle * AElemSize), APContext) = 0 then
+    if ACompareFunc(ASearchedElem, RightMovePtr(APBase, iMiddle * AElemSize), APContext) = 0 then
     begin
       iA := Max(iMiddle - 1, 0);
       while True do
       begin
-        if ACompareFunc(ASearchedElem, GetPtr(APBase, iA * AElemSize), APContext) <> 0 then
+        if ACompareFunc(ASearchedElem, RightMovePtr(APBase, iA * AElemSize), APContext) <> 0 then
         begin
           Inc(iA);
           Break;
@@ -3046,7 +2888,7 @@ begin
       Exit(iA)
     end
     else
-    if ACompareFunc(ASearchedElem, GetPtr(APBase, iMiddle * AElemSize), APContext) < 0 then
+    if ACompareFunc(ASearchedElem, RightMovePtr(APBase, iMiddle * AElemSize), APContext) < 0 then
       iB := iMiddle
     else
       iA := iMiddle;
@@ -3070,7 +2912,7 @@ end;
 // 返回值: TIntegerArray 为空：没有找到符合条件的元素，不为空：找到的所有符合条件的元素的索引（从0开始）数组
 function BinarySearchs(const APBase: Pointer; AElemNum, AElemSize: TSize_T; const APContext, ASearchedElem: Pointer; ACompareFunc: TCompareFunction): TIntegerArray;
 var
-  iMiddle, iB, i: Integer;
+  iMiddle, iB, i, iNum, iSize: Integer;
 begin
   iMiddle := BinarySearch(APBase, AElemNum, AElemSize, APContext, ASearchedElem, ACompareFunc);
   if iMiddle < 0 then
@@ -3080,9 +2922,11 @@ begin
   end;
 
   iB := Min(iMiddle + 1, AElemNum - 1);
-  while iB <= AElemNum - 1 do
+  iNum := AElemNum;
+  iSize := AElemSize;
+  while iB <= iNum - 1 do
   begin
-    if ACompareFunc(ASearchedElem, GetPtr(APBase, iB * AElemSize), APContext) <> 0 then
+    if ACompareFunc(ASearchedElem, RightMovePtr(APBase, iB * iSize), APContext) <> 0 then
     begin
       Dec(iB);
       Break;
@@ -3094,7 +2938,7 @@ begin
   SetLength(Result, iB - iMiddle + 1);
   for i := Low(Result) to High(Result) do
     Result[i] := iMiddle + i;
-    
+
 end;
 
 //不论数组是否有序，都能使用
@@ -3110,12 +2954,17 @@ end;
 //                                     排序依据，若两个参数相等就返回0
 // 返回值: Integer -1：没有找到符合条件的元素，一个正整数：找到的第一个符合条件的元素所在的索引（从0开始）
 function SequentialSearch(const APBase: Pointer; AElemNum, AElemSize: TSize_T; const APContext, ASearchedElem: Pointer; ACompareFunc: TCompareFunction): Integer;
+var
+  iSize, iNum: Integer;
 begin
   if not Assigned(APBase) or (AElemNum = 0) or (AElemSize = 0) or not Assigned(ACompareFunc) then
     Exit(-1);
 
-  for Result := 0 to AElemNum - 1 do
-    if ACompareFunc(ASearchedElem, GetPtr(APBase, Result * AElemSize), APContext) = 0 then
+  iSize := AElemSize;
+  iNum := AElemNum;
+
+  for Result := 0 to iNum - 1 do
+    if ACompareFunc(ASearchedElem, RightMovePtr(APBase, Result * iSize), APContext) = 0 then
       Exit;
 
   Result := -1;
@@ -3142,7 +2991,7 @@ begin
 
   for i := 0 to AElemNum - 1 do
   begin
-    if ACompareFunc(ASearchedElem, GetPtr(APBase, i * AElemSize), APContext) = 0 then
+    if ACompareFunc(ASearchedElem, RightMovePtr(APBase, i * AElemSize), APContext) = 0 then
     begin
       if AOffset = 0 then
       begin
@@ -3167,7 +3016,7 @@ end;
 // 返回值: TIntegerArray 为空：没有找到符合条件的元素，不为空：找到的所有符合条件的元素的索引（从0开始）数组
 function SequentialSearchs(const APBase: Pointer; AElemNum, AElemSize: TSize_T; const APContext, ASearchedElem: Pointer; ACompareFunc: TCompareFunction): TIntegerArray;
 var
-  iIndex, iTemp: Integer;
+  iIndex, iTemp: TSize_T;
 begin
   SetLength(Result, 0);
   if not Assigned(APBase) or (AElemNum = 0) or (AElemSize = 0) or not Assigned(ACompareFunc) then
@@ -3176,7 +3025,7 @@ begin
   iTemp := 1;
   for iIndex := 0 to AElemNum - 1 do
   begin
-    if ACompareFunc(ASearchedElem, GetPtr(APBase, iIndex * AElemSize), APContext) = 0 then
+    if ACompareFunc(ASearchedElem, RightMovePtr(APBase, iIndex * AElemSize), APContext) = 0 then
     begin
       SetLength(Result, iTemp);
       Inc(iTemp);
@@ -3197,72 +3046,181 @@ end;
 //   - const ASize: TSize_T: Pointer        指针指向的变量的内存大小（以字节计）
 procedure CompareAndSwap(const APSmallerData, APBiggerData, APContext: Pointer; const ACompareFunc: TCompareFunction; const ASize: TSize_T);
 begin
-  if not (Assigned(APSmallerData) and Assigned(APBiggerData) and Assigned(ACompareFunc)) then
-    raise Exception.Create('APSmallerData 与 APBiggerData 和 ACompareFunc必须有效');
+  if not Assigned(APSmallerData) then
+    raise EArgumentNilException.CreateResFmt(@SParamIsNil, ['APSmallerData']);
+    
+  if not Assigned(APBiggerData) then
+    raise EArgumentNilException.CreateResFmt(@SParamIsNil, ['APBiggerData']);
+    
+  if not Assigned(ACompareFunc) then
+    raise EArgumentNilException.CreateResFmt(@SParamIsNil, ['ACompareFunc']);
 
   if ACompareFunc(APSmallerData, APBiggerData, APContext) > 0 then
     MemSwap(APSmallerData, APBiggerData, ASize);
 end;
 
-// 功能：将颜色转成以RRGGBB表示的字符串
+// 功能：将 TColor 类型的颜色值转换为 RRGGBB（红红绿绿蓝蓝）格式的十六进制字符串表示。
+// TColor 在 Delphi 中通常是一个 LongWord (32位无符号整数)，其内部存储格式为 AARRGGBB（Alpha 叠加 红色 绿色 蓝色）。
+// 这个函数将提取 R, G, B 三个分量，并按照 RRGGBB 的标准顺序组合成字符串。
+// 参数：
+//   - AColor: TColor              需要转换的颜色值。
+// 返回值：
+//   - string                     返回格式为 RRGGBB 的十六进制字符串，例如 'FF0000' 表示红色。
 function ColorToRRGGBBStr(AColor: TColor): string;
 var
   R, G, B: Byte;
-  ColorValue: LongWord; // TColor 在内部是 LongWord (32位整数)
+  ColorValue: LongWord;
 begin
   ColorValue := LongWord(AColor);
 
-  R := (ColorValue shr 16) and $FF;
-  G := (ColorValue shr 8) and $FF;
-  B := ColorValue and $FF;
-
-  Result := IntToHex(B, 2) + IntToHex(G, 2) + IntToHex(R, 2);
+  B := (ColorValue and $00FF0000) shr 16;
+  G := (ColorValue and $0000FF00) shr 8;
+  R := ColorValue and $000000FF;
+  Result := IntToHex(R, 2) + IntToHex(G, 2) + IntToHex(B, 2);
 end;
 
+// 其他函数保持不变
 function IsXDigit(AChar: Char): Boolean;
 begin
   Result := CharInSet(AChar, ['0'..'9', 'A'..'F']);
 end;
 
+// 功能：检查一个字符串是否完全由十六进制字符组成（'0'-'9' 或 'A'-'F'）。
+// 参数：
+//   - const AStr: string      需要检查的字符串。
+// 返回值：
+//   - Boolean                  如果 AStr 的所有字符都是十六进制字符，则返回 True；否则返回 False。
 function IsAllCharFitHex(const AStr: string): Boolean;
 var
-  StrP: PChar;
   i: Integer;
 begin
-  StrP := PChar(AStr);
-  Result := False;
-  for i := 0 to Length(AStr) - 1 do
+  Result := True;
+  for i := 1 to Length(AStr) do
   begin
-    if not CharInSet(StrP^, ['0'..'9', 'A'..'F']) then
+    if not CharInSet(AStr[i], ['0'..'9', 'A'..'F']) then
+    begin
+      Result := False;
       Exit;
+    end;
   end;
-  Result := True;  
 end;
 
-// 功能：将以RRGGBB表示的字符串转成颜色
-function RRGGBBStrToColor(AStr: string): TColor;
+
+// 功能：将 RRGGBB（红红绿绿蓝蓝）格式的十六进制字符串转换为 TColor 类型的颜色值。
+// 参数：
+//   - AStr: string               输入的 RRGGBB 格式的十六进制字符串。
+//   - ADefaultColor: LongWord = $00FFFFFF  如果转换失败使用的默认值
+// 返回值：
+//   - TColor                     转换后的颜色值。如果输入无效（如非空白字符长度不为6，有非16进制字符等），则返回一个默认值ADefaultColor。
+function RRGGBBStrToColor(AStr: string; ADefaultColor: LongWord = $00FFFFFF): TColor;
 var
   ColorString: string;
   R, G, B: Byte;
 begin
-  ColorString := UpperCase(Trim(AStr)); // 转换为大写，方便处理
+  Result := ADefaultColor;
+  ColorString := UpperCase(Trim(AStr));
 
-  ColorString := Copy(ColorString, Max(0, Length(ColorString) - 6), 6);
-
-  // 检查是否都是十六进制字符 (0-9, A-F)
-  if not IsAllCharFitHex(ColorString) then
+  if Length(ColorString) = 6 then
   begin
-    Exit;
+    if IsAllCharFitHex(ColorString) then
+    begin
+      R := StrToIntDef('$' + Copy(ColorString, 1, 2), 0);
+      G := StrToIntDef('$' + Copy(ColorString, 3, 2), 0);
+      B := StrToIntDef('$' + Copy(ColorString, 5, 2), 0);
+      Result := RGB(R, G, B);
+    end;
   end;
+end;
 
-  R := StrToIntDef('$' + Copy(ColorString, 1, 2), 0);
 
-  G := StrToIntDef('$' + Copy(ColorString, 3, 2), 0);
+// 功能：比较输入的整数AInput是否在指定的范围[AMin, AMax]内，如果是就返回AInput，否则返回ADefaultValue
+// 参数：
+//   - AInput: Integer              输入的整数
+//   - AMin: Integer                范围的左端点
+//   - AMax: Integer                范围的右端
+//   - ADefaultValue: Integer = -1  如果不在范围内返回的默认值
+function CheckInRange(AInput, AMin, AMax: Integer; ADefaultValue: Integer = -1): Integer;
+begin
+  Result := IfThen((AInput < AMin) or (AInput > AMax), ADefaultValue, AInput);
+end;
 
-  B := StrToIntDef('$' + Copy(ColorString, 5, 2), 0);
+// 其他类型的重载，内容与 Integer 版本相同，只是类型不同
+function CheckInRange(AInput, AMin, AMax: Int64; ADefaultValue: Int64 = -1): Int64; overload;
+begin
+  Result := IfThen((AInput < AMin) or (AInput > AMax), ADefaultValue, AInput);
+end;
 
-  Result := RGB(R, G, B);
+function CheckInRange(AInput, AMin, AMax: Single; ADefaultValue: Single = -1): Single; overload;
+begin
+  Result := IfThen((AInput < AMin) or (AInput > AMax), ADefaultValue, AInput);
+end;
 
+function CheckInRange(AInput, AMin, AMax: Double; ADefaultValue: Double = -1): Double; overload;
+begin
+  Result := IfThen((AInput < AMin) or (AInput > AMax), ADefaultValue, AInput);
+end;
+
+function CheckInRange(AInput, AMin, AMax: Extended; ADefaultValue: Extended = -1): Extended; overload;
+begin
+  Result := IfThen((AInput < AMin) or (AInput > AMax), ADefaultValue, AInput);
+end;
+
+function CheckInRange(AInput, AMin, AMax: NativeInt; ADefaultValue: NativeInt = 0): NativeInt; overload;
+begin
+  Result := IfThen((AInput < AMin) or (AInput > AMax), ADefaultValue, AInput);
+end;
+
+function CheckInRange(AInput, AMin, AMax: NativeUInt; ADefaultValue: NativeUInt = 0): NativeUInt; overload;
+begin
+  Result := IfThen((AInput < AMin) or (AInput > AMax), ADefaultValue, AInput);
+end;
+
+function CheckInRange(AInput, AMin, AMax: UInt64; ADefaultValue: UInt64 = 0): UInt64; overload;
+begin
+  Result := IfThen((AInput < AMin) or (AInput > AMax), ADefaultValue, AInput);
+end;
+
+function CheckInRange(AInput, AMin, AMax: Char; ADefaultValue: Char = #0): Char; overload;
+begin
+  Result := IfThen((AInput < AMin) or (AInput > AMax), ADefaultValue, AInput);
+end;
+
+function CheckInRange(AInput, AMin, AMax: Cardinal; ADefaultValue: Cardinal = 0): Cardinal; overload;
+begin
+  Result := IfThen((AInput < AMin) or (AInput > AMax), ADefaultValue, AInput);
+end;
+
+function CheckInRange(AInput, AMin, AMax: Byte; ADefaultValue: Byte = 0): Byte; overload;
+begin
+  Result := IfThen((AInput < AMin) or (AInput > AMax), ADefaultValue, AInput);
+end;
+
+function CheckInRange(AInput, AMin, AMax: Word; ADefaultValue: Word = 0): Word; overload;
+begin
+  Result := IfThen((AInput < AMin) or (AInput > AMax), ADefaultValue, AInput);
+end;
+
+// 功能：调整输入的左右端点，确保左端点不大于右端点，并且在合法的范围内
+// 参数：
+//   - ALeftpoint: Integer              待调整的左端点 (引用传递，会直接修改原值)
+//   - ARightPoint: Integer             待调整的右端点 (引用传递，会直接修改原值)
+//   - LegalLeftPoint: Integer          合法的左端点最小值
+//   - LegalRightPoint: Integer         合法的右端点最大值
+procedure AdjustRange(var ALeftpoint: Integer; var ARightPoint: Integer; LegalLeftPoint, LegalRightPoint: Integer);
+begin
+  if ALeftpoint > ARightPoint then
+    MemSwap(@ALeftpoint, @ARightPoint, SIZEOFINTEGER);
+
+  if LegalLeftPoint > LegalRightPoint then
+    MemSwap(@LegalLeftPoint, @LegalRightPoint, SIZEOFINTEGER);
+
+  if ALeftpoint > LegalRightPoint then
+    raise EInvalidArgument.CreateResFmt(@sParamOutOfRangeInclusive, ['ALeftpoint', ALeftpoint, LegalLeftPoint, LegalRightPoint]);
+
+  ALeftpoint := Max(ALeftpoint, LegalLeftPoint);
+
+  ARightPoint := Min(ARightPoint, LegalRightPoint);
 end;
 
 end.
+
