@@ -103,7 +103,7 @@ CMAKE_PROJECT_HOMEPAGE_URL:STATIC=
 CMAKE_PROJECT_NAME:STATIC=hsmk-mathematical-library
 
 //RC compiler
-CMAKE_RC_COMPILER:FILEPATH=C:/Program Files (x86)/Embarcadero/Studio/23.0/bin/rc.exe
+CMAKE_RC_COMPILER:FILEPATH=E:/Delphi10_4/bin/rc.exe
 
 //Flags for Windows Resource Compiler during all build types.
 CMAKE_RC_FLAGS:STRING=-DWIN32

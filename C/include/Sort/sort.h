@@ -43,6 +43,7 @@
  */
 typedef int (*default_compare_s)(const void *, const void *, void *);
 
+
 /**
  * @brief Function pointer type for a comparison function.
  *

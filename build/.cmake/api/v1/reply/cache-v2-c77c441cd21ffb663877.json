@@ -631,7 +631,7 @@
 				}
 			],
 			"type" : "FILEPATH",
-			"value" : "C:/Program Files (x86)/Embarcadero/Studio/23.0/bin/rc.exe"
+			"value" : "E:/Delphi10_4/bin/rc.exe"
 		},
 		{
 			"name" : "CMAKE_RC_COMPILER_WORKS",
