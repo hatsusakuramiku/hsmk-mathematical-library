@@ -27,7 +27,9 @@
 #include "exception.h"
 
 // Standard Headers
+#include <stdbool.h>
 #include <stddef.h>
+#include <stdio.h>
 
 /**
  * @brief Enum representing the result type of a function or operation.
@@ -43,60 +45,83 @@ typedef enum
  * @brief Structure representing the result of a mathematical library operation.
  *
  * Contains information about the result type (success or error),
- * a pointer to the result data, the size of the data, the data type,
- * and an exception object if an error occurred.
+ * a union of result data (for success) or exception (for error),
+ * and an owns_data flag indicating memory ownership.
+ *
+ * @note When status == SUCCESS, only 'data' field is valid.
+ *       When status == ERROR, only 'exception' field is valid.
  */
 typedef struct
 {
-    HSMK_MATH_LIB_RESULT_STATUS status; ///< Result type: success or error
-    void *data;                         ///< Pointer to result data (type depends on data_type)
-    size_t size;                        ///< Size of the data in bytes
-    const char *type_name;              ///< Type descriptor for the data
-    HSMK_MATH_LIB_EXCEPTION exception;  ///< Exception information if an error occurred
+    HSMK_MATH_LIB_RESULT_STATUS status;  ///< Result type: success or error
+    union
+    {
+        void *data;                         ///< Result data (valid on SUCCESS)
+        HSMK_MATH_LIB_EXCEPTION exception;  ///< Exception info (valid on ERROR)
+    };
+    size_t size;                           ///< Size of data in bytes (valid on SUCCESS)
+    bool owns_data;                        ///< If true, caller is responsible for freeing data
 } HSMK_MATH_LIB_RESULT;
 
 /**
  * @brief Alias for HSMK_MATH_LIB_RESULT for convenience.
  */
-#define HSMK_RESULT HSMK_MATH_LIB_RESULT
+typedef HSMK_MATH_LIB_RESULT HSMK_RESULT;
 
 /**
- * @brief Macro to create a HSMK_MATH_LIB_RESULT structure with all fields specified.
- * @param type      Result type (success or error)
- * @param data      Pointer to result data
- * @param size      Size of the data in bytes
- * @param data_type Type of the data
- * @param exception Exception information (NULL if no error)
+ * @brief Create a successful result with data.
+ * @param ptr    Pointer to result data
+ * @param sz     Size of data in bytes
+ * @param owner  If true, caller owns the data and must free it; if false, data is borrowed
  */
-#define HSMK_RESULT_CREATE(status, data, size, data_type, exception) \
-    ((HSMK_RESULT){                                                  \
-        status,                                                      \
-        data,                                                        \
-        size,                                                        \
-        data_type,                                                   \
-        exception})
+#define HSMK_RESULT_OK(ptr, sz, owner) \
+    ((HSMK_RESULT){ \
+        .status = HSMK_MATH_LIB_RESULT_STATUS_SUCCESS, \
+        .data = (ptr), \
+        .size = (sz), \
+        .owns_data = (owner) \
+    })
 
 /**
- * @brief Macro to create a successful result with data.
- * @param data      Pointer to result data
- * @param size      Size of the data in bytes
- * @param data_type Type of the data
+ * @brief Create an error result with exception.
+ * @param ex  Exception object (use HSMK_MATH_LIB_EXCEPTION_CREATE_ERROR(msg))
  */
-#define HSMK_RESULT_CREATE_SUCCESS(data, size, data_type) \
-    HSMK_RESULT_CREATE(HSMK_MATH_LIB_RESULT_STATUS_SUCCESS, data, size, data_type, HSMK_MATH_LIB_NO_EXCEPTION)
+#define HSMK_RESULT_ERR(ex) \
+    ((HSMK_RESULT){ \
+        .status = HSMK_MATH_LIB_RESULT_STATUS_ERROR, \
+        .exception = (ex), \
+        .size = 0, \
+        .owns_data = false \
+    })
 
 /**
- * @brief Macro to create an error result with exception information.
- * @param exceptionMessage Exception information
+ * @brief Destroy a result, freeing data if owned.
+ * @param r  Result to destroy
  */
-#define HSMK_RESULT_CREATE_ERROR(exceptionMessage) \
-    HSMK_RESULT_CREATE(HSMK_MATH_LIB_RESULT_STATUS_ERROR, NULL, 0, "void", HSMK_MATH_LIB_EXCEPTION_CREATE_ERROR(exceptionMessage))
+#define HSMK_RESULT_DESTROY(r) \
+    do { \
+        if ((r).owns_data && (r).data != NULL) { \
+            free((r).data); \
+            (r).data = NULL; \
+        } \
+    } while (0)
 
-typedef char *(*result_to_string)(HSMK_RESULT result);
+/**
+ * @brief Check if result is successful.
+ * @param r  Result to check
+ */
+#define HSMK_RESULT_IS_OK(r) ((r).status == HSMK_MATH_LIB_RESULT_STATUS_SUCCESS)
 
-void print_hsmk_result(HSMK_RESULT result, result_to_string func)
-{
+/**
+ * @brief Check if result is an error.
+ * @param r  Result to check
+ */
+#define HSMK_RESULT_IS_ERR(r) ((r).status == HSMK_MATH_LIB_RESULT_STATUS_ERROR)
 
-    printf(func(result));
-}
+/**
+ * @brief Get error message from result (valid only on ERROR).
+ * @param r  Result to get message from
+ */
+#define HSMK_RESULT_GET_ERROR_MSG(r) ((r).exception.message)
+
 #endif

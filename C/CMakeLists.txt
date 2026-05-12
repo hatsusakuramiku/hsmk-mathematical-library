@@ -4,7 +4,6 @@ project(hsmk-mathematical-library C)
 # 包含头文件目录
 include_directories(
     include
-    include/Matrix
     include/Stack
     include/Toolbox
     include/Queue
@@ -12,15 +11,12 @@ include_directories(
     include/Pair
     include/List
     include/BinaryTree
-    include/Integral
     include/StdDef
     include/Random
 )
 
 # 收集所有源文件
 set(SRC_FILES
-    src/Matrix/matrix.c
-    src/Matrix/vector.c
     src/Stack/stack.c
     src/Toolbox/toolbox.c
     src/Queue/queue.c
@@ -28,7 +24,6 @@ set(SRC_FILES
     src/Pair/pair.c
     src/List/list.c
     src/BinaryTree/compBinaryTree.c
-    src/Integral/integral.c
 )
 
 set(TEST_FILES
