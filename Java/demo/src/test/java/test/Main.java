@@ -21,9 +21,6 @@
  */
 package test;
 
-import com.hsmkmathlib.matrix.Matrix;
-import com.hsmkmathlib.matrix.MatrixUtils;
-import com.hsmkmathlib.tools.ArrayTools;
 
 // import sort.algorithm.BubbleSort;
 public class Main {
@@ -50,11 +47,7 @@ public class Main {
         // // System.out.println(triangle.isRightVertices(ves));
         // // System.out.println(triangle.getArea());
         // // TriangleSimplexIntegral.saveIntegralPoints("integralPoints.txt");
-        // System.out.println(Arrays.toString(teI.getEnableIntegralFormulaName()));
-        Matrix a = new Matrix(new double[][]{{1, 2, 3}, {4, 5, 6}, {7, 8, 9}}, false);
-        Matrix b = new Matrix(new double[][]{{1, 2, 3, 0}, {4, 5, 6, 0}, {7, 8, 9, 0}}, false);
-        Matrix c = MatrixUtils.multiply(a, b);
-        System.out.println(ArrayTools.arrayToString(c.getRow(0, 3, 2)));
-        // System.out.println(MatrixUtils.onesMatrix(1000, 10, 1));
+        // System.out.println(Arrays.toString(teI.getEnableIntegralFormulaName()))
+        System.out.println("Hello world!");
     }
 }

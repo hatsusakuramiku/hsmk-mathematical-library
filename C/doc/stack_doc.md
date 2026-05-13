@@ -1,42 +1,40 @@
-# 说明
+# Stack (C)
 
-本文件是[stack.c](/C/srcrc/Stack/stack.c)和[stack.h](/C/includede/Stack/stack.h)
-的简要说明文档。简要说明其中可供外部调用的函数/宏定义的功能和用法。
+> [!NOTE]
+> This documentation covers `stack.h` and `stack.c`.
 
-栈(stack)是一种先进后出(FILO)的数据结构，常见的实现有数组型和链表型。为提高可扩展性，本项目采用链表型栈。
+A **stack** is a Last-In-First-Out (LIFO) data structure. This implementation uses a linked list for flexibility.
 
-## 栈的类型定义
+## Types
 
-```C
-// 定义栈中元素的类型为无符号指针，以确保其可扩展性
+```c
+// Stack element (generic pointer)
 typedef void *stackElem;
 
-// 定义栈节点类型
+// Stack node
 typedef struct _StackNode {
     stackElem data;
     struct _StackNode *next;
-    size_t elemSize;// 栈元素的大小，为了确保其可扩展性，每个栈节点的元素大小不一定相同，这意味着不同类型的元素可以存储在同一个栈中
+    size_t elemSize;  // Element size for deep copy
 } StackNode;
 
-// 定义栈类型
+// Stack structure
 typedef struct _Stack {
-    StackNode *head;// 栈顶指针
-    StackNode *tail;// 栈底指针
+    StackNode *head;  // Top of stack
+    StackNode *tail;  // Bottom of stack
     int size;
 } Stack;
 
-
-// 定义带有大小的栈元素类型
+// Element with size
 typedef struct _stackElemWithSize {
     stackElem data;
     size_t elemSize;
 } stackElemWithSize;
-
 ```
 
-在向栈中添加节点时必须指定其元素的大小，为方便使用，这里定义了一些常见类型的栈元素大小。
+## Common Element Sizes
 
-```C
+```c
 enum STACK_TYPE_SIZE {
     STACK_TYPE_SIZE_INT = sizeof(int),
     STACK_TYPE_SIZE_LONG = sizeof(long),
@@ -48,473 +46,213 @@ enum STACK_TYPE_SIZE {
 };
 ```
 
-## 栈相关函数
+## Functions
 
-### **stackInit**
+### stackInit
 
-说明: 初始化栈，并返回一个指向该栈的指针，必须先初始化栈后才能使用栈。
-
-函数原型:
-
-```C
-Stack *stackInit();
+```c
+Stack *stackInit(void);
 ```
 
-**Output**::
+Creates and initializes a new stack.
 
-| type     | description                                         |
-| -------- | --------------------------------------------------- |
-| Stack \* | 指向初始化后的栈的指针，如果内存分配失败，返回 NULL |
+**Returns:** Pointer to new Stack, or NULL on allocation failure.
 
-**使用示例**:
+---
 
-```C
-Stack *stack = stackInit();
-```
+### stackPush
 
-### **stackClear**
-
-说明: 清空栈，释放栈中所有节点的内存，但保留栈本身。
-
-函数原型:
-
-```C
-void stackClear(Stack *stack);
-```
-
-**Input**:
-
-| name  | type     | description  | required    |
-| ----- | -------- | ------------ | ----------- |
-| stack | Stack \* | 指向栈的指针 | 不可为 NULL |
-
-使用示例:
-
-```C
-stackClear(stack);
-```
-
-### **stackDestroy**
-
-说明: 释放栈，释放栈中所有节点的内存，并且释放栈的内存并将指向该栈的指针设置为 NULL。
-
-函数原型:
-
-```C
-void stackDestroy(Stack **stack);
-```
-
-**Input**:
-
-| name  | type       | description        | required    |
-| ----- | ---------- | ------------------ | ----------- |
-| stack | Stack \*\* | 指向栈的指针的指针 | 不可为 NULL |
-
-使用示例:
-
-```C
-stackDestroy(&stack);
-```
-
-### **stackPush**
-
-说明: 向栈中添加一个元素。
-
-函数原型:
-
-```C
+```c
 void stackPush(Stack *stack, stackElem elem, size_t elemSize);
 ```
 
-**Input**:
+Pushes an element onto the stack (copies elemSize bytes).
 
-| name     | type      | description        | required    |
-| -------- | --------- | ------------------ | ----------- |
-| stack    | Stack \*  | 指向栈的指针       | 不可为 NULL |
-| elem     | stackElem | 要添加的元素       | 不可为 NULL |
-| elemSize | size_t    | 要添加的元素的大小 | 不可为 0    |
+**Parameters:**
+| Name | Type | Description |
+|------|------|-------------|
+| stack | Stack\* | Stack to push to |
+| elem | stackElem | Element to push |
+| elemSize | size_t | Size of element in bytes |
 
-使用示例:
+---
 
-```C
-int a = 10;
-stackPush(stack, &a, STACK_TYPE_SIZE_INT);
-```
+### stackPop
 
-### **stackPop**
-
-说明: 弹出栈顶元素，如果栈为空，则返回 NULL。
-
-函数原型:
-
-```C
+```c
 stackElem stackPop(Stack *stack);
 ```
 
-**Input**:
+Removes and returns the top element.
 
-| name  | type     | description  | required    |
-| ----- | -------- | ------------ | ----------- |
-| stack | Stack \* | 指向栈的指针 | 不可为 NULL |
+**Returns:** Top element (without size), or NULL if empty.
 
-**Output**:
+---
 
-| type      | description                                     |
-| --------- | ----------------------------------------------- |
-| stackElem | 弹出的元素，不含元素大小，如果栈为空，返回 NULL |
+### stackPopWithSize
 
-使用示例:
-
-```C
-int a = 10;
-stackPush(stack, &a, STACK_TYPE_SIZE_INT);
-int a = *(int*)stackPop(stack);
-```
-
-### **stackBottom**
-
-说明: 返回栈底元素，如果栈为空，则返回 NULL。
-
-函数原型:
-
-```C
-stackElem stackBottom(Stack *stack);
-```
-
-**Input**:
-
-| name  | type     | description  | required    |
-| ----- | -------- | ------------ | ----------- |
-| stack | Stack \* | 指向栈的指针 | 不可为 NULL |
-
-**Output**:
-
-| type      | description                                   |
-| --------- | --------------------------------------------- |
-| stackElem | 栈底元素，不含元素大小，如果栈为空，返回 NULL |
-
-使用示例:
-
-```C
-int a = 10;
-stackPush(stack, &a, STACK_TYPE_SIZE_INT);
-int a = *(int*)stackBottom(stack);
-```
-
-### **stackTop**
-
-说明: 返回栈顶元素，如果栈为空，则返回 NULL。
-
-函数原型:
-
-```C
-stackElem stackTop(Stack *stack);
-```
-
-**Input**:
-
-| name  | type     | description  | required    |
-| ----- | -------- | ------------ | ----------- |
-| stack | Stack \* | 指向栈的指针 | 不可为 NULL |
-
-**Output**:
-
-| type      | description                                   |
-| --------- | --------------------------------------------- |
-| stackElem | 栈顶元素，不含元素大小，如果栈为空，返回 NULL |
-
-使用示例:
-
-```C
-int a = 10;
-stackPush(stack, &a, STACK_TYPE_SIZE_INT);
-int a = *(int*)stackTop(stack);
-```
-
-### **stackPopWithSize**
-
-说明: 弹出栈顶元素，如果栈为空，则返回 NULL。
-
-函数原型:
-
-```C
+```c
 stackElemWithSize stackPopWithSize(Stack *stack);
 ```
 
-**Input**:
+Removes and returns the top element with its size.
 
-| name  | type     | description  | required    |
-| ----- | -------- | ------------ | ----------- |
-| stack | Stack \* | 指向栈的指针 | 不可为 NULL |
+**Returns:** stackElemWithSize struct, or with data=NULL if empty.
 
-**Output**:
+---
 
-| type              | description                                   |
-| ----------------- | --------------------------------------------- |
-| stackElemWithSize | 弹出的元素，含元素大小，如果栈为空，返回 NULL |
+### stackTop
 
-使用示例:
-
-```C
-int a = 10;
-stackPush(stack, &a, STACK_TYPE_SIZE_INT);
-int a = *(int*)stackPopWithSize(stack).data;
+```c
+stackElem stackTop(Stack *stack);
 ```
 
-### **stackBottomWithSize**
+Returns the top element without removing it.
 
-说明: 返回栈底元素，如果栈为空，则返回 NULL。
+**Returns:** Top element, or NULL if empty.
 
-函数原型:
+---
 
-```C
-stackElemWithSize stackBottomWithSize(Stack *stack);
-```
+### stackTopWithSize
 
-**Input**:
-
-| name  | type     | description  | required    |
-| ----- | -------- | ------------ | ----------- |
-| stack | Stack \* | 指向栈的指针 | 不可为 NULL |
-
-**Output**:
-
-| type              | description                                 |
-| ----------------- | ------------------------------------------- |
-| stackElemWithSize | 栈底元素，含元素大小，如果栈为空，返回 NULL |
-
-使用示例:
-
-```C
-int a = 10;
-stackPush(stack, &a, STACK_TYPE_SIZE_INT);
-int a = *(int*)stackBottomWithSize(stack).data;
-```
-
-### **stackTopWithSize**
-
-说明: 返回栈顶元素，如果栈为空，则返回 NULL。
-
-函数原型:
-
-```C
+```c
 stackElemWithSize stackTopWithSize(Stack *stack);
 ```
 
-**Input**:
+Returns the top element with size, without removing it.
 
-| name  | type     | description  | required    |
-| ----- | -------- | ------------ | ----------- |
-| stack | Stack \* | 指向栈的指针 | 不可为 NULL |
+**Returns:** stackElemWithSize struct, or with data=NULL if empty.
 
-**Output**:
+---
 
-| type              | description                                 |
-| ----------------- | ------------------------------------------- |
-| stackElemWithSize | 栈顶元素，含元素大小，如果栈为空，返回 NULL |
+### stackBottom / stackBottomWithSize
 
-使用示例:
-
-```C
-int a = 10;
-stackPush(stack, &a, STACK_TYPE_SIZE_INT);
-int a = *(int*)stackTopWithSize(stack).data;
+```c
+stackElem stackBottom(Stack *stack);
+stackElemWithSize stackBottomWithSize(Stack *stack);
 ```
 
-### **stackSize**
+Returns the bottom element of the stack.
 
-说明: 返回栈的大小。
+---
 
-函数原型:
+### stackSize
 
-```C
+```c
 int stackSize(Stack *stack);
 ```
 
-**Input**:
+**Returns:** Number of elements in stack, or -1 if stack is NULL.
 
-| name  | type     | description  | required    |
-| ----- | -------- | ------------ | ----------- |
-| stack | Stack \* | 指向栈的指针 | 不可为 NULL |
+---
 
-**Output**:
+### stackClear
 
-| type | description                  |
-| ---- | ---------------------------- |
-| int  | 栈的大小，如果栈为空，返回 0 |
-
-使用示例:
-
-```C
-int size = stackSize(stack);
+```c
+void stackClear(Stack *stack);
 ```
 
-### **stackSwap**
+Removes all elements but keeps the stack structure.
 
-说明: 反转栈中的元素。
+---
 
-函数原型:
+### stackDestroy
 
-```C
+```c
+void stackDestroy(Stack **stack);
+```
+
+Frees all nodes and the stack itself. Sets pointer to NULL.
+
+---
+
+### stackSwap
+
+```c
 void stackSwap(Stack *stack);
 ```
 
-**Input**:
+Reverses the order of elements in the stack.
 
-| name  | type     | description  | required    |
-| ----- | -------- | ------------ | ----------- |
-| stack | Stack \* | 指向栈的指针 | 不可为 NULL |
+---
 
-使用示例:
+### isStackEmpty
 
-```C
-void main(void) {
- Stack *stack = stackInit();
- int arr[] = {1, 2, 3, 4, 5};
- for (int i = 0; i < 5; i++) {
-  stackPush(stack, &arr[i], STACK_TYPE_SIZE_INT);
- }
- int *tmp = stackToArray(stack);
- if (tmp != NULL) {
-  printf("Before swap:\n");
-  for (int i = 0; i < 5; i++) {
-   printf("%d\n", tmp[i]);
-  }
-  FREE(tmp);
-  printf("After swap:\n");
-  stackSwap(stack);
-  tmp = stackToArray(stack);
-  for (int i = 0; i < 5; i++) {
-   printf("%d\n", tmp[i]);
-  }
- }
-}
-
-// 输出结果如下：
-Before swap:
-5
-4
-3
-2
-1
-After swap:
-1
-2
-3
-4
-5
-```
-
-### **isStackEmpty**
-
-说明: 判断栈是否为空。
-
-函数原型:
-
-```C
+```c
 int isStackEmpty(Stack *stack);
 ```
 
-**Input**:
+**Returns:** 1 if empty, 0 if not empty, -1 if stack is NULL.
 
-| name  | type     | description  | required    |
-| ----- | -------- | ------------ | ----------- |
-| stack | Stack \* | 指向栈的指针 | 不可为 NULL |
+---
 
-**Output**:
+### isStackMember
 
-| type | description                                    |
-| ---- | ---------------------------------------------- |
-| int  | 1 表示栈为空，0 表示栈不为空，-1 表示栈为 NULL |
-
-使用示例:
-
-```C
-int isEmpty = isStackEmpty(stack);
+```c
+int isStackMember(Stack *stack, stackElemWithSize elem,
+                  int (*cmp)(const void *, const void *));
 ```
 
-### **isStackMember**
+Checks if an element exists in the stack.
 
-说明: 判断栈中是否存在某个元素。
+**Parameters:**
+| Name | Type | Description |
+|------|------|-------------|
+| stack | Stack\* | Stack to search |
+| elem | stackElemWithSize | Element to find |
+| cmp | function | Comparison function (returns 1 if equal) |
 
-函数原型:
+**Returns:** 1 if found, 0 if not found, -1 if stack is NULL.
 
-```C
-int isStackMember(Stack *stack, stackElemWithSize elem, int (*cmp)(const void *, const void *));
-```
+---
 
-**Input**:
+### stackToArray
 
-| name  | type                                   | description                                                                              | required    |
-| ----- | -------------------------------------- | ---------------------------------------------------------------------------------------- | ----------- |
-| stack | Stack \*                               | 指向栈的指针                                                                             | 不可为 NULL |
-| elem  | stackElemWithSize                      | 要判断的元素，包含元素大小                                                               | 不可为 NULL |
-| cmp   | int (\*)(const void \*, const void \*) | 比较函数，需要用户自行实现，用于比较元素，如果返回值为 1 表示相等，返回值为 0 表示不相等 | 不可为 NULL |
-
-**Output**:
-
-| type | description                                                    |
-| ---- | -------------------------------------------------------------- |
-| int  | 1 表示栈中存在该元素，0 表示栈中不存在该元素，-1 表示栈为 NULL |
-
-使用示例:
-
-```C
-int isMember = isStackMember(stack, &a, cmp);
-```
-
-## **stackToArray**
-
-说明: 将栈转换为数组。
-
-函数原型:
-
-```C
+```c
 void *stackToArray(Stack *stack);
 ```
 
-**Input**:
+Converts stack to array (top of stack = index 0).
 
-| name  | type     | description  | required                                  |
-| ----- | -------- | ------------ | ----------------------------------------- |
-| stack | Stack \* | 指向栈的指针 | 不可为 NULL；要求栈中每一个元素的大小相同 |
+**Returns:** Pointer to new array, or NULL if empty. Caller must free.
 
-**Output**:
+---
 
-| type    | description                                                                                |
-| ------- | ------------------------------------------------------------------------------------------ |
-| void \* | 指向转换后的数组的指针，如果栈为空，返回 NULL;数组的顺序与出栈的顺序相同，与入栈的顺序相反 |
+### stackCopy
 
-使用示例（上文亦有示例[stackSwap](/C/dococ/stack_doc.md#stackSwap)）:
-
-```C
-int *arr = stackToArray(stack);
-```
-
-### **stackCopy**
-
-说明: 将栈拷贝到另一个栈。
-
-函数原型:
-
-```C
+```c
 Stack *stackCopy(Stack *stack);
 ```
 
-**Input**:
+Creates a deep copy of the stack.
 
-| name  | type     | description  | required    |
-| ----- | -------- | ------------ | ----------- |
-| stack | Stack \* | 指向栈的指针 | 不可为 NULL |
+**Returns:** Pointer to new stack, or NULL if empty/failure.
 
-**Output**:
+---
 
-| type     | description                                 |
-| -------- | ------------------------------------------- |
-| Stack \* | 指向拷贝后的栈的指针，如果栈为空，返回 NULL |
+## Usage Example
 
-使用示例：
+```c
+#include "stack.h"
+#include <stdio.h>
 
-```C
-Stack *newStack = stackCopy(stack);
+int main(void) {
+    Stack *stack = stackInit();
+
+    // Push elements
+    int arr[] = {1, 2, 3, 4, 5};
+    for (int i = 0; i < 5; i++) {
+        stackPush(stack, &arr[i], STACK_TYPE_SIZE_INT);
+    }
+
+    // Pop all elements
+    while (!isStackEmpty(stack)) {
+        int *val = (int *)stackPop(stack);
+        printf("%d ", *val);
+    }
+    // Output: 5 4 3 2 1
+
+    stackDestroy(&stack);
+    return 0;
+}
 ```
