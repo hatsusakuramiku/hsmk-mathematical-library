@@ -21,37 +21,97 @@
 { SOFTWARE.                                                                    }
 {******************************************************************************}
 
-{* Require Version >= Delphi XE4(Delphi 10.0) *}
+{ Require Version >= Delphi XE4 (Delphi 10.0) }
 
-{* Require Version >= Delphi XE4(Delphi 10.0) *}
 unit GeneralTypeUnit;
 
 interface
 
+/// <summary>
+/// Common type definitions and constants for the library.
+/// </summary>
 type
-  {Dynamic Array}
-  TIntegerArray = TArray<Integer>; //array of Integer;
+  /// <summary>
+  /// Dynamic array of Integer.
+  /// </summary>
+  TIntegerArray = TArray<Integer>;
+
+  /// <summary>
+  /// Dynamic array of string.
+  /// </summary>
   TStringArray = TArray<string>;
+
+  /// <summary>
+  /// Dynamic array of Extended (high-precision floating point).
+  /// </summary>
   TExtendedArray = TArray<Extended>;
+
+  /// <summary>
+  /// Dynamic array of Cardinal (unsigned 32-bit integer).
+  /// </summary>
   TCardinalArray = TArray<Cardinal>;
+
+  /// <summary>
+  /// Dynamic array of Int64 (signed 64-bit integer).
+  /// </summary>
   TInt64Array = TArray<Int64>;
+
+  /// <summary>
+  /// Dynamic array of Pointer.
+  /// </summary>
   TPointerArray = TArray<Pointer>;
+
+  /// <summary>
+  /// Dynamic array of TObject.
+  /// </summary>
   TObjectArray = TArray<TObject>;
 
-  {Base Type}
+  /// <summary>
+  /// Size type equivalent to NativeUInt.
+  /// </summary>
   TSize_T = NativeUInt;
+
+  /// <summary>
+  /// Pointer to TSize_T.
+  /// </summary>
   PTSize_T = ^TSize_T;
 
 const
+  /// <summary>
+  /// Size of Char type in bytes.
+  /// </summary>
   SIZEOFCHAR = SizeOf(Char);
+
+  /// <summary>
+  /// Size of Integer type in bytes.
+  /// </summary>
   SIZEOFINTEGER = SizeOf(Integer);
+
+  /// <summary>
+  /// Size of Extended type in bytes.
+  /// </summary>
   SIZEOFEXTENDED = SizeOf(Extended);
+
+  /// <summary>
+  /// Size of NativeUInt type in bytes.
+  /// </summary>
   SIZEOFNATIVEUINT = SizeOf(NativeUInt);
+
+  /// <summary>
+  /// Size of Int64 type in bytes.
+  /// </summary>
   SIZEOFINT64 = SizeOf(Int64);
+
+  /// <summary>
+  /// Size of TSize_T type in bytes.
+  /// </summary>
   SIZEOFTSIZE_T = SizeOf(NativeUInt);
+
+  /// <summary>
+  /// Default text splitter character (255 in ANSI).
+  /// </summary>
   DEFAULTTEXTSPLITTER: string = AnsiChar(255);
 
 implementation
 
 end.
-

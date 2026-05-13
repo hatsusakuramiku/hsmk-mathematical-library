@@ -1,138 +1,180 @@
-# 说明
+# hsmk-mathematical-library
 
-这个项目目的是使用不同语言实现一些科学计算功能等，如（偏）微分方程数值解、曲线拟合等。
+多语言科学计算库，实现科学计算功能（排序算法、数据结构等）。
 
-> [!NOTE] 1.为方便开发，本项目仅支持实数域内的相关运算。 2.下文所提到的语言标准/版本均为我使用的标准/版本，不代表运行/使用项目所要求的最低/高版本。
+> [!NOTE]
+> 1. 本项目仅支持实数域内的相关运算。
+> 2. Matrix 和 Integral 模块正在重构中，暂时禁用。
 
-## C （C 语言）
+---
+
+## 项目结构
+
+```
+hsmk-mathematical-library/
+├── C/                    # C11 实现
+│   ├── include/          # 头文件 (.h)
+│   ├── src/              # 源文件 (.c)
+│   └── tests/            # 测试文件
+├── Java/demo/            # Java 实现 (Maven)
+│   ├── src/main/java/   # 源代码
+│   └── pom.xml
+├── delphi/               # Delphi/Pascal 实现
+│   ├── src/              # 源代码 (.pas)
+│   └── README.md         # 文档
+├── matlab/               # MATLAB 脚本 (占位)
+├── python/               # Python 实现 (占位)
+└── build/                # 构建输出
+```
+
+---
+
+## C (C11)
 
 > **语言标准**: C11
 > **文件编码**: UTF-8
-> **字符集**: UTF-8
 
-<details>
-<summary>欲实现功能如下</summary>
+### 排序算法
 
-### 矩阵运算
+文档: [sort_doc.md](C/doc/sort_doc.md)
 
-部分完成，文档 [matrix_doc.md](C/doc/matrix_doc.md),
-头文件 [matrix.h](C/include/Matrix/matrix.h),
-源文件 [matrix.c](C/src/Matrix/matrix.c).
+- [x] 冒泡排序
+- [x] 插入排序
+- [x] 选择排序
+- [x] 归并排序
+- [x] 堆排序
+- [ ] 希尔排序
+- [ ] 快速排序
+- [ ] 基数排序
 
-#### 主要功能
+### 数据结构
 
-- [x] [普通矩阵](C/doc/matrix_doc.md#matrix_gen), [随机矩阵](C/doc/matrix_doc.md#rand_matrix), [单位矩阵](C/doc/matrix_doc.md#eye_matrix), [对角矩阵](C/doc/matrix_doc.md#diagMatrix)
-      的创建
-- [x] 矩阵的复制: [matrix_copy](C/doc/matrix_doc.md#matrix_copy), [matrix*copy*](C/doc/matrix_doc.md#matrix_copy_r)
-- [x] 矩阵乘积: [AxB](C/doc/matrix_doc.md#matrix_mul), [A\*B](C/doc/matrix_doc.md#matrix_cdot_mul),
-      [a\*B](C/doc/matrix_doc.md#matrix_mul_single)
-- [x] [矩阵转置](C/doc/matrix_doc.md#matrix_transpose)
-- [x] 矩阵[拼接](C/doc/matrix_doc.md#matrix_splicing)与[分割](C/doc/matrix_doc.md#matrix_cat)
-- [x] 矩阵[加法](C/doc/matrix_doc.md#matrix_add)与[减法](C/doc/matrix_doc.md#matrix_sub)
-- [x] 矩阵与二维数组间的转换: [矩阵转二维数组](C/doc/matrix_doc.md#matrix_to_2d_array), [二维数组转矩阵](C/doc/matrix_doc.md#matrix_from_2d_array)
-- [x] [求逆矩阵](C/doc/matrix_doc.md#matrix_invert)
-- [x] [矩阵求特征值](C/doc/matrix_doc.md#matrix_eigen_matrix)
-- [x] [矩阵求行列式](C/doc/matrix_doc.md#matrix_det)
-- [x] 高斯消元:[单步消元](C/doc/matrix_doc.md#matrix_gauss_elimination_), [直接消元成上三角矩阵](C/doc/matrix_doc.md#matrix_gauss_elimination)
-- [x] [矩阵求秩](C/doc/matrix_doc.md#matrix_rank)
-- [x] [线性方程组的求解](C/doc/matrix_doc.md#matrixequation)
-- [x] [矩阵(P)LU 分解](C/doc/matrix_doc.md#matrixpludecdiagcard)
-
-#### 辅助功能
-
-- [x] [查找矩阵中符合条件的元素](C/doc/matrix_doc.md#matrix_find)
-- [x] 矩阵中元素的[最大值](C/doc/matrix_doc.md#matrix_min), [最小值](C/doc/matrix_doc.md#matrix_max)
-- [x] [求矩阵的行列式](C/doc/matrix_doc.md#matrix_det)
-
-### 排序
-
-部分完成，文档 [sort_doc.md](C/doc/sort_doc.md),
-头文件 [sort.h](C/include/Sort/sort.h),
-源文件 [sort.c](C/src/Sort/sort.c).
-
-- [x] [冒泡排序](C/doc/sort_doc.md#bubblesort)
-- [x] [插入排序](C/doc/sort_doc.md#insertionsort)
-- [x] [选择排序](C/doc/sort_doc.md#selectionsort)
-- [x] [归并排序](C/doc/sort_doc.md#mergesort)
-- [x] [堆排序](C/doc/sort_doc.md#heapsort)
-
-### 其他数据结构
-
-- [x] 线性单链表: [头文件](C/include/List/list.h), [源文件](C/src/List/list.c)
-- [x] 栈: [头文件](C/include/Stack/stack.h), [源文件](C/src/Stack/stack.c)
-- [x] 线性队列: [头文件](C/include/Queue/queue.h), [源文件](C/src/Queue/queue.c)
+- [x] 线性单链表: [list.h](C/include/List/list.h), [list.c](C/src/List/list.c)
+- [x] 栈: [stack.h](C/include/Stack/stack.h), [stack.c](C/src/Stack/stack.c)
+- [x] 线性队列: [queue.h](C/include/Queue/queue.h), [queue.c](C/src/Queue/queue.c)
 - [ ] 完全二叉树
 - [ ] 红黑树
 - [ ] 集合
 - [ ] 哈希表
 
-### 数值积分
+### 核心定义
 
-#### 一维积分
+- [x] Result 类型: [result.h](C/include/StdDef/result.h), [result_types.h](C/include/StdDef/result_types.h) - Rust-like 错误处理
+- [x] Exception 类型: [exception.h](C/include/StdDef/exception.h)
 
-部分完成，文档 [integral_doc.md](C/doc/integral_doc.md),
-头文件 [integral.h](C/include/Integral/integral.h),
-源文件 [integral.c](C/src/Integral/integral.c).
+---
 
-- [x] [(复化)梯形积分](/C/doc/integral_doc.md#trapezoid)
-- [x] [(复化)辛普森积分](/C/doc/integral_doc.md#simpson)
-- [x] [自适应辛普森积分](/C/doc/integral_doc.md#adaptive_simpson)
-- [ ] 自适应高精度积分
-- [x] [高斯勒让德积分](/C/doc/integral_doc.md#gausslegendre2pointintegral)
+## Java (JDK 21+)
 
-#### 二维积分
-
-- [ ] 龙格-库塔积分
-
-### 曲线拟合
-
-- [ ] 线性回归
-- [ ] 非线性回归
-
-### 插值
-
-- [ ] 拉格朗日插值
-- [ ] 牛顿插值
-- [ ] 线性插值
-- [ ] 双线性插值
-
-### 微分方程数值解
-
-- [ ] 欧拉方法
-- [ ] 龙格-库塔方法
-- [ ] 高斯方法
-- [ ] 有限差分法
-
-</details>
-
-## Java
-
-> **JDK**:Oracle OpenJDK JDK 21
+> **JDK**: JDK 21
 > **文件编码**: UTF-8
-> **字符集**: UTF-8
 
-[javadoc](http://htmlpreview.github.io/?https://github.com/hatsusakuramiku/hsmk-mathematical-library/blob/main/Java/demo/target/site/apidocs/index.html)
+### 排序算法
 
-### 排序
+- [x] [BubbleSort](Java/demo/src/main/java/com/hsmkmathlib/sort/algorithm/BubbleSort.java)
+- [x] [InsertionSort](Java/demo/src/main/java/com/hsmkmathlib/sort/algorithm/InsertionSort.java)
+- [x] [SelectionSort](Java/demo/src/main/java/com/hsmkmathlib/sort/algorithm/SelectionSort.java)
+- [x] [MergeSort](Java/demo/src/main/java/com/hsmkmathlib/sort/algorithm/MergeSort.java)
+- [x] [HeapSort](Java/demo/src/main/java/com/hsmkmathlib/sort/algorithm/HeapSort.java)
 
-- [x] [冒泡排序](/Java/demo/src/main/Java/demo/src/main/java/com/hsmkmathlib//sort/BubbleSort.java)
-- [x] [插入排序](/Java/demo/src/main/java/com/hsmkmathlib//sort/InsertionSort.java)
-- [x] [选择排序](/Java/demo/src/main/java/com/hsmkmathlib//sort/SelectionSort.java)
-- [x] [归并排序](/Java/demo/src/main/java/com/hsmkmathlib//sort/MergeSort.java)
-- [x] [堆排序](/Java/demo/src/main/java/com/hsmkmathlib//sort/HeapSort.java)
+### 排序工具类
 
-### 数值积分
+```java
+import com.hsmkmathlib.sort.Sorts;
+import com.hsmkmathlib.sort.algorithm.BubbleSort;
+import com.hsmkmathlib.sort.algorithm.MergeSort;
 
-#### 一维积分
+// 使用类类型
+Integer[] arr = {5, 2, 8, 1, 9};
+Sorts.sort(BubbleSort.class, arr);
+Sorts.sort(MergeSort.class, arr, 0, arr.length, SortAlgorithm.DESCENDING);
 
-- [x] [梯形积分](/Java/demo/src/main/java/com/hsmkmathlib//Integral/Trapezoid.java)
-- [ ] 辛普森积分
-- [ ] 高斯勒让德积分
+// 使用实例
+Sorts.sort(new BubbleSort(), arr, SortAlgorithm.ASCENDING);
+```
 
-#### 二维积分
+### 构建命令
 
-- [x] [二维单纯形上的单纯对称积分](/Java/demo/src/main/java/com/hsmkmathlib/simplexIntegral/TriangleIntegral.java), [文档](https://htmlpreview.github.io/?https://raw.githubusercontent.com/hatsusakuramiku/hsmk-mathematical-library/main/Java/demo/target/site/apidocs/com/hsmkmathlib/simplexIntegral/package-summary.html)
+```bash
+cd Java/demo
+mvn compile          # 编译
+mvn test             # 运行测试
+mvn javadoc:javadoc  # 生成文档
+```
 
-#### 三维积分
+---
 
-- [x] [三维单纯形上的单纯对称积分](/Java/demo/src/main/java/com/hsmkmathlib/simplexIntegral/TetrahedronIntegral.java), [文档](https://htmlpreview.github.io/?https://raw.githubusercontent.com/hatsusakuramiku/hsmk-mathematical-library/main/Java/demo/target/site/apidocs/com/hsmkmathlib/simplexIntegral/package-summary.html)
+## Delphi (XE4+)
+
+> **版本**: Delphi XE4 (10.0) 或更高
+> **文件编码**: UTF-8
+
+### 模块
+
+| 模块 | 文件 | 说明 |
+|------|------|------|
+| [GeneralTypeUnit](delphi/src/General/GeneralTypeUnit.pas) | 类型定义 | TIntegerArray, TStringArray, TExtendedArray 等 |
+| [ArrayHelperUnit](delphi/src/Array/ArrayHelperUnit.pas) | 数组操作 | TArrayHelper 泛型类 |
+| [SortFunctionToolUnit](delphi/src/Sort/SortFunctionToolUnit.pas) | 排序算法 | TArraySortUtils，支持 IDataAccessor |
+| [CLikeFunctionToolsUnit](delphi/src/Sort/CLikeFunctionToolsUnit.pas) | C风格排序 | 指针操作，低级排序和搜索 |
+| [MemoryUtils](delphi/src/General/MemoryUtils.pas) | 内存操作 | MemSwap, ReverseByte, ReverseArray |
+| [RTTIMethodUtilsUnit](delphi/src/General/RTTIMethodUtilsUnit.pas) | RTTI工具 | 动态事件绑定，属性操作 |
+
+### 排序算法
+
+- [x] 冒泡排序 (BubbleSort)
+- [x] 选择排序 (SelectionSort)
+- [x] 插入排序 (InsertionSort)
+- [x] 希尔排序 (ShellSort)
+- [x] 快速排序 (QuickSort)
+- [x] 归并排序 (MergeSort)
+- [x] 堆排序 (HeapSort)
+- [x] 内省排序 (IntroSort)
+- [x] 混合排序 (HybridSort)
+
+### 快速开始
+
+```pascal
+uses
+  System.SysUtils, ArrayHelperUnit, SortFunctionToolUnit,
+  System.Generics.Defaults;
+
+var
+  Numbers: TArray<Integer>;
+begin
+  SetLength(Numbers, 5);
+  Numbers := [5, 2, 8, 1, 9];
+
+  // 排序 (默认 QuickSort)
+  TArraySortUtils.Sort<Integer>(Numbers, TComparer<Integer>.Default);
+
+  // 转换为字符串
+  WriteLn(TArrayHelper.ToString<Integer>(Numbers, IntToStr));
+  // 输出: [1,2,5,8,9]
+end;
+```
+
+详细文档: [delphi/README.md](delphi/README.md)
+
+---
+
+## 待实现功能
+
+### 数值计算
+
+- [ ] 曲线拟合 (线性回归、非线性回归)
+- [ ] 插值 (拉格朗日、牛顿、线性、双线性)
+- [ ] 微分方程数值解 (欧拉、龙格-库塔、有限差分)
+
+### 数据结构
+
+- [ ] 完全二叉树
+- [ ] 红黑树
+- [ ] 集合
+- [ ] 哈希表
+
+---
+
+## 贡献
+
+欢迎提交 Issue 和 Pull Request。

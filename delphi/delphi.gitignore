@@ -7,6 +7,7 @@
 *.local
 *.identcache
 *.tvsconfig
+*.skincfg
 
 # 可执行文件和DLL
 *.exe
@@ -18,25 +19,30 @@
 *.~*
 *.*~
 *.bak
+__history/
+*~
 
 # IDE配置
 *.dsk
 *.dproj.local
+*.dproj
 *.dof
 *.cfg
 *.ddp
 *.dproj.*.user
+*.res
 
 # 输出目录
 /Bin
 /Dcu
 /Backup
+/.build
 
-# 第三方库文件（如果用Boss管理，通常不需要提交）
+# 第三方库文件
 /Packages
 /Libs
 /ThirdParty
 
-# 资源文件（视情况决定是否提交）
+# 资源文件（视情况）
 /Resources/*.res
 /Resources/*.ico
